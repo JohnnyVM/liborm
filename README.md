@@ -1,2 +1,1 @@
-# C-template
-C template repository
+# C++ ORM
