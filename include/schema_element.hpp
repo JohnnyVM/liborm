@@ -5,8 +5,11 @@
 
 namespace orm {
 
-struct SchemaElement { // Keep that separate for class slicing
+class SchemaElement { // Keep that separate for class slicing
+	public:
 	std::string name;
+	SchemaElement(const std::string& arg_name) : name(arg_name) {};
+	virtual ~SchemaElement(){}
 };
 
 }
