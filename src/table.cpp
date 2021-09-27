@@ -11,7 +11,7 @@
 #include "table_restriction.hpp"
 
 orm::Table::Table(const std::string& name_arg, std::initializer_list<TableElement*>args)
-	: orm::SchemaElement(name_arg) {
+	: orm::Selectable(name_arg) {
 
 	for(TableElement* te : args) {
   	// \warning push_back can throw: if this happen a memory leak will happen, its not acceptable

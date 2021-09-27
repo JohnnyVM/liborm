@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 
+#include "selectable.hpp"
 #include "table_element.hpp"
 #include "table_restriction.hpp"
 #include "column.hpp"
@@ -12,15 +13,14 @@
 
 namespace orm {
 
-class Table : public SchemaElement {
+class Table : public Selectable {
 	public:
-	std::vector<std::unique_ptr<orm::Column> >columns;
 	std::vector<std::unique_ptr<orm::TableRestriction> >restrictions;
 
 	Table(const std::string& name, std::initializer_list<TableElement*>args);
 
 	Table* clone() const override;
-	Table(const Table&) : SchemaElement() {};
+	Table(const Table&) : Selectable() {};
 };
 
 }
