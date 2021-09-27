@@ -7,9 +7,10 @@ namespace orm {
 
 class SchemaElement { // Keep that separate for class slicing
 	public:
-	std::string name;
-	SchemaElement(const std::string& arg_name) : name(arg_name) {};
+	const std::string name;
+	SchemaElement(const std::string& arg_name) : name(arg_name) {}
 	virtual ~SchemaElement(){}
+	virtual SchemaElement* clone() const = 0;
 };
 
 }

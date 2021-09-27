@@ -8,6 +8,7 @@
 namespace orm {
 
 class TableRestriction : public TableElement { // Keep that separate for class slicing
+	TableRestriction(const std::string& arg_name) : TableElement(arg_name) {}
 };
 
 }

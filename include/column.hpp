@@ -29,10 +29,11 @@ class Column : public TableElement {
 
 	public:
 	std::unique_ptr<orm::ColumnType> type;
-	bool primary_key;
-	bool nullable;
+	bool primary_key = false;
+	bool nullable = true;
 	/// \todo C17 variant return the value type with holds_alternative
 	std::pair<orm::column::type, std::type_info&>(*default_value)(void); /* unused */
+	explicit operator const std::string();
 
 	explicit Column(params p)
 		: TableElement(p.name),

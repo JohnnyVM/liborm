@@ -17,6 +17,8 @@ class Table : public SchemaElement {
 	std::vector<std::unique_ptr<orm::TableRestriction> >restrictions;
 
 	Table(const std::string& name, std::initializer_list<TableElement*>args);
+
+	Table* clone() const override;
 };
 
 }

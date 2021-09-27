@@ -1,5 +1,6 @@
 #include "CppUTest/TestHarness.h"
 
+#include <string>
 #include <typeinfo>
 
 #include "column.hpp"
@@ -24,13 +25,25 @@ TEST(Column, initialicer){
 			.nullable = false,
 			.default_value = nullptr
 	}};
-	// other initializacion way
-	/*orm::Column col_2({
-			{"col"}, // base class
-			.primary_key = false,
-			.nullable = false,
-			.default_value = nullptr
-	});*/
 	CHECK(1);
 };
 
+TEST(Column, to_string){
+	orm::Column col{{
+			.name = "col", // base class
+			.type = new orm::Integer(),
+			.primary_key = false,
+			.nullable = false,
+			.default_value = nullptr
+	}};
+	CHECK_EQUAL((std::string)col, (std::string)"col integer not null");
+
+	orm::Column col_2{{
+			.name = "col", // base class
+			.type = new orm::String(0),
+			.primary_key = true,
+			.nullable = true,
+			.default_value = nullptr
+	}};
+	CHECK_EQUAL((std::string)col_2, (std::string)"col character varying(1) primary key");
+};

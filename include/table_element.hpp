@@ -7,7 +7,7 @@ namespace orm {
 
 class TableElement { // Keep that separate for class slicing
 	public:
-	std::string name;
+	const std::string name;
 	TableElement(const std::string& arg_name) : name(arg_name) {};
 	virtual ~TableElement(){}
 };

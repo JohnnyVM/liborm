@@ -2,14 +2,17 @@
 #define LIBORM_COLUMN_BASE_HPP
 
 #include <cstdlib>
+#include <string>
 
 namespace orm {
 
 class ColumnType { // Keep that separate for class slicing
 	public:
-	size_t length;
+	const size_t length;
 	virtual ~ColumnType(){}
 	ColumnType(size_t arg_length) : length(arg_length) {}
+
+	virtual explicit operator const std::string() = 0;
 };
 
 }
