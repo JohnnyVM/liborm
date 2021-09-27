@@ -8,6 +8,7 @@
 #include "table_element.hpp"
 #include "table_restriction.hpp"
 #include "column.hpp"
+#include "schema_element.hpp"
 
 namespace orm {
 
@@ -19,6 +20,7 @@ class Table : public SchemaElement {
 	Table(const std::string& name, std::initializer_list<TableElement*>args);
 
 	Table* clone() const override;
+	Table(const Table&) : SchemaElement() {};
 };
 
 }
