@@ -17,21 +17,19 @@ union type { std::uintmax_t INTEGER; std::string VARCHAR; };
 
 namespace orm {
 
-class Column : public TableElement {
+
+class Column : public orm::TableElement {
 	private:
-		struct params {
-			const std::string& name;
-			orm::ColumnType* type;
-			bool primary_key;
-			bool nullable;
-			std::pair<orm::column_value::type, std::type_info&>(*default_value)(void);
-		};
+	struct column_params {
+		const std::string& name;
+		orm::ColumnType* type;
+		bool primary_key;
+		bool nullable;
+		std::pair<orm::column_value::type, std::type_info&>(*default_value)(void);
+	};
 
 	public:
-	Column() = default;
-	virtual ~Column() = default;
-	Column& operator=(const Column&) = delete;
-
+	Column(const Column&) : TableElement() {};
 	std::unique_ptr<orm::ColumnType> type;
 	bool primary_key = false;
 	bool nullable = true;
@@ -40,7 +38,7 @@ class Column : public TableElement {
 
 	explicit operator const std::string();
 
-	explicit Column(params p)
+	explicit Column(column_params p)
 		: TableElement(p.name),
 		type(p.type),
 		primary_key(p.primary_key),

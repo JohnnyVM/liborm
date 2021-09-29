@@ -9,7 +9,6 @@ class TableElement { // Keep that separate for class slicing
 	public:
 	TableElement() = default;
 	virtual ~TableElement() = default;
-	TableElement(const TableElement&) = delete;
 	TableElement& operator=(const TableElement&) = delete;
 
 	/*  */
