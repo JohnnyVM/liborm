@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "selectable.hpp"
-#include "table.hpp"
 #include "expresion.hpp"
 
 namespace orm {

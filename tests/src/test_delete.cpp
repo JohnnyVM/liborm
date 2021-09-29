@@ -4,11 +4,11 @@
 #include "column/string.hpp"
 #include "column/integer.hpp"
 #include "table.hpp"
-#include "select.hpp"
+#include "delete.hpp"
 
-TEST_GROUP(select){};
+TEST_GROUP(deleter){};
 
-TEST(select, initialicer) {
+TEST(deleter, initialicer) {
 
 	// only for test the compilation, not require dfine all
 	orm::Table table(
@@ -21,19 +21,11 @@ TEST(select, initialicer) {
 						.nullable=true,
 						.default_value=nullptr
 				}),
-
-				new orm::Column({
-						.name = "colum_2",
-						.type = new orm::Integer(),
-						.primary_key=true,
-						.nullable=true,
-						.default_value=nullptr
-				})
-
 			}
 	);
 
-	orm::Select select(&table);
-	CHECK_EQUAL((std::string)select, (const std::string)"select table.colum_1,table.colum_2 from table");
+	orm::Delete del(&table);
+	CHECK_EQUAL(std::string(del), (const std::string)"delete from table");
 };
+
 

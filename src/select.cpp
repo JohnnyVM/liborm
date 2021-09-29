@@ -10,12 +10,11 @@ orm::Select::operator const std::string() {
 	size_t i;
 	std::string os = (std::string)"select ";
 
-	for(i=0; i < object->columns.size() - 1; i++) {
-		os += object->name + "." + object->columns[i]->name + ",";
+	for(i=0; i < object->columns.size(); i++) {
+		os += (std::string)(i ? "," : "") + object->name + "." + object->columns[i]->name;
 	}
-	os += object->name + "." + object->columns[i+1]->name; // avoid trailing coma
 
-	os += (std::string)"from " + object->name;
+	os += (std::string)" from " + object->name;
 
 	// TODO where
 
