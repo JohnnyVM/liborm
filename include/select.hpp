@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-#include "schema_element.hpp"
+#include "selectable.hpp"
 #include "table.hpp"
 #include "expresion.hpp"
 
@@ -12,9 +12,10 @@ namespace orm {
 
 class Select : public orm::Expresion {
 	public:
-	Select(orm::Selectable* el) : orm::Expresion(el){}
-
 	explicit operator const std::string() override;
+	std::shared_ptr<Selectable> object;
+
+	Select(Selectable* arg_selectable) : object(arg_selectable) {}
 };
 
 }

@@ -3,16 +3,18 @@
 
 #include <string>
 
-#include "table.hpp"
+#include "selectable.hpp"
 
 namespace orm {
 
 class Expresion {
 	public:
+	Expresion() = default;
+	Expresion(const Expresion&) = delete;
+	virtual ~Expresion() = default;
+	Expresion& operator=(const Expresion&) = delete;
+
 	virtual explicit operator const std::string() = 0;
-	Expresion(orm::Selectable* el) : selectable(el->clone()){}
-	protected:
-	std::unique_ptr<orm::Selectable>selectable;
 };
 
 }

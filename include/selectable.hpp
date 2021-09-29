@@ -13,12 +13,13 @@ namespace orm {
 /* Selectable are all elementss that can return */
 class Selectable : public SchemaElement { // Keep that separate for class slicing
 	public:
-	Selectable() : SchemaElement() {}
-	Selectable(const std::string& arg_name) : SchemaElement(arg_name) {}
-	virtual ~Selectable(){}
-	virtual Selectable* clone() const = 0;
+	Selectable() = default;
+	Selectable(const Selectable&) = delete;
+	virtual ~Selectable() = default;
+	Selectable& operator=(const Selectable&) = delete;
 
 	std::vector<std::unique_ptr<orm::Column> >columns;
+	Selectable(const std::string arg_name) : SchemaElement(arg_name) {}
 };
 
 }

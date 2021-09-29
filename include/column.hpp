@@ -11,7 +11,7 @@
 #include "schema_element.hpp"
 #include "column/base.hpp"
 
-namespace orm { namespace column {
+namespace orm { namespace column_value {
 union type { std::uintmax_t INTEGER; std::string VARCHAR; };
 }}
 
@@ -24,15 +24,20 @@ class Column : public TableElement {
 			orm::ColumnType* type;
 			bool primary_key;
 			bool nullable;
-			std::pair<orm::column::type, std::type_info&>(*default_value)(void);
+			std::pair<orm::column_value::type, std::type_info&>(*default_value)(void);
 		};
 
 	public:
+	Column() = default;
+	virtual ~Column() = default;
+	Column& operator=(const Column&) = delete;
+
 	std::unique_ptr<orm::ColumnType> type;
 	bool primary_key = false;
 	bool nullable = true;
 	/// \todo C17 variant return the value type with holds_alternative
-	std::pair<orm::column::type, std::type_info&>(*default_value)(void); /* unused */
+	std::pair<orm::column_value::type, std::type_info&>(*default_value)(void); /* \todo */
+
 	explicit operator const std::string();
 
 	explicit Column(params p)

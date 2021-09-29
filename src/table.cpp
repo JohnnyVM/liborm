@@ -6,12 +6,12 @@
 #include <typeinfo>
 #include <type_traits>
 
+#include "owner.hpp"
 #include "column.hpp"
 #include "table.hpp"
 #include "table_restriction.hpp"
 
-orm::Table::Table(const std::string& name_arg, std::initializer_list<TableElement*>args)
-	: orm::Selectable(name_arg) {
+orm::Table::Table(const std::string& arg_name, std::initializer_list<TableElement*>args) : orm::Selectable(arg_name) {
 
 	for(TableElement* te : args) {
   	// \warning push_back can throw: if this happen a memory leak will happen, its not acceptable
@@ -27,6 +27,3 @@ orm::Table::Table(const std::string& name_arg, std::initializer_list<TableElemen
 	}
 }
 
-orm::Table* orm::Table::clone() const {
-	return new Table(*this);
-}
