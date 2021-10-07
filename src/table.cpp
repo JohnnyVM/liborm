@@ -18,10 +18,10 @@ orm::Table::Table(const std::string& arg_name, std::initializer_list<TableElemen
   	// \warning push_back can throw: if this happen a memory leak will happen, its not acceptable
   	// not handle that throw NEVER, let the program die
 		if(typeid(*te) == typeid(orm::Column)) {
-			orm::Column* c = dynamic_cast<orm::Column*>(te);
+			orm::Column* c = static_cast<orm::Column*>(te);
 			columns.push_back(std::unique_ptr<orm::Column>(c));
 		} else if(typeid(*te) == typeid(orm::TableRestriction)) {
-			orm::TableRestriction* r = dynamic_cast<orm::TableRestriction*>(te);
+			orm::TableRestriction* r = static_cast<orm::TableRestriction*>(te);
 			restrictions.push_back(std::unique_ptr<orm::TableRestriction>(r));
 		} else {
   		// Same should not happen and then should not be handled

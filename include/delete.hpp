@@ -12,7 +12,7 @@ namespace orm {
 class Delete : public orm::Expresion {
 	public:
 	explicit operator const std::string() override;
-	std::shared_ptr<Selectable> object;
+	Selectable* object;
 
 	Delete(Selectable* arg_selectable) : object(arg_selectable) {}
 };

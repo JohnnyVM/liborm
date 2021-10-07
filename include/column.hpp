@@ -30,6 +30,7 @@ class Column : public orm::TableElement {
 
 	public:
 	Column(const Column&) : TableElement() {};
+	~Column() override {}
 	std::unique_ptr<orm::ColumnType> type;
 	bool primary_key = false;
 	bool nullable = true;
