@@ -35,5 +35,7 @@ TEST(select, initialicer) {
 
 	orm::Select select(&table);
 	CHECK_EQUAL((std::string)select, (const std::string)"select table.colum_1,table.colum_2 from table");
+
+	CHECK_EQUAL((std::string)select(&table), (const std::string)"select table.colum_1,table.colum_2 from table");
 };
 

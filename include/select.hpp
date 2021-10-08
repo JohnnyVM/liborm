@@ -5,16 +5,15 @@
 #include <memory>
 
 #include "selectable.hpp"
-#include "expresion.hpp"
+#include "query.hpp"
 
 namespace orm {
 
-class Select : public orm::Expresion {
+class Select : public orm::Query {
 	public:
 	explicit operator const std::string() override;
-	Selectable *object;
 
-	Select(Selectable* arg_selectable) : object(arg_selectable) {}
+	Select(Selectable* arg_selectable) : orm::Query(arg_selectable) {}
 };
 
 }

@@ -5,6 +5,7 @@
 #include "table.hpp"
 #include "column.hpp"
 #include "select.hpp"
+#include "query.hpp"
 
 orm::Select::operator const std::string() {
 	size_t i;

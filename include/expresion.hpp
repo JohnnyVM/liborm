@@ -14,7 +14,7 @@ class Expresion {
 	virtual ~Expresion() = default;
 	Expresion& operator=(const Expresion&) = delete;
 
-	virtual explicit operator const std::string() = 0;
+	virtual operator const std::string() = 0;
 };
 
 }
