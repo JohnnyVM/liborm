@@ -21,10 +21,10 @@ class Table : public Selectable {
 	Table& operator=(const Table&) = delete;
 
 	/* Class variables */
-	std::vector<std::unique_ptr<orm::TableRestriction> >restrictions;
+	std::vector<std::shared_ptr<orm::TableRestriction> >restrictions;
 
 	/* Class methods */
-	Table(const std::string& name, std::initializer_list<TableElement*>args);
+	Table(const std::string& name, std::initializer_list<std::shared_ptr<TableElement> >args);
 };
 
 }
