@@ -17,17 +17,21 @@ union type { std::uintmax_t INTEGER; std::string VARCHAR; };
 
 namespace orm {
 
+/**
+ * \brief necesary definition to pass to class constructor
+ */
+struct column_params {
+	const std::string& name;
+	orm::ColumnType* type;
+	bool primary_key;
+	bool nullable;
+	std::pair<orm::column_value::type, std::type_info&>(*default_value)(void);
+};
 
+/**
+ * \brief
+ */
 class Column : public orm::TableElement {
-	private:
-	struct column_params {
-		const std::string& name;
-		orm::ColumnType* type;
-		bool primary_key;
-		bool nullable;
-		std::pair<orm::column_value::type, std::type_info&>(*default_value)(void);
-	};
-
 	public:
 	Column(const Column&) : TableElement() {};
 	~Column() override {}
@@ -46,6 +50,9 @@ class Column : public orm::TableElement {
 		nullable(p.nullable),
 		default_value(p.default_value){};
 };
+
+/** Return a class Column */
+std::shared_ptr<Column> column(column_params p);
 
 }
 

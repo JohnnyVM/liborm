@@ -18,7 +18,7 @@ class Selectable : public SchemaElement { // Keep that separate for class slicin
 	virtual ~Selectable() = default;
 	Selectable& operator=(const Selectable&) = delete;
 
-	std::vector<std::unique_ptr<orm::Column> >columns;
+	std::vector<std::shared_ptr<orm::Column> >columns;
 	Selectable(const std::string arg_name) : SchemaElement(arg_name) {}
 
 	/* methods */

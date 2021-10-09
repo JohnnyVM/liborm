@@ -14,7 +14,7 @@ TEST(deleter, initialicer) {
 	orm::Table table(
 			"table", // name
 			{ // Columns
-				new orm::Column({
+				orm::column({
 						.name = "colum_1",
 						.type = new orm::String(16),
 						.primary_key=true,
