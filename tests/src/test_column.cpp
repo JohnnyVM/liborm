@@ -42,8 +42,8 @@ TEST(Column, to_string){
 			.name = "col", // base class
 			.type = new orm::String(0),
 			.primary_key = true,
-			.nullable = true,
+			.nullable = false,
 			.default_value = nullptr
 	}};
-	CHECK_EQUAL((std::string)col_2, (std::string)"col character varying(1) primary key");
+	CHECK_EQUAL((std::string)col_2, (std::string)"col character varying(1) primary key not null");
 };

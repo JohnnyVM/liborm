@@ -8,7 +8,7 @@ debug ?= false
 ifeq (${debug}, true)
 	COMMON_FLAGS += -g3
 else
-	COMMON_FLAGS += -O2 -D_FORTIFY_SOURCE=2 -DNDEBUG
+	COMMON_FLAGS += -g -O2 -DNDEBUG
 endif
 
 profile ?= false

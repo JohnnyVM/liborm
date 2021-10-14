@@ -17,7 +17,7 @@ TEST(Table, initialicer){
 				orm::column({
 						.name = "colum_1",
 						.type = new orm::String(16),
-						.primary_key=true,
+						.primary_key=false,
 						.nullable=true,
 						.default_value=nullptr
 				}),
@@ -26,7 +26,7 @@ TEST(Table, initialicer){
 						.name = "colum_2",
 						.type = new orm::Integer(),
 						.primary_key=true,
-						.nullable=true,
+						.nullable=false,
 						.default_value=nullptr
 				})
 

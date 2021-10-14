@@ -14,9 +14,10 @@ class Query : public orm::Expresion {
 	virtual operator const std::string() = 0;
 	Selectable *object;
 
+	Query() {}
 	Query(Selectable* arg_selectable) : object(arg_selectable) {}
 
-	Query& operator()(Selectable* selectable);
+	virtual Query& operator()(Selectable* selectable);
 };
 
 }

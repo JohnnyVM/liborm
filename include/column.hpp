@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include <assert.h>
 
 #include "table_element.hpp"
 #include "schema_element.hpp"
@@ -48,7 +49,7 @@ class Column : public orm::TableElement {
 		type(p.type),
 		primary_key(p.primary_key),
 		nullable(p.nullable),
-		default_value(p.default_value){};
+		default_value(p.default_value){ assert(primary_key!=true || nullable == false); };
 };
 
 /** Return a class Column */
