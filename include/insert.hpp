@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <utility>
 #include <stdexcept>
+#include <map>
 
 #include "selectable.hpp"
 #include "query.hpp"
@@ -28,28 +29,30 @@ class Insert : public orm::Query {
 	Insert& operator() (Selectable* selectable) override;
 
 	/* */
-	std::vector<std::pair<std::string,std::string> >_values;
+	std::map<std::string,std::string>params; // No keep the aprameters order
 
 	Insert() : orm::Query() {}
 	Insert(Selectable* arg_selectable) : orm::Query(arg_selectable) {}
 
 	// This templates have to change in C++17(enable_if/is_aritmetic_v)
+	// in general, all this is a very bad approach to the problem
+	// tempalte apram okay, but lost the info about the type in the process is bad
 	template<
 		typename V,
-		typename = std::enable_if_t<std::is_arithmetic<V>::value>
-	>
+		typename = std::enable_if_t<std::is_arithmetic<V>::value>>
 	Insert& values(std::string key, V value) {
-		_values.push_back(std::pair<std::string,std::string>(key, std::to_string(value)));
+		params[key] = std::to_string(value); // TODO refactor
 		return *this;
 	}
+
 	template<
 		typename V,
-		typename = std::enable_if_t<!std::is_arithmetic<V>::value>
-	>
+		typename = std::enable_if_t<!std::is_arithmetic<V>::value>>
 	Insert& values(std::string key, V const& value) {
-	_values.push_back(std::pair<std::string,std::string>(key, (std::string)"'" + std::string(value) + "'")); // add quote
-	return *this;
+		params[key] = (std::string)"'" + std::string(value) + "'";
+		return *this;
 	}
+
 };
 
 }

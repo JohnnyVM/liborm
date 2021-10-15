@@ -35,17 +35,21 @@ TEST(Insert, initialicer) {
 
 	// Simple constructor
 	orm::Insert insert;
+	// No values passed
+	CHECK_EQUAL((std::string)insert(&table), (const std::string)"insert into table colum_1,colum_2 values(:colum_1,:colum_2)");
+
+
 	insert(&table).values("colum_2", "5");
-	CHECK_EQUAL((std::string)insert, (const std::string)"insert into table colum_2 values('5')");
+	CHECK_EQUAL((std::string)insert, (const std::string)"insert into table colum_2 values(:colum_2)");
 
 	insert.values("colum_1", 5); // For now i think is better not allow this
-	CHECK_EQUAL((std::string)insert, (const std::string)"insert into table colum_2,colum_1 values('5',5)");
+	CHECK_EQUAL((const std::string)"insert into table colum_1,colum_2 values(:colum_1,:colum_2)", (std::string)insert);
 
 	//chain constructor
 	orm::Insert sinsert;
 	sinsert(&table)
 		.values("colum_2", "5")
-		.values("colum_1", 5); // For now i think is better not allow this
-	CHECK_EQUAL((std::string)sinsert, (const std::string)"insert into table colum_2,colum_1 values('5',5)");
+		.values("colum_1", 5);
+	CHECK_EQUAL((const std::string)"insert into table colum_1,colum_2 values(:colum_1,:colum_2)", (std::string)sinsert);
 };
 

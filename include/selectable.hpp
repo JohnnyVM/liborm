@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <array>
 
 #include "column.hpp"
 #include "schema_element.hpp"
