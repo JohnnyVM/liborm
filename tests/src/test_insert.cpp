@@ -37,6 +37,8 @@ TEST(Insert, initialicer) {
 	orm::Insert insert;
 	// No values passed
 	CHECK_EQUAL((std::string)insert(&table), (const std::string)"insert into table colum_1,colum_2 values(:colum_1,:colum_2)");
+	// equivalent
+	CHECK_EQUAL((std::string)table.insert(), (const std::string)"insert into table colum_1,colum_2 values(:colum_1,:colum_2)");
 
 
 	insert(&table).values("colum_2", "5");

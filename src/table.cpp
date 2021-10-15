@@ -6,11 +6,13 @@
 #include <typeinfo>
 #include <type_traits>
 
+#include "insert.hpp"
 #include "selectable.hpp"
 #include "owner.hpp"
 #include "column.hpp"
 #include "table.hpp"
 #include "table_restriction.hpp"
+#include "insert.hpp"
 
 orm::Table::Table(const std::string& arg_name, std::initializer_list<std::shared_ptr<TableElement> >args) : orm::Selectable(arg_name) {
 
@@ -26,5 +28,11 @@ orm::Table::Table(const std::string& arg_name, std::initializer_list<std::shared
 			throw std::invalid_argument("Invalid element pass to table constructor");
 		}
 	}
+}
+
+orm::Insert orm::Table::insert() {
+	orm::Insert insert(this);
+
+	return insert;
 }
 

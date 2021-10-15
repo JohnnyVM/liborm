@@ -11,6 +11,7 @@
 #include "table_restriction.hpp"
 #include "column.hpp"
 #include "schema_element.hpp"
+#include "insert.hpp"
 
 namespace orm {
 
@@ -25,6 +26,8 @@ class Table : public Selectable {
 
 	/* Class methods */
 	Table(const std::string& name, std::initializer_list<std::shared_ptr<TableElement> >args);
+
+	orm::Insert insert();
 };
 
 }

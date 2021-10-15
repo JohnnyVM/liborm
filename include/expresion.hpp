@@ -10,9 +10,7 @@ namespace orm {
 class Expresion {
 	public:
 	Expresion() = default;
-	Expresion(const Expresion&) = delete;
 	virtual ~Expresion() = default;
-	Expresion& operator=(const Expresion&) = delete;
 
 	virtual operator const std::string() = 0;
 };
