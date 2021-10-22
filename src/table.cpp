@@ -20,7 +20,7 @@ orm::Table::Table(const std::string& arg_name, std::initializer_list<std::shared
   	// \warning push_back can throw: if this happen a memory leak will happen, its not acceptable
   	// not handle that throw NEVER, let the program die
 		if(typeid(*te) == typeid(orm::Column)) {
-			columns.push_back(std::shared_ptr<orm::Column>(std::static_pointer_cast<orm::Column>(te)));
+			c.push_back(std::shared_ptr<orm::Column>(std::static_pointer_cast<orm::Column>(te)));
 		} else if(typeid(*te) == typeid(orm::TableRestriction)) {
 			restrictions.push_back(std::shared_ptr<orm::TableRestriction>(std::static_pointer_cast<orm::TableRestriction>(te)));
 		} else {
