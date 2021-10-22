@@ -18,6 +18,7 @@ class Query : public orm::Expresion {
 	Query(Selectable* arg_selectable) : object(arg_selectable) {}
 
 	virtual Query& operator()(Selectable* selectable);
+
 };
 
 }

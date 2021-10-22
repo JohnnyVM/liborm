@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "selectable.hpp"
-
 namespace orm {
 
 class Expresion {
@@ -13,6 +11,12 @@ class Expresion {
 	virtual ~Expresion() = default;
 
 	virtual operator const std::string() = 0;
+
+	/**
+	 * \brief for compile a expresion against a dialect (oracle/postgres/sqlite)
+	 * \todo define this
+	 */
+	//virtual std::string compile() = 0;
 };
 
 }

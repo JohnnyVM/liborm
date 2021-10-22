@@ -8,6 +8,8 @@
 
 #include "column.hpp"
 #include "schema_element.hpp"
+#include "clause_list.hpp"
+#include "clause_element.hpp"
 
 namespace orm {
 
@@ -20,9 +22,12 @@ class Selectable : public SchemaElement { // Keep that separate for class slicin
 	Selectable& operator=(const Selectable&) = delete;
 
 	std::vector<std::shared_ptr<orm::Column> >c;
+	std::vector<orm::ClauseList>clauses; // where is builded with that
+
 	Selectable(const std::string arg_name) : SchemaElement(arg_name) {}
 
 	/* methods */
+	Selectable where(orm::ClauseElement);
 };
 
 }

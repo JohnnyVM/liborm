@@ -44,7 +44,7 @@ TEST(Insert, initialicer) {
 	insert(&table).values("colum_2", "5");
 	CHECK_EQUAL((std::string)insert, (const std::string)"insert into table colum_2 values(:colum_2)");
 
-	insert.values("colum_1", 5); // For now i think is better not allow this
+	insert.values("colum_1", 5);
 	CHECK_EQUAL((const std::string)"insert into table colum_1,colum_2 values(:colum_1,:colum_2)", (std::string)insert);
 
 	//chain constructor

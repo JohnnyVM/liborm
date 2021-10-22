@@ -11,6 +11,7 @@
 #include "table_element.hpp"
 #include "schema_element.hpp"
 #include "column/base.hpp"
+#include "expresion.hpp"
 
 namespace orm { namespace column_value {
 union type { std::uintmax_t INTEGER; std::string VARCHAR; };
@@ -50,6 +51,13 @@ class Column : public orm::TableElement {
 		primary_key(p.primary_key),
 		nullable(p.nullable),
 		default_value(p.default_value){ assert(primary_key!=true || nullable == false); };
+
+	/** method like form where claused */
+	//orm::Expresion like(std::string value);
+
+	private:
+	//orm::Expresion compare(std::string optr, std::string value);
+
 };
 
 /** Return a class Column */
