@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <map>
 
-#include "selectable.hpp"
+#include "table.hpp"
 #include "query.hpp"
 
 namespace orm {
@@ -26,13 +26,13 @@ struct insert_definition_char {
 
 public:
 explicit operator const std::string() override;
-Insert& operator() (Selectable* selectable) override;
+Insert& operator() (Table* table) override;
 
 /* */
 std::map<std::string,std::string>params; // No keep the aprameters order
 
 Insert() : orm::Query() {}
-Insert(Selectable* arg_selectable) : orm::Query(arg_selectable) {}
+Insert(orm::Table* arg_table) : orm::Query(arg_table) {}
 
 // This templates have to change in C++17(enable_if/is_aritmetic_v)
 // in general, all this is a very bad approach to the problem

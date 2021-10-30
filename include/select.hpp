@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-#include "selectable.hpp"
+#include "table.hpp"
 #include "query.hpp"
 
 namespace orm {
@@ -13,7 +13,7 @@ class Select : public orm::Query {
 	public:
 	explicit operator const std::string() override;
 
-	Select(Selectable* arg_selectable) : orm::Query(arg_selectable) {}
+	Select(Table* arg_table) : orm::Query(arg_table) {}
 };
 
 }

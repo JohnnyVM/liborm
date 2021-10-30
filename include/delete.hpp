@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-#include "selectable.hpp"
+#include "table.hpp"
 #include "query.hpp"
 
 namespace orm {
@@ -12,9 +12,9 @@ namespace orm {
 class Delete : public orm::Query {
 	public:
 	explicit operator const std::string() override;
-	Selectable* object;
+	Table* object;
 
-	Delete(Selectable* arg_selectable) : object(arg_selectable) {}
+	Delete(Table* arg_table) : object(arg_table) {}
 };
 
 }

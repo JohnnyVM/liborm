@@ -6,22 +6,25 @@
 #include <memory>
 
 #include "owner.hpp"
-#include "selectable.hpp"
+#include "schema_element.hpp"
 #include "table_element.hpp"
 #include "table_restriction.hpp"
-#include "column.hpp"
 #include "schema_element.hpp"
-#include "insert.hpp"
+
 
 namespace orm {
 
-class Table : public Selectable {
+class Insert;
+class Column;
+
+class Table : public orm::SchemaElement {
 	public:
 	Table() = default;
 	virtual ~Table() = default;
 	Table& operator=(const Table&) = delete;
 
 	/* Class variables */
+	std::vector<std::shared_ptr<orm::Column> >c;
 	std::vector<std::shared_ptr<orm::TableRestriction> >restrictions;
 
 	/* Class methods */

@@ -1,7 +1,16 @@
 #include "query.hpp"
-#include "selectable.hpp"
+#include "clause_list.hpp"
+#include "table.hpp"
 
-orm::Query& orm::Query::operator()(Selectable* selectable) {
-	this->object = selectable;
+/**boiler plate code to ciopy apste by constructor */
+orm::Query& orm::Query::operator()(Table* table) {
+	this->object = table;
 	return *this;
 }
+
+
+orm::Query& orm::Query::where(orm::ClauseList clause) {
+	clauses.push_back(clause);
+	return *this;
+}
+

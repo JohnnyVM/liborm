@@ -2,23 +2,28 @@
 #define LIBORM_QUERY_HPP
 
 #include <string>
-#include <memory>
+#include <vector>
 
+#include "clause_list.hpp"
 #include "expresion.hpp"
-#include "selectable.hpp"
+#include "table.hpp"
 
 namespace orm {
 
+/* intermediate class for no redefine operator() for insert select and delete create */
 class Query : public orm::Expresion {
 	public:
 	virtual operator const std::string() = 0;
-	Selectable *object;
+	Table *object;
 
 	Query() {}
-	Query(Selectable* arg_selectable) : object(arg_selectable) {}
+	Query(Table* arg_table) : object(arg_table) {}
 
-	virtual Query& operator()(Selectable* selectable);
+	std::vector<orm::ClauseList> clauses;
 
+	virtual Query& operator()(Table* table);
+	virtual Query& where(orm::ClauseList clause);// i cannot found how trick this
+	/* methods */
 };
 
 }

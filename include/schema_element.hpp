@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "owner.hpp"
-
 namespace orm {
 
 class SchemaElement { // Keep that separate for class slicing

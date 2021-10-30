@@ -2,19 +2,21 @@
 #define LIBORM_CLAUSE_LIST_HPP
 
 #include <string>
-#include <memory>
+#include <vector>
 
-#include "expresion.hpp"
-#include "expresion.hpp"
+#include "clause_element.hpp"
 
 namespace orm {
 
-class ClauseList : public orm::Expresion {
+/**
+ * \brief base class as group of ClauseElements
+ */
+class ClauseList {
 	public:
-	virtual operator const std::string() = 0;
+	std::vector<orm::ClauseElement*>clauses;
 
 	private:
-	bool _union = true; //the list is joined with and if not the list is joined with or
+	bool and_ = true; //the list is joined with and if not the list is joined with or
 };
 
 }

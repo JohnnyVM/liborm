@@ -2,6 +2,9 @@
 #define LIBORM_EXPRESION_HPP
 
 #include <string>
+#include <vector>
+
+#include "engine.hpp"
 
 namespace orm {
 
@@ -16,7 +19,7 @@ class Expresion {
 	 * \brief for compile a expresion against a dialect (oracle/postgres/sqlite)
 	 * \todo define this
 	 */
-	//virtual std::string compile() = 0;
+	//virtual std::string compile(orm::Engine* engine) = 0;
 };
 
 }

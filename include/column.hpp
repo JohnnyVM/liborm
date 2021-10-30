@@ -12,6 +12,7 @@
 #include "schema_element.hpp"
 #include "column/base.hpp"
 #include "expresion.hpp"
+#include "table.hpp"
 
 namespace orm { namespace column_value {
 union type { std::uintmax_t INTEGER; std::string VARCHAR; };
@@ -43,7 +44,8 @@ class Column : public orm::TableElement {
 	/// \todo C17 variant return the value type with holds_alternative
 	std::pair<orm::column_value::type, std::type_info&>(*default_value)(void); /* \todo */
 
-	explicit operator const std::string();
+	explicit operator const std::string(); // \todo remove this
+	orm::Table* table_parent = nullptr; // used for recognice the parent table since the constructor
 
 	explicit Column(column_params p)
 		: TableElement(p.name),

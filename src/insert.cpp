@@ -5,11 +5,11 @@
 #include <map>
 
 #include "insert.hpp"
-#include "selectable.hpp"
+#include "table.hpp"
 #include "column.hpp"
 
-orm::Insert& orm::Insert::operator() (orm::Selectable* selectable) {
-	this->object = selectable;
+orm::Insert& orm::Insert::operator() (orm::Table* table) {
+	this->object = table;
 	return *this;
 }
 
