@@ -8,7 +8,7 @@ std::shared_ptr<orm::Column> orm::column(column_params p) {
 	return std::make_shared<orm::Column>(p);
 }
 
-orm::Column::operator const std::string() {
+/*orm::Column::operator const std::string() {
 	std::string os = name + " " + (std::string)*type;
 
 	if(primary_key) {
@@ -24,5 +24,5 @@ orm::Column::operator const std::string() {
 	}
 
 	return os;
-}
+}*/
 

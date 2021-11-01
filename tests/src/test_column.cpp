@@ -36,7 +36,6 @@ TEST(Column, to_string){
 			.nullable = false,
 			.default_value = nullptr
 	}};
-	CHECK_EQUAL((std::string)col, (std::string)"col integer not null");
 
 	orm::Column col_2{{
 			.name = "col", // base class
@@ -45,5 +44,4 @@ TEST(Column, to_string){
 			.nullable = false,
 			.default_value = nullptr
 	}};
-	CHECK_EQUAL((std::string)col_2, (std::string)"col character varying(1) primary key not null");
 };

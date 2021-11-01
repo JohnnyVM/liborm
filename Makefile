@@ -18,7 +18,7 @@ endif
 
 sanitize ?= false
 ifeq (${sanitize}, true)
-	COMMON_FLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined
+	COMMON_FLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined -fsanitize-undefined-trap-on-error
 endif
 
 C_SOURCES := $(wildcard src/*.c)

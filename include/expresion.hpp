@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "engine.hpp"
+#include "compiled.hpp"
 
 namespace orm {
 
@@ -13,13 +14,12 @@ class Expresion {
 	Expresion() = default;
 	virtual ~Expresion() = default;
 
-	virtual operator const std::string() = 0;
-
 	/**
 	 * \brief for compile a expresion against a dialect (oracle/postgres/sqlite)
 	 * \todo define this
 	 */
-	//virtual std::string compile(orm::Engine* engine) = 0;
+	virtual orm::Compiled compile(std::string dialect) { return orm::Compiled(); };
+	virtual orm::Compiled compile(orm::Engine* engine) { return orm::Compiled(); };
 };
 
 }
