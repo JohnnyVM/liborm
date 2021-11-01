@@ -18,8 +18,8 @@ class Expresion {
 	 * \brief for compile a expresion against a dialect (oracle/postgres/sqlite)
 	 * \todo define this
 	 */
-	virtual orm::Compiled compile(std::string dialect) { return orm::Compiled(); };
-	virtual orm::Compiled compile(orm::Engine* engine) { return orm::Compiled(); };
+	//virtual orm::Compiled compile(std::string dialect) { return orm::Compiled(); };
+	//virtual orm::Compiled compile(orm::Engine* engine) { return orm::Compiled(); };
 };
 
 }

@@ -1,3 +1,0 @@
-[submodule "libdict"]
-	path = libdict
-	url = git@github.com:JohnnyVM/libdict.git
