@@ -8,7 +8,7 @@ debug ?= false
 ifeq (${debug}, true)
 	COMMON_FLAGS += -g3
 else
-	COMMON_FLAGS += -g -O2 -DNDEBUG
+	COMMON_FLAGS += -O2 -D_FORTIFY_SOURCE=2 -DNDEBUG
 endif
 
 profile ?= false
@@ -28,7 +28,7 @@ CPP_OBJECTS := $(patsubst %.cpp,%.o,${CPP_SOURCES})
 OBJECTS := ${CPP_OBJECTS} ${C_OBJECTS}
 DEPENDENCIES := $(patsubst %.c,%.d,${C_SOURCES}) $(patsubst %.cpp,%.d,${CPP_SOURCES})
 
-INCLUDE_FLAGS := -I./include -I${LIBDICT_HOME}/include -I${LIBARRAY_HOME}/include
+INCLUDE_FLAGS := -I./include -I../../include -I${LIBDICT_HOME}/include -I${LIBARRAY_HOME}/include
 WARNING_FLAGS := -Wextra -Wall -Wshadow -Wdouble-promotion \
 	-Wformat=2 -Wformat-truncation -fno-common -Wconversion -Warray-bounds \
 	-Wtrampolines -Wswitch-enum
@@ -51,8 +51,8 @@ ${CPP_OBJECTS}: %.o: %.cpp
 	${CC} -Werror ${CPPFLAGS} -MMD -c $< -o $@
 
 tests: ${OBJECTS}
-	${MAKE} -C tests tests
-	LSAN_OPTIONS=verbosity=1:log_threads=1 ./tests/tests
+	${MAKE} TEST_DRIVER=sqlite -C ../tests tests
+	LSAN_OPTIONS=verbosity=1:log_threads=1 ../tests/tests
 
 lib:
 	mkdir lib

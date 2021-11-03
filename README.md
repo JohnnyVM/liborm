@@ -39,3 +39,8 @@ The base of the engine part is the struct engine, with is a "interface to multip
 Long list
 Firstly reestructurate the namespace in expression/orm or core
 Separate drivers for engine
+
+## Dependencies
+---
+- git@github.com:JohnnyVM/libdict.git (C++ ordered map wrapper)
+- git@github.com:JohnnyVM/dynamic_storage.git (Helper for allocating array of elements continiously)
