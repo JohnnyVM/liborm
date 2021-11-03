@@ -61,7 +61,7 @@ lib:
 
 clean:
 	-rm -rf ${OBJECTS} ${DEPENDENCIES} lib
-	-$(MAKE) -C tests clean
+	-$(MAKE) -C ../tests clean
 
 install:
 	cp lib/* ${PREFIX}/lib

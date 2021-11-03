@@ -16,8 +16,13 @@ STATIC struct orm_status open(struct database_params* db_params) {
 		.type = SQLITE3_CONNECTION,
 		.error = NO_ERROR,
 		.connection = malloc(sizeof(struct sqlite_connection)) };
-	int check;
-	check = sqlite3_open_v2(db_params->database, output.connection, db_params->flags, NULL);
+
+	if(!db_params) {
+		output.error = INVALID_PARAMETERS;
+		return output;
+	}
+
+	int check = sqlite3_open_v2(db_params->database, output.connection, db_params->flags, NULL);
 	if( check != SQLITE_OK ) {
 		free(output.connection);
 		output.error = SQLITE3_ERROR;

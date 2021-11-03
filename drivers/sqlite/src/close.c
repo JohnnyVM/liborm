@@ -15,8 +15,12 @@ STATIC struct orm_status close(struct sqlite_connection* conn) {
 	struct orm_status output = {
 		.type = NO_OUTPUT,
 		.error = NO_ERROR,
-		.connection = conn,
 	};
+
+	if(!conn) {
+		output.error = INVALID_PARAMETERS;
+		return output;
+	}
 
 	int check = sqlite3_close_v2(conn->database);
 	if( check != SQLITE_OK ) {

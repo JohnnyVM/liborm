@@ -13,6 +13,7 @@ extern "C"
 enum orm_status_code {
 	NO_ERROR = 0,
 	UNKNOW_ERROR = 1,
+	INVALID_PARAMETERS,
 	SQLITE3_ERROR,
 };
 

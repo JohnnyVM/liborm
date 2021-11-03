@@ -2,7 +2,7 @@
 #define LIBORM_DRIVER_H
 
 #include "database_params.h"
-#include "libdict/dict.h"
+#include "libarray/array.h"
 #include "status.h"
 
 #ifdef __cplusplus
@@ -20,7 +20,7 @@ struct driver {
 	struct orm_status (*close)(void* conn);
 	struct orm_status (*commit)(void* conn);
 	struct orm_status (*rollback)(void* conn);
-	struct orm_status (*execute_many)(void* conn, const char*stmt, struct dict *params);
+	struct orm_status (*execute_many)(void* conn, const char*stmt, struct array *params);
 	struct orm_status (*fetch_many)(void*conn);
 
 	/** \todo database structure */

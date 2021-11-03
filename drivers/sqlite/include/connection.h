@@ -5,6 +5,7 @@
 
 struct sqlite_connection {
 	sqlite3 *database;
+	sqlite3_stmt *statement;
 };
 
 #endif
