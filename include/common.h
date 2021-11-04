@@ -9,6 +9,7 @@
 #define __INIT_DRIVER__(DRIVER) {\
 .open = driver_##DRIVER##_open,\
 .close = driver_##DRIVER##_close,\
+.execute_many = driver_##DRIVER##_execute_many,\
 .error_message = driver_##DRIVER##_error_message,\
 }
 

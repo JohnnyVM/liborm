@@ -5,7 +5,7 @@
 #include "libarray/array.h"
 #include "status.h"
 #include "common.h"
-#include "visivility.h"
+#include "visibility.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -16,7 +16,7 @@ extern "C"
 NO_DISCARD struct orm_status execute_many(struct sqlite_connection* conn, const char* stmt, struct array* params);
 #endif
 
-NO_DISCARD struct orm_status driver_sqlite_execute_many(void* conn, const char* stmt, struct dict* params);
+NO_DISCARD struct orm_status driver_sqlite_execute_many(void* conn, const char* stmt, struct array* params);
 
 #ifdef __cplusplus
 }

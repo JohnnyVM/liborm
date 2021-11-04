@@ -2,19 +2,8 @@
 
 #include "CppUTest/TestHarness_c.h"
 
-#include "sqlite3.h"
-
-#include "driver.h"
 #include "common.h"
-
-
-TEST_GROUP_C_SETUP(driver)
-{
-}
-
-TEST_GROUP_C_TEARDOWN(driver)
-{
-}
+#include "driver.h"
 
 #if TEST_DRIVER == sqlite
 #include "sqlite3.h"
@@ -34,7 +23,7 @@ static struct database_params define_connection() {
 #endif
 
 
-TEST_C(driver, open)
+TEST_C(driver, execute_many)
 {
 	struct driver driver = INIT_DRIVER(TEST_DRIVER);
 	struct database_params db_params = define_connection();
@@ -46,11 +35,16 @@ TEST_C(driver, open)
 	CHECK_C(!status.error);
 	void *connection = status.connection;
 
-	status = driver.close(connection);
+	status = driver.execute_many(connection, "CREATE TABLE t(x INTEGER)", NULL);
 	if(status.error) {
 		printf(driver.error_message(status.connection));
 	}
 	CHECK_C(!status.error);
 
+	status = driver.close(connection);
+	if(status.error) {
+		printf(driver.error_message(status.connection));
+	}
+	CHECK_C(!status.error);
 }
 

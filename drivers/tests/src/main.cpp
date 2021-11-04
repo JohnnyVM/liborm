@@ -9,6 +9,7 @@ TEST_GROUP_C_WRAPPER(driver)
 };
 
 TEST_C_WRAPPER(driver, open);
+TEST_C_WRAPPER(driver, execute_many);
 
 int main(int ac, char** av)
 {
