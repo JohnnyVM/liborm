@@ -1,10 +1,10 @@
-#include "CppUTest/TestHarness.h"
-
 #include "column.hpp"
 #include "column/string.hpp"
 #include "column/integer.hpp"
 #include "table.hpp"
 #include "select.hpp"
+
+#include "CppUTest/TestHarness.h"
 
 TEST_GROUP(select){};
 

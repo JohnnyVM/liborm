@@ -1,11 +1,11 @@
-#include "CppUTest/TestHarness.h"
-
 #include <typeinfo>
 
 #include "column.hpp"
 #include "column/string.hpp"
 #include "column/integer.hpp"
 #include "table.hpp"
+
+#include "CppUTest/TestHarness.h"
 
 TEST_GROUP(Table){};
 

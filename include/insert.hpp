@@ -1,12 +1,12 @@
 #ifndef LIBORM_INSERT_HPP
 #define LIBORM_INSERT_HPP
 
+#include <map>
 #include <string>
 #include <memory>
 #include <type_traits>
 #include <utility>
 #include <stdexcept>
-#include <map>
 
 #include "table.hpp"
 #include "query.hpp"
