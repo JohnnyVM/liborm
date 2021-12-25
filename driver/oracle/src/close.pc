@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+#define SQLCA_STORAGE_CLASS extern
+#include <sqlca.h>
+
+#include "driver/oracle/connection_data.h"
+#include "connection.h"
+
+struct connection_state
+driver_ora_close(struct oracle_connection_data* dbconn) {
+	struct connection_state db_stat = {0};
+
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* input_descriptor = dbconn->input_descriptor;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	EXEC SQL END DECLARE SECTION;
+
+	// Nasty dragon
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL DEALLOCATE DESCRIPTOR GLOBAL :input_descriptor;
+	if(sqlca.sqlcode) {
+		db_stat.error = DATABASE_ERROR;
+		return db_stat;
+	}
+	EXEC SQL DEALLOCATE DESCRIPTOR GLOBAL :output_descriptor;
+	if(sqlca.sqlcode) {
+		db_stat.error = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	EXEC SQL AT :database ROLLBACK WORK RELEASE;
+	if(sqlca.sqlcode) {
+		db_stat.error = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	EXEC SQL CONTEXT FREE :ctx;
+	dbconn->ctx = NULL;
+
+	return db_stat;
+}

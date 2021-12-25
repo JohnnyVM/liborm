@@ -1,0 +1,9 @@
+#ifndef LIBORM_MAPPER_H
+#define LIBORM_MAPPER_H
+
+#define LIBORM_VERSION_MAJOR @mapper_VERSION_MAJOR@
+#define LIBORM_VERSION_MINOR @mapper_VERSION_MINOR@
+
+#endif
+
+

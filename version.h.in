@@ -1,0 +1,8 @@
+#ifndef LIBORM_H
+#define LIBORM_H
+
+#define LIBORM_VERSION_MAJOR @liborm_VERSION_MAJOR@
+#define LIBORM_VERSION_MINOR @liborm_VERSION_MINOR@
+
+#endif
+

@@ -1,0 +1,65 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+#define SQLCA_STORAGE_CLASS extern
+#define ORACA_STORAGE_CLASS extern
+#include <sqlca.h>
+#include <sqlcpr.h>
+
+#include "inner_driver_oracle.h"
+#include "connection.h"
+#include "driver/oracle/connection_data.h"
+
+// TODO handle error
+struct connection_state
+driver_ora_connect(struct oracle_connection_data* dbconn) {
+	struct connection_state state = {0};
+	static int enable_threads = 1;
+
+	if(enable_threads) {
+		EXEC SQL ENABLE THREADS;
+		if(sqlca.sqlcode) {
+			state.error = DATABASE_ERROR;
+			return state;
+		}
+		enable_threads = 0;
+	}
+
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	char* user = dbconn->user;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* connect_string = dbconn->connect_string;
+	char* password = dbconn->password;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT ALLOCATE :ctx;
+	if(sqlca.sqlcode) {
+		state.error = DATABASE_ERROR;
+		dbconn->ctx = NULL;
+		return state;
+	}
+	dbconn->ctx = ctx;
+	EXEC SQL CONTEXT USE :ctx;
+
+	state = allocate_descriptor_global(dbconn, dbconn->input_descriptor);
+	if(state.error) {
+		return state;
+	}
+
+	state = allocate_descriptor_global(dbconn, dbconn->output_descriptor);
+	if(state.error) {
+		return state;
+	}
+
+	EXEC SQL CONNECT :user IDENTIFIED BY :password AT :database USING :connect_string;
+	if(sqlca.sqlcode) {
+		state.error = DATABASE_ERROR;
+		EXEC SQL CONTEXT FREE :ctx;
+		dbconn->ctx = NULL;
+		return state;
+	}
+
+	return state;
+}
+

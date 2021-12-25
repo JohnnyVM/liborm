@@ -1,0 +1,8 @@
+#ifndef LIBORM_H
+#define LIBORM_H
+
+#define TYPES_VERSION_MAJOR @types_VERSION_MAJOR@
+#define TYPES_VERSION_MINOR @types_VERSION_MINOR@
+
+#endif
+
