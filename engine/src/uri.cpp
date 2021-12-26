@@ -20,9 +20,12 @@ engine::RFC1738 RFC1738::parse(std::string uri) {
 
 	// dialect(+driver)?
 	std::size_t driver_pos = uri.substr(0, splitter).find("+");
+	if(driver_pos == std::string::npos) {
+		driver_pos = splitter;
+	}
 	out.dialect = uri.substr(0, driver_pos);
 	out.driver = out.dialect;
-	if(driver_pos != std::string::npos) {
+	if(driver_pos != splitter) {
 		out.driver = uri.substr(driver_pos+1, splitter - driver_pos - 1);
 	}
 	uri = uri.substr(splitter+3, std::string::npos);
