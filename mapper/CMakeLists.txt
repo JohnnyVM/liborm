@@ -15,6 +15,7 @@ target_include_directories(mapper PUBLIC
 target_link_libraries(mapper types)
 
 install(TARGETS mapper DESTINATION lib)
+install(DIRECTORY include DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)

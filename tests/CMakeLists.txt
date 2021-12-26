@@ -8,16 +8,16 @@ else()
     message(STATUS "Found CppUTest version ${CPPUTEST_VERSION}")
 endif()
 
-if(DRIVER_ORACLE)
+if(ORACLE)
 	set(OPTIONAL_SOURCES ${OPTIONAL_SOURCES} src/driver_oracle.cpp)
 endif()
 
-if(DRIVER_POSTGRES)
+if(POSTGRES)
 	set(OPTIONAL_SOURCES ${OPTIONAL_SOURCES} src/driver_postgres.cpp)
 endif()
 
 add_executable(tests
-	src/engine.cpp
+	src/uri.cpp
 	src/driver.cpp
 	src/driver_c.c
 	${OPTIONAL_SOURCES}

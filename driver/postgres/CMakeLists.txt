@@ -20,6 +20,7 @@ target_link_libraries(${driver} connection engine ${PostgreSQL_LIBRARIES})
 target_link_directories(${driver} PRIVATE ${PostgreSQL_LIBRARY_DIRS})
 
 install(TARGETS ${driver}  DESTINATION lib)
+install(DIRECTORY include DESTINATION include)
 install(DIRECTORY
-		${PROJECT_BINARY_DIR}/include/driver
+		${PROJECT_BINARY_DIR}/include
 	DESTINATION include)

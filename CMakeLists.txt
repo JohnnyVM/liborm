@@ -4,8 +4,10 @@ project(orm VERSION 0.1 DESCRIPTION "liborm library")
 
 option(CHECK_MEMORY "Build with memory sanitize support" OFF)
 option(CHECK_THREADS "Build with memory sanitize threads support (todo)" OFF)
-option(DRIVER_POSTGRES "Build postgresql support" OFF)
-option(DRIVER_ORACLE "Build oracle support" ON)
+option(POSTGRES "Build postgresql support" OFF)
+option(ORACLE "Build oracle support" OFF)
+option(SQLITE "Build sqlite support" OFF)
+option(MYSQL "Build mysql support" OFF)
 option(TESTS "Build the tests" OFF)
 option(RUN_TESTS "Build the tests" ON)
 
@@ -17,8 +19,11 @@ if(CHECK_MEMORY)
 add_compile_options(-fsanitize=undefined -fsanitize=address -fsanitize=leak -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize-recover=all)
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(C_STANDARD 17)
+set(CMAKE_CXX_STANDARD ${CMAKE_C_STANDARD})
+set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 
 add_subdirectory(engine)
 add_subdirectory(connection)
@@ -34,11 +39,11 @@ if(TESTS)
 add_subdirectory(tests)
 endif()
 
-if(DRIVER_POSTGRES)
+if(POSTGRES)
 	add_subdirectory(driver/postgres)
 endif()
 
-if(DRIVER_ORACLE)
+if(ORACLE)
 	add_subdirectory(driver/oracle)
 endif()
 

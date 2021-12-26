@@ -1,4 +1,5 @@
-#include "connection.h"
+#include "connection/cursor.hpp"
+#include "connection/state.h"
 
 struct connection_state cursor_open(Cursor* c) {
 	return c->open();
@@ -8,7 +9,7 @@ struct connection_state cursor_close(Cursor* c) {
 	return c->close();
 }
 
-unsigned cursor_ntuples(Cursor* c) {
+unsigned cursor_nrows(Cursor* c) {
 	return c->nrows();
 }
 
@@ -21,7 +22,6 @@ unsigned cursor_changes(Cursor* c) {
 }
 
 void free_cursor(Cursor* c) {
-	c->close();
 	delete c;
 }
 

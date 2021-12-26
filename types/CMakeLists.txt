@@ -12,6 +12,7 @@ target_include_directories(types PUBLIC
 )
 
 install(TARGETS types DESTINATION lib)
+install(DIRECTORY include DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)

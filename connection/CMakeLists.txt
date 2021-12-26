@@ -6,16 +6,13 @@ configure_file(include/version.h.in include/connection/version.h)
 
 add_library(connection STATIC
 	src/connection.cpp
-	)
-target_include_directories(connection PUBLIC
-	include
-)
+	src/cursor.cpp)
 
-install(TARGETS connection  DESTINATION lib)
-install(FILES
-		include/connection.h
-	DESTINATION include)
+target_include_directories(connection PUBLIC
+	include)
+
+install(TARGETS connection DESTINATION lib)
+install(DIRECTORY include DESTINATION include)
 install(DIRECTORY
-		include/connection
-		${PROJECT_BINARY_DIR}/include/connection
+		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)

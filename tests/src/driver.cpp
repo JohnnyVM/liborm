@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "connection.h"
+#include "connection/state.h"
 
 #include "CppUTest/TestHarness.h"
 

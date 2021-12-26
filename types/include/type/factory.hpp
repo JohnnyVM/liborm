@@ -35,8 +35,7 @@ class TypeFactory {
 		if(type == typeid(orm::type::Numeric)) {
 			return Numeric();
 		}
-		assert(0);
-		throw std::logic_error((std::string)"Type " + type.name() + " not supported by driver");
+		throw std::logic_error((std::string)"Type " + type.name() + " not supported");
 		return nullptr;
 	}
 	TypeEngine* factory() {

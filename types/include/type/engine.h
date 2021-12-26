@@ -1,11 +1,5 @@
-#ifndef LIBORM_MAPPER_COLUMN_BASE_HPP
-#define LIBORM_MAPPER_COLUMN_BASE_HPP
-
-#ifndef __cplusplus
-
-typedef struct TypeEngine TypeEngine;
-
-#else
+#ifndef LIBORM_TYPE_ENGINE_HPP
+#define LIBORM_TYPE_ENGINE_HPP
 
 #include <cstdlib>
 #include <string>
@@ -21,12 +15,6 @@ class TypeEngine { // Keep that separate for class slicing
 	/* \todo
 	 * bind_processor() Return a conversion function for processing bind values.
 	 */
-	template<typename T>
-	operator T() {
-		std::logic_error((std::string)"Cast " + typeid(*this).name() + " -> " + typeid(T).name() + " not implemented");
-	}
 };
-
-#endif
 
 #endif

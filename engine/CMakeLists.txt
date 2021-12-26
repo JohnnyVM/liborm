@@ -6,6 +6,8 @@ configure_file(include/version.h.in include/engine/version.h)
 
 add_library(engine STATIC
 	src/engine.cpp
+	src/create_engine.cpp
+	src/uri.cpp
 )
 
 target_include_directories(engine PUBLIC
@@ -25,9 +27,7 @@ add_compile_definitions(DRIVER_ORACLE)
 endif()
 
 install(TARGETS engine DESTINATION lib)
-install(FILES
-		include/engine.h
-	DESTINATION include)
+install(DIRECTORY include DESTINATION include)
 install(DIRECTORY
-		${PROJECT_BINARY_DIR}/include/engine
+		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)
