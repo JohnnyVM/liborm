@@ -22,7 +22,7 @@ class Engine {
 	Engine(const Engine&) = delete;
 	void operator=(const Engine&) = delete;
 	Engine(const char* uri);
-	virtual Connection* connect() = 0;
+	[[nodiscard]] virtual Connection* connect() = 0;
 	virtual ~Engine() {}
 
 	// This tend to missuse
@@ -43,11 +43,11 @@ class Engine {
 extern "C" {
 #endif
 
-Engine* create_engine(const char* uri);
+[[nodiscard]] Engine* create_engine(const char* uri);
 
 void free_engine(Engine* engine);
 
-Connection* engine_connect(Engine* engine);
+[[nodiscard]] Connection* engine_connect(Engine* engine);
 
 #ifdef __cplusplus
 }

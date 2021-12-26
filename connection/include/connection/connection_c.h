@@ -9,8 +9,8 @@ typedef struct Connection Connection;
 extern "C" {
 #endif
 
-struct connection_state connection_execute_many(Connection* conn, const char* stmt, void*);
-struct connection_state connection_execute(Connection* conn, const char* stmt);
+[[nodiscard]] struct connection_state connection_execute_many(Connection* conn, const char* stmt, void*);
+[[nodiscard]] struct connection_state connection_execute(Connection* conn, const char* stmt);
 void free_connection(Connection* conn);
 
 #ifdef __cplusplus

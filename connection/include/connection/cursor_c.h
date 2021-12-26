@@ -10,13 +10,13 @@ typedef struct Cursor Cursor;
 extern "C" {
 #endif
 
-struct connection_state cursor_open(Cursor* c);
-struct connection_state cursor_close(Cursor* c);
+[[nodiscard]] struct connection_state cursor_open(Cursor* c);
+[[nodiscard]] struct connection_state cursor_close(Cursor* c);
 void free_cursor(Cursor* c);
 
-unsigned cursor_nfields(Cursor *c);
-unsigned cursor_ntuples(Cursor *c);
-unsigned cursor_changes(Cursor *c);
+[[nodiscard]] unsigned cursor_nfields(Cursor *c);
+[[nodiscard]] unsigned cursor_ntuples(Cursor *c);
+[[nodiscard]] unsigned cursor_changes(Cursor *c);
 
 #ifdef __cplusplus
 }
