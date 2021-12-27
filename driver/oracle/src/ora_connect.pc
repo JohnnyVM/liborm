@@ -10,11 +10,10 @@
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
 
-// TODO handle error
 struct connection_state
 driver_ora_connect(struct oracle_connection_data* dbconn) {
 	struct connection_state state = {0};
-	static int enable_threads = 1;
+	static int enable_threads = 1; // Since c11 this is no longer safe
 
 	if(enable_threads) {
 		EXEC SQL ENABLE THREADS;

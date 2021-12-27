@@ -6,6 +6,6 @@ enum connection_error {
 	DATABASE_ERROR, /**< DBAPI error */
 };
 
-#define conn_error_t enum connection_error
+#define conn_error enum connection_error
 
 #endif

@@ -10,10 +10,11 @@
 
 #else
 
-#include "connection/state.h"
 #include "connection/cursor_c.h"
 #include "connection/connection_c.h"
 
 #endif
+
+#include "connection/state.h"
 
 #endif

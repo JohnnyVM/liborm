@@ -46,7 +46,6 @@ target_link_libraries(${driver} connection engine types -lclntsh)
 target_link_directories(${driver} PUBLIC $ENV{ORACLE_HOME}/lib)
 
 install(TARGETS ${driver}  DESTINATION lib)
-install(DIRECTORY include DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)

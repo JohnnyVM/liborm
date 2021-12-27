@@ -12,7 +12,6 @@ typedef struct Engine Engine;
 #include <string>
 #include <memory>
 
-#include "type/factory.hpp"
 #include "engine/uri.hpp"
 
 class Connection;
@@ -21,19 +20,14 @@ class Engine {
 	public:
 	Engine(const Engine&) = delete;
 	void operator=(const Engine&) = delete;
-	Engine(const char* uri);
-	[[nodiscard]] virtual Connection* connect() = 0;
 	virtual ~Engine() {}
+	Engine(const char* uri) : Engine((std::string)uri) {}
+	// teorically it should pass a class Dialect (see the documentation)
+	Engine(std::string uri) : params(engine::RFC1738{uri}) {}
 
-	// This tend to missuse
-	std::shared_ptr<const orm::TypeFactory> typeFactory;
-	// todo dialect
+	[[nodiscard]] virtual Connection* connect() = 0; /**< returna open connection to the dbapi */
 
-	// teorically it should pass a class Dialect
-	Engine(std::string uri, orm::TypeFactory* arg) :
-		typeFactory(arg), params(engine::RFC1738{uri}) {}
-
-	private:
+	protected:
 	engine::RFC1738 params;
 };
 

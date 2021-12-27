@@ -15,13 +15,14 @@ class Connection {
 	virtual ~Connection() {};
 	Connection(const Connection&) = delete;
 	void operator=(const Connection&) = delete;
-	[[nodiscard]] virtual conn_error_t changes() = 0; /**< list of rows modified by the last statement */
-	[[nodiscard]] virtual conn_error_t close() = 0;
-	[[nodiscard]] virtual conn_error_t begin() = 0;
-	[[nodiscard]] virtual conn_error_t commit() = 0;
-	virtual conn_error_t rollback() = 0;
-	[[nodiscard]] virtual std::tuple<Cursor*, conn_error_t> execute(const char* stmt) = 0;
+	[[nodiscard]] virtual conn_error close() = 0;
+	[[nodiscard]] virtual conn_error begin() = 0;
+	[[nodiscard]] virtual conn_error commit() = 0;
+	[[nodiscard]] virtual conn_error rollback() = 0;
+	[[nodiscard]] virtual std::tuple<Cursor*, conn_error> execute(const char* stmt) = 0;
 
+	[[nodiscard]] virtual bool is_open() = 0; /**< the connection is open */
+	[[nodiscard]] virtual unsigned changes() = 0; /**< list of rows modified by the last statement */
 	/** \todo database structure */
 	/*struct connection_state (*get_columns)(void) = 0;
 	struct connection_state (*get_table_id)(void) = 0;

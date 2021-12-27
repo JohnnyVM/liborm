@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <cassert>
 
 #include "engine.h"
 
@@ -20,19 +21,17 @@ Engine* create_engine(const char* uri_arg) {
 
 	#ifdef ORACLE
 	if(uri->driver == "oracle") {
-		engine = new engine::Oracle(uri, std::make_shared<driver::oracle::TypeEngine>());
+		engine = new driver::oracle::Engine(uri);
 	}
 	#endif
 
 	#ifdef POSTGRES
 	if(uri->driver == "postgres") {
-		engine = new engine::Postgres(uri, std::make_shared<driver::oracle::TypeEngine>());
+		engine = new driver::postgres::Engine(uri);
 	}
 	#endif
 
-	if(engine == nullptr){
-		throw std::invalid_argument((std::string)"Driver " + uri.driver + " not know");
-	}
+	assert(0); // this should not happen
 
 	return engine;
 }

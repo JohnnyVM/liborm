@@ -1,5 +1,5 @@
-#ifndef LIBORM_DRIVER_ORACLE_CURSOR_H
-#define LIBORM_DRIVER_ORACLE_CURSOR_H
+#ifndef LIBORM_DRIVER_ORACLE_CURSOR_HPP
+#define LIBORM_DRIVER_ORACLE_CURSOR_HPP
 
 #include <vector>
 #include <memory>
