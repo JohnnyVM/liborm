@@ -37,11 +37,11 @@ class Engine {
 extern "C" {
 #endif
 
-[[nodiscard]] Engine* create_engine(const char* uri);
+Engine* create_engine(const char* uri);
 
 void free_engine(Engine* engine);
 
-[[nodiscard]] Connection* engine_connect(Engine* engine);
+Connection* engine_connect(Engine* engine);
 
 #ifdef __cplusplus
 }

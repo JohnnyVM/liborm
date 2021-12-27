@@ -6,7 +6,7 @@
 #include "connection/types.h"
 #include "connection/cursor_c.h"
 
-#if !defined(ORA_PROC)
+#ifndef ORA_PROC
 #include <stdbool.h>
 #elif
 typedef unsigned char bool;

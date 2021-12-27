@@ -57,3 +57,7 @@ tags
 compile_commands.json
 tests/tests
 build
+.lis
+
+# visual studio
+.devcontainer

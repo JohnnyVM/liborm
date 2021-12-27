@@ -20,7 +20,7 @@ add_compile_options(-fsanitize=undefined -fsanitize=address -fsanitize=leak -fsa
 endif()
 
 set(C_STANDARD 17)
-set(CMAKE_CXX_STANDARD ${CMAKE_C_STANDARD})
+set(CMAKE_CXX_STANDARD ${C_STANDARD})
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
