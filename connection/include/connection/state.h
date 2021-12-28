@@ -8,7 +8,7 @@
 
 #ifndef ORA_PROC
 #include <stdbool.h>
-#elif
+#else
 typedef unsigned char bool;
 #endif
 

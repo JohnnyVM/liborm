@@ -31,7 +31,7 @@ Engine* create_engine(const char* uri_arg) {
 	}
 	#endif
 
-	assert(0); // this should not happen
+	assert(!"Driver not known");
 
 	return engine;
 }

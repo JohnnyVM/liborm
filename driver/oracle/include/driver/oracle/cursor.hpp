@@ -7,6 +7,7 @@
 #include "connection.h"
 #include "inner_driver_oracle.h"
 #include "connection_data.h"
+#include "type/engine.hpp"
 
 using PCursor = Cursor;
 
@@ -26,13 +27,13 @@ class Cursor : public PCursor {
 	//virtual unsigned fields(void) = 0;
 	~Cursor();
 	Cursor(struct oracle_connection_data* arg_data);
-	struct connection_state open(void) override;
-	struct connection_state close(void) override;
-	struct connection_state fetch(void) override;
-	unsigned nfields() override {return _nfields;};
-	unsigned nrows() override {return _ntuples;};
-	unsigned changes() override {return _changes;};
-	bool is_open() override {return _open;}
+	[[nodiscard]] conn_error open(void) override;
+	conn_error close(void) override;
+	[[nodiscard]] conn_error fetch(void) override;
+	[[nodiscard]] unsigned nfields() override {return _nfields;};
+	[[nodiscard]] unsigned nrows() override {return _ntuples;};
+	[[nodiscard]] unsigned changes() override {return _changes;};
+	[[nodiscard]] bool is_open() override {return _open;}
 	private:
 	std::vector<std::unique_ptr<TypeEngine> > _values;
 	struct oracle_connection_data* data;

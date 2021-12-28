@@ -15,11 +15,11 @@ class Connection {
 	virtual ~Connection() {};
 	Connection(const Connection&) = delete;
 	void operator=(const Connection&) = delete;
-	[[nodiscard]] virtual conn_error close() = 0;
+	virtual conn_error close() = 0;
 	[[nodiscard]] virtual conn_error begin() = 0;
 	[[nodiscard]] virtual conn_error commit() = 0;
 	[[nodiscard]] virtual conn_error rollback() = 0;
-	[[nodiscard]] virtual std::tuple<Cursor*, conn_error> execute(const char* stmt) = 0;
+	[[nodiscard]] virtual std::tuple<Cursor*, conn_error> execute(const std::string& stmt) = 0;
 
 	[[nodiscard]] virtual bool is_open() = 0; /**< the connection is open */
 	[[nodiscard]] virtual unsigned changes() = 0; /**< list of rows modified by the last statement */

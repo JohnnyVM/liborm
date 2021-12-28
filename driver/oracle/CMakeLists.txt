@@ -37,7 +37,7 @@ add_library(${driver} STATIC
 	src/factory.cpp
 	src/number_to_Decimal.c
 	src/cursor.cpp
-	src/oracle.cpp)
+	src/connection.cpp)
 
 target_include_directories(${driver}
 	PUBLIC include $ENV{ORACLE_HOME}/sdk/include)

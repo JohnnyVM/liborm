@@ -1,7 +1,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "factory.h"
+#include "factory.hpp"
 #include "oracle_types.h"
 #include "inner_driver_oracle.h"
 
@@ -61,34 +61,4 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() {
 
 orm::type::Numeric* driver::oracle::TypeFactory::Numeric() {
 			return new orm::type::Numeric(precision, scale, number_to_Decimal128(data.get(), returned_length));
-}
-
-TypeEngine* oracleTypeFactory(
-	enum sql_code type,
-	int length,
-	short returned_length,
-	int octet_length,
-	short returned_octet_length,
-	int precision,
-	int scale,
-	int nullable,
-	short indicator,
-	char* name,
-	char* character_set_name,
-	unsigned char* data)
-{
-	driver::oracle::TypeFactory f(
-			type,
-			length,
-			returned_length,
-			octet_length,
-			returned_octet_length,
-			precision,
-			scale,
-			nullable,
-			indicator,
-			name,
-			character_set_name,
-			data);
-	return f.factory();
 }

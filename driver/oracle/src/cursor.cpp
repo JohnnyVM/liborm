@@ -4,6 +4,7 @@
 #include "driver/oracle/cursor.hpp"
 #include "inner_driver_oracle.h"
 #include "driver/oracle/connection_data.h"
+#include "oracle_types.h"
 
 driver::oracle::Cursor::Cursor(struct oracle_connection_data* arg_data) :
 	data(arg_data), _nfields(0U), _ntuples(0U), _changes(0), _open(false) {}
@@ -12,10 +13,10 @@ driver::oracle::Cursor::~Cursor() {
 	this->close();
 }
 
-struct connection_state driver::oracle::Cursor::open(void) {
+conn_error driver::oracle::Cursor::open(void) {
 	struct connection_state state = driver_ora_fields_count(data,&_nfields);
 	if(state.error) {
-		return state;
+		return state.error;
 	}
 
 	state = driver_ora_cursor_open(data, _nfields);
@@ -23,32 +24,37 @@ struct connection_state driver::oracle::Cursor::open(void) {
 		_open = true;
 	}
 
-	return state;
+	return state.error;
 }
 
-struct connection_state driver::oracle::Cursor::fetch(void) {
+conn_error driver::oracle::Cursor::fetch(void) {
 	struct connection_state state = driver_ora_fetch(data, &_changes);
 	if(state.error) {
-		return state;
+		return state.error;
 	}
 
-	TypeEngine *ptr;
+	struct ora_database_type ptr;
 	size_t osize = _values.size();
 	_values.resize(osize + _nfields);
 	for(unsigned i = 0; i < _nfields; i++) {
 		state = driver_ora_get_descriptor_column(data, _nfields + 1, &ptr);
 		if(state.error) {
+			if(ptr.indicator != -1) { free(ptr.data); }
 			_values.resize(osize);
-			return state;
+			return state.error;
 		}
-		_values[osize + i].reset(ptr);
+		//_values[osize + i].reset(ptr);
+		if(ptr.indicator != -1) { free(ptr.data); }
 	}
 	_ntuples++;
-	return state;
+	return state.error;
 }
 
-struct connection_state driver::oracle::Cursor::close(void) {
-	_open = false;
-	return driver_ora_cursor_close(data);
+conn_error driver::oracle::Cursor::close(void) {
+	struct connection_state state = driver_ora_cursor_close(data);
+	if(!state.error) {
+		_open = false;
+	}
+	return state.error;
 }
 

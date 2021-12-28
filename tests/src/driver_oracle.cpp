@@ -9,24 +9,21 @@ TEST_GROUP(driver_oracle){};
 
 TEST(driver_oracle, dual)
 {
-	struct connection_state state = INIT_CONNECTION_STATE;
+	conn_error error;
 	char uri[] ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
 	Engine* engine = create_engine(uri);
 	Connection* conn = engine->connect();
 
-	state = conn->execute_many("select 1 from dual", nullptr);
-	if(state.error && state.tuples_ok && state.cursor && state.changes == 0) {
+	auto [cursor, err] = conn->execute("select 1 from dual");
+	if(err || conn->changes() != 0 || cursor == nullptr) {
 		FAIL("simple select failed");
 	}
 
-	Cursor* c = state.cursor;
-	state = c->open();
-	CHECK(!state.error);
-	state = c->fetch();
-	CHECK(!state.error && state.changes == 1 && c->changes() == 1);
+	error = cursor->fetch();
+	CHECK(!error);
 
-	delete state.cursor;
+	delete cursor;
 	delete engine;
 	delete conn;
 }

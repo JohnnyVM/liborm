@@ -14,7 +14,6 @@
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
 #include "oracle_types.h"
-#include "factory.h"
 
 /**
  * \brief return number of parameters spected counting : in stmt
@@ -199,7 +198,7 @@ driver_ora_cursor_close(struct oracle_connection_data* dbconn) {
 }
 
 struct connection_state
-driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned nfield, TypeEngine** result) {
+driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned nfield, struct ora_database_type *result) {
 	struct connection_state state = {0};
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -238,7 +237,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 	}
 	len = snprintf(NULL, 0, "%s", name);
 	if(len < 0 ||len >= (int)sizeof name) {
-		assert(0); //indicator_name_length too short or nasty error
+		assert(!"indicator_name_length too short or nasty error");
 		state.error = NO_MEMORY;
 		return state;
 	}
@@ -257,20 +256,23 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 		return state;
 	}
 
-	//something
-	*result = oracleTypeFactory(
-			type,
-			length,
-			returned_length,
-			octet_length,
-			returned_octet_length,
-			precision,
-			scale,
-			nullable,
-			indicator,
-			name,
-			NULL,
-			data);
+	result->type = type;
+	result->length = length;
+	result->returned_length = returned_length;
+	result->octet_length = octet_length;
+	result->returned_octet_length = returned_octet_length;
+	result->precision = precision;
+	result->scale = scale;
+	result->nullable = nullable;
+	result->indicator = indicator;
+	len = snprintf(result->name, INDICATOR_NAME_LENGTH, "%s", name);
+	if(len < 0 || len >= (int)INDICATOR_NAME_LENGTH) {
+		assert(!"indicator_name_length too short or nasty error");
+		state.error = NO_MEMORY;
+		return state;
+	}
+	result->character_set_name = NULL;
+	result->data = data;
 
 	state.changes = sqlca.sqlerrd[2];
 
@@ -294,7 +296,7 @@ driver_ora_fetch(struct oracle_connection_data* dbconn, unsigned* changes) {
 	if(sqlca.sqlcode) {
 		state.error = DATABASE_ERROR;
 		if(sqlca.sqlcode == ORA_NOT_FOUND) {
-			state.error = NO_MORE_ROWS;
+			state.error = STMT_DONE;
 			return state;
 		}
 	}

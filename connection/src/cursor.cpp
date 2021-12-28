@@ -1,11 +1,13 @@
 #include "connection/cursor.hpp"
 #include "connection/state.h"
 
-struct connection_state cursor_open(Cursor* c) {
+extern "C" {
+
+conn_error cursor_open(Cursor* c) {
 	return c->open();
 }
 
-struct connection_state cursor_close(Cursor* c) {
+conn_error cursor_close(Cursor* c) {
 	return c->close();
 }
 
@@ -25,3 +27,4 @@ void free_cursor(Cursor* c) {
 	delete c;
 }
 
+}

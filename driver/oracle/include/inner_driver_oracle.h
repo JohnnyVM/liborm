@@ -5,7 +5,7 @@
 
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
-#include "type/engine.h"
+#include "oracle_types.h"
 
 #define ORA_NOT_FOUND 100
 
@@ -31,7 +31,7 @@ struct connection_state driver_ora_cursor_open(struct oracle_connection_data* co
 struct connection_state driver_ora_cursor_close(struct oracle_connection_data* conn);
 struct connection_state driver_ora_fields_count(struct oracle_connection_data* conn, unsigned* i);
 struct connection_state driver_ora_fetch(struct oracle_connection_data* conn, unsigned* changes);
-struct connection_state driver_ora_get_descriptor_column(struct oracle_connection_data* conn, unsigned field, TypeEngine** column);
+struct connection_state driver_ora_get_descriptor_column(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
 _Decimal128 number_to_Decimal128(unsigned char const* number, int size);
 
 #ifdef __cplusplus
