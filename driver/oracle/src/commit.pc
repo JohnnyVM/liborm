@@ -6,9 +6,9 @@
 #include "driver/oracle/connection_data.h"
 #include "connection.h"
 
-struct connection_state
+struct connection_result
 driver_ora_commit(struct oracle_connection_data* dbconn) {
-	struct connection_state db_stat = {0};
+	struct connection_result db_stat = {0};
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -18,7 +18,7 @@ driver_ora_commit(struct oracle_connection_data* dbconn) {
 	EXEC SQL CONTEXT USE :ctx;
 	EXEC SQL AT :database COMMIT WORK;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 

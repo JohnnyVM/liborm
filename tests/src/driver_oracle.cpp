@@ -9,19 +9,19 @@ TEST_GROUP(driver_oracle){};
 
 TEST(driver_oracle, dual)
 {
-	conn_error error;
+	conn_state error;
 	char uri[] ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
 	Engine* engine = create_engine(uri);
 	Connection* conn = engine->connect();
 
 	auto [cursor, err] = conn->execute("select 1 from dual");
-	if(err || conn->changes() != 0 || cursor == nullptr) {
-		FAIL("simple select failed");
+	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
+		FAIL(conn->error_message());
 	}
 
 	error = cursor->fetch();
-	CHECK(!error);
+	CHECK_TEXT(!error, conn->error_message());
 
 	delete cursor;
 	delete engine;

@@ -10,15 +10,15 @@
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
 
-struct connection_state
+struct connection_result
 driver_ora_connect(struct oracle_connection_data* dbconn) {
-	struct connection_state state = {0};
+	struct connection_result state = {0};
 	static int enable_threads = 1; // Since c11 this is no longer safe
 
 	if(enable_threads) {
 		EXEC SQL ENABLE THREADS;
 		if(sqlca.sqlcode) {
-			state.error = DATABASE_ERROR;
+			state.state = DATABASE_ERROR;
 			return state;
 		}
 		enable_threads = 0;
@@ -34,7 +34,7 @@ driver_ora_connect(struct oracle_connection_data* dbconn) {
 
 	EXEC SQL CONTEXT ALLOCATE :ctx;
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		dbconn->ctx = NULL;
 		return state;
 	}
@@ -42,18 +42,18 @@ driver_ora_connect(struct oracle_connection_data* dbconn) {
 	EXEC SQL CONTEXT USE :ctx;
 
 	state = allocate_descriptor_global(dbconn, dbconn->input_descriptor);
-	if(state.error) {
+	if(state.state) {
 		return state;
 	}
 
 	state = allocate_descriptor_global(dbconn, dbconn->output_descriptor);
-	if(state.error) {
+	if(state.state) {
 		return state;
 	}
 
 	EXEC SQL CONNECT :user IDENTIFIED BY :password AT :database USING :connect_string;
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		EXEC SQL CONTEXT FREE :ctx;
 		dbconn->ctx = NULL;
 		return state;

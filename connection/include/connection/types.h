@@ -1,13 +1,15 @@
 #ifndef LIBORM_CONNECTION_TYPES_H
 #define LIBORM_CONNECTION_TYPES_H
 
-enum connection_error {
-	NO_CONNECTION_ERROR = 0, /**< no error */
+enum connection_state {
+	SQL_DONE = 0, /**< no error */
+	SQL_ROWS, /**< if ok, connection can be fetched, it doesnt mean some rows have to be returned */
+	SQL_MISUSE, /**< Bad use of the API, reopen a closed cursor, fetch closed cursors etc*/
 	DATABASE_ERROR, /**< DBAPI error */
 	NO_MEMORY, /**< allocation error */
 	STMT_DONE /**< no more queries */
 };
 
-#define conn_error enum connection_error
+#define conn_state enum connection_state
 
 #endif

@@ -17,6 +17,7 @@ add_compile_options(-Wall -Wextra -Werror -fno-common)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
 if(CHECK_MEMORY)
 add_compile_options(-fsanitize=undefined -fsanitize=address -fsanitize=leak -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize-recover=all)
+add_link_options(-fsanitize=undefined -fsanitize=address -fsanitize=leak -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize-recover=all)
 endif()
 
 set(C_STANDARD 17)

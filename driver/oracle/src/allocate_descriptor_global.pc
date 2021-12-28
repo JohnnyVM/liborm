@@ -8,9 +8,9 @@
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
 
-struct connection_state
+struct connection_result
 allocate_descriptor_global(struct oracle_connection_data* dbconn, unsigned char* descriptor) {
-	struct connection_state db_stat = {0};
+	struct connection_result db_stat = {0};
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -21,7 +21,7 @@ allocate_descriptor_global(struct oracle_connection_data* dbconn, unsigned char*
 
 	EXEC SQL ALLOCATE DESCRIPTOR GLOBAL :decl_descriptor WITH MAX 128;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 	}
 
 	return db_stat;

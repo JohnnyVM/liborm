@@ -6,22 +6,14 @@
 #include "connection/types.h"
 #include "connection/cursor_c.h"
 
-#ifndef ORA_PROC
-#include <stdbool.h>
-#else
-typedef unsigned char bool;
-#endif
-
-struct connection_state {
-	enum connection_error error;
-	bool tuples_ok; /**< if ok, connection can be fetched, it doesnt mean some rows have to be returned */
+struct connection_result {
+	enum connection_state state;
 	unsigned changes;
-	Cursor* cursor; /**< No access to this memeber if tuples_ok = false */
+	Cursor* cursor; /**< No access to this memeber if state != SQL_ROWS */
 };
 
-#define INIT_CONNECTION_STATE {\
-	.error = NO_CONNECTION_ERROR,\
-	.tuples_ok = false,\
+#define INIT_CONNECTION_RESULT {\
+	.state = SQL_DONE,\
 	.changes = 0,\
 	.cursor = NULL\
 }

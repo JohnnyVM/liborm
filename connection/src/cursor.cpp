@@ -3,11 +3,11 @@
 
 extern "C" {
 
-conn_error cursor_open(Cursor* c) {
+conn_state cursor_open(Cursor* c) {
 	return c->open();
 }
 
-conn_error cursor_close(Cursor* c) {
+conn_state cursor_close(Cursor* c) {
 	return c->close();
 }
 

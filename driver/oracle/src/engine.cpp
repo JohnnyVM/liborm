@@ -48,8 +48,8 @@ struct oracle_connection_data driver::oracle::Engine::params_to_conn() {
 driver::oracle::Connection* driver::oracle::Engine::connect() {
 	struct oracle_connection_data conn = params_to_conn();
 
-	struct connection_state state = driver_ora_connect(&conn);
-	if(state.error) {
+	struct connection_result state = driver_ora_connect(&conn);
+	if(state.state) {
 		throw std::runtime_error("Could not open connection to the database"); // TODO move to custom exception
 	}
 

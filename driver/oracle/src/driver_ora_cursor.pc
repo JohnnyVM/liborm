@@ -19,9 +19,9 @@
  * \brief return number of parameters spected counting : in stmt
  * \todo for input aprameters this function need a c wrapper
  */
-struct connection_state
+struct connection_result
 driver_ora_execute_many(struct oracle_connection_data* dbconn, const char* stmt, void* rows) {
-	struct connection_state db_stat = {0};
+	struct connection_result db_stat = {0};
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	int i;
@@ -42,24 +42,19 @@ driver_ora_execute_many(struct oracle_connection_data* dbconn, const char* stmt,
 	EXEC SQL AT :database DECLARE db_execute_stmt STATEMENT;
 	EXEC SQL AT :database PREPARE db_execute_stmt FROM :statement;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 
 	EXEC SQL AT :database DESCRIBE INPUT db_execute_stmt USING SQL DESCRIPTOR GLOBAL :input_descriptor;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 
 	EXEC SQL GET DESCRIPTOR GLOBAL :input_descriptor :input_count = COUNT;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
-		return db_stat;
-	}
-
-	if(rows && !rows){
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 
@@ -70,41 +65,41 @@ driver_ora_execute_many(struct oracle_connection_data* dbconn, const char* stmt,
 		// TODO proces paramters, probably the best is move to a function
 		// process input parameters or similar
 		if(sqlca.sqlcode) {
-			db_stat.error = DATABASE_ERROR;
+			db_stat.state = DATABASE_ERROR;
 			return db_stat;
 		}
 	}*/
 
 	EXEC SQL AT :database DESCRIBE OUTPUT db_execute_stmt USING SQL DESCRIPTOR GLOBAL :output_descriptor;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 
 	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor :output_count = COUNT;
 	if(sqlca.sqlcode) {
-		db_stat.error = DATABASE_ERROR;
+		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 
-	if(!output_count) {
-		EXEC SQL AT :database EXECUTE db_execute_stmt USING SQL DESCRIPTOR GLOBAL :input_descriptor;
-		// the library return "NOT ROW FOUND" for operations that return 0 rows affected
-		if(sqlca.sqlcode && sqlca.sqlcode != ORA_NOT_FOUND) {
-			db_stat.error = DATABASE_ERROR;
-			return db_stat;
-		}
+	EXEC SQL AT :database EXECUTE db_execute_stmt USING SQL DESCRIPTOR GLOBAL :input_descriptor;
+	// the library return "NOT ROW FOUND" for operations that return 0 rows affected
+	if(sqlca.sqlcode && sqlca.sqlcode != ORA_NOT_FOUND) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
 	}
 
-	db_stat.tuples_ok = 1;
 	db_stat.changes = sqlca.sqlerrd[2];
+	if(output_count) {
+		db_stat.state = SQL_ROWS;
+	}
 
 	return db_stat;
 }
 
-struct connection_state
+struct connection_result
 driver_ora_fields_count(struct oracle_connection_data* dbconn, unsigned* i) {
-	struct connection_state state = {0};
+	struct connection_result state = {0};
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
 	unsigned char* database = dbconn->dbname;
@@ -115,7 +110,7 @@ driver_ora_fields_count(struct oracle_connection_data* dbconn, unsigned* i) {
 	EXEC SQL CONTEXT USE :ctx;
 	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor :output_count = COUNT;
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		return state;
 	}
 	*i = output_count;
@@ -132,17 +127,17 @@ driver_ora_fields_count(struct oracle_connection_data* dbconn, unsigned* i) {
  * \param many number of rows required, can be returned less
  * \
  */
-struct connection_state
+struct connection_result
 driver_ora_cursor_open(struct oracle_connection_data* dbconn, unsigned nfields) {
-	struct connection_state state = {0};
+	struct connection_result state = {0};
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
 	unsigned char* database = dbconn->dbname;
 	unsigned char* output_descriptor = dbconn->output_descriptor;
 	int type;
 	int precision;
+	int length;
 	int scale;
-	const int max_precision = 40;
 	int i;
 	EXEC SQL END DECLARE SECTION;
 
@@ -152,37 +147,41 @@ driver_ora_cursor_open(struct oracle_connection_data* dbconn, unsigned nfields) 
 
 	EXEC SQL AT :database OPEN db_execute_cursor;
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		return state;
 	}
 
-	for(i = 1; !dbconn->cursor_open && (unsigned)i <= nfields; ++i) {
+	for(i = 1; (unsigned)i <= nfields; ++i) {
 		EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
 			:type = TYPE,
 			:precision = PRECISION,
+			:length = LENGTH,
 			:scale = SCALE;
 		if(sqlca.sqlcode) {
 			driver_ora_cursor_close(dbconn);
-			state.error = DATABASE_ERROR;
+			state.state = DATABASE_ERROR;
 			return state;
 		}
 		// the precision have to be setted in advance
 		if(type == ORA_NUMBER && scale <= 0 && precision == 0) {
-			EXEC SQL SET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
-				PRECISION = :max_precision;
-			if(sqlca.sqlcode) {
-				driver_ora_cursor_close(dbconn);
-				state.error = DATABASE_ERROR;
-				return state;
-			}
+			precision = 40; // Maximun oracle precision
+		}
+		EXEC SQL SET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
+			TYPE = :type,
+			LENGTH = :length,
+			PRECISION = :precision;
+		if(sqlca.sqlcode) {
+			driver_ora_cursor_close(dbconn);
+			state.state = DATABASE_ERROR;		
+			return state;
 		}
 	}
 	return state;
 }
 
-struct connection_state
+struct connection_result
 driver_ora_cursor_close(struct oracle_connection_data* dbconn) {
-	struct connection_state state = {0};
+	struct connection_result state = {0};
 	EXEC SQL BEGIN DECLARE SECTION;
 	unsigned char* database = dbconn->dbname; // Nasty dragon, not remove
 	sql_context ctx = dbconn->ctx;
@@ -192,14 +191,14 @@ driver_ora_cursor_close(struct oracle_connection_data* dbconn) {
 	EXEC SQL CLOSE db_execute_cursor;
 
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 	}
 	return state;
 }
 
-struct connection_state
+struct connection_result
 driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned nfield, struct ora_database_type *result) {
-	struct connection_state state = {0};
+	struct connection_result state = {0};
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
 	unsigned char* database = dbconn->dbname;
@@ -234,19 +233,19 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 		:nullable = NULLABLE,
 		:name = NAME;
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		return state;
 	}
 	len = snprintf(NULL, 0, "%s", name);
 	if(len < 0 ||len >= (int)sizeof name) {
 		assert(!"indicator_name_length too short or nasty error");
-		state.error = NO_MEMORY;
+		state.state = NO_MEMORY;
 		return state;
 	}
 
 	data = malloc((size_t)octet_length);
 	if(data == NULL) {
-		state.error = NO_MEMORY;
+		state.state = NO_MEMORY;
 		return state;
 	}
 
@@ -255,7 +254,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 		:indicator = INDICATOR;
 	if(sqlca.sqlcode) {
 		free(data);
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		return state;
 	}
 
@@ -272,7 +271,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 	if(len < 0 || len >= (int)INDICATOR_NAME_LENGTH) {
 		assert(!"indicator_name_length too short or nasty error");
 		free(data);
-		state.error = NO_MEMORY;
+		state.state = NO_MEMORY;
 		return state;
 	}
 	result->character_set_name = NULL;
@@ -283,9 +282,9 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 	return state;
 }
 
-struct connection_state
+struct connection_result
 driver_ora_fetch(struct oracle_connection_data* dbconn, unsigned* changes) {
-	struct connection_state state = {0};
+	struct connection_result state = {0};
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -298,9 +297,9 @@ driver_ora_fetch(struct oracle_connection_data* dbconn, unsigned* changes) {
 	EXEC SQL AT :database FETCH db_execute_cursor INTO DESCRIPTOR GLOBAL :output_descriptor;
 
 	if(sqlca.sqlcode) {
-		state.error = DATABASE_ERROR;
+		state.state = DATABASE_ERROR;
 		if(sqlca.sqlcode == ORA_NOT_FOUND) {
-			state.error = STMT_DONE;
+			state.state = STMT_DONE;
 			return state;
 		}
 	}
@@ -309,4 +308,6 @@ driver_ora_fetch(struct oracle_connection_data* dbconn, unsigned* changes) {
 	return state;
 }
 
-
+char* driver_ora_short_error_message(void) {
+	return sqlca.sqlerrm.sqlerrmc;
+}

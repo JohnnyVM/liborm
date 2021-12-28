@@ -19,34 +19,34 @@ driver::oracle::Cursor::Cursor(struct oracle_connection_data arg_conn) :
  */
 driver::oracle::Cursor::~Cursor() {
 	if(_is_open) {
-		conn_error err = this->close();
+		conn_state err = this->close();
 		assert(!err || !"Atempt to close cursor failed");
 	}
 }
 
-conn_error driver::oracle::Cursor::open(void) {
-	struct connection_state state = driver_ora_fields_count(&conn, &_nfields);
-	if(state.error) {
-		return state.error;
+conn_state driver::oracle::Cursor::open(void) {
+	struct connection_result state = driver_ora_fields_count(&conn, &_nfields);
+	if(state.state) {
+		return state.state;
 	}
 
 	state = driver_ora_cursor_open(&conn, _nfields);
-	if(!state.error) {
+	if(!state.state) {
 		_is_open = true;
 	}
 
-	return state.error;
+	return state.state;
 }
 
 /**
  * \brief fetch one row in memory
  * \warning if this function return error even if retry the fetched row is lost
- * \return conn_error
+ * \return conn_state
  */
-conn_error driver::oracle::Cursor::fetch(void) {
-	struct connection_state state = driver_ora_fetch(&conn, &_changes);
-	if(state.error) {
-		return state.error;
+conn_state driver::oracle::Cursor::fetch(void) {
+	struct connection_result state = driver_ora_fetch(&conn, &_changes);
+	if(state.state) {
+		return state.state;
 	}
 
 	size_t osize = _values.size();
@@ -54,10 +54,10 @@ conn_error driver::oracle::Cursor::fetch(void) {
 	for(unsigned i = 0; i < _nfields; i++) {
 		struct ora_database_type *ptr = (struct ora_database_type *)malloc(sizeof *ptr);
 		state = driver_ora_get_descriptor_column(&conn, _nfields + 1, ptr);
-		if(state.error) {
+		if(state.state) {
 			free(ptr);
 			_values.resize(osize);
-			return state.error;
+			return state.state;
 		}
 		
 		driver::oracle::TypeFactory factory{ptr};
@@ -66,14 +66,14 @@ conn_error driver::oracle::Cursor::fetch(void) {
 		free_ora_database_type(ptr);
 	}
 	_ntuples++;
-	return state.error;
+	return state.state;
 }
 
-conn_error driver::oracle::Cursor::close(void) {
-	struct connection_state state = driver_ora_cursor_close(&conn);
-	if(!state.error) {
+conn_state driver::oracle::Cursor::close(void) {
+	struct connection_result state = driver_ora_cursor_close(&conn);
+	if(!state.state) {
 		_is_open = false;
 	}
-	return state.error;
+	return state.state;
 }
 

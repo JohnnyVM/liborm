@@ -5,12 +5,12 @@
 
 
 static void connection_battery_test(const char* uri) {
-	struct connection_state state = INIT_CONNECTION_STATE;
+	struct connection_result state = INIT_CONNECTION_RESULT;
 
 	Engine* engine = create_engine(uri);
 	Connection* conn = engine_connect(engine);
 	// If we arrived here no exception launched
-	if(state.error) {
+	if(state.state) {
 		FAIL_C();
 	}
 	free_engine(engine);

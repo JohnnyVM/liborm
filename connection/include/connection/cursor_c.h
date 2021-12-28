@@ -9,8 +9,8 @@ typedef struct Cursor Cursor;
 extern "C" {
 #endif
 
-conn_error cursor_open(Cursor* c);
-conn_error cursor_close(Cursor* c);
+conn_state cursor_open(Cursor* c);
+conn_state cursor_close(Cursor* c);
 void free_cursor(Cursor* c);
 
 unsigned cursor_nfields(Cursor *c);

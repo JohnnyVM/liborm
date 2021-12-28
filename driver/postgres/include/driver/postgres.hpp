@@ -12,15 +12,15 @@ class Postgres : virtual public Connection {
 	public:
 	Postgres(Engine* engine);
 	~Postgres();
-	struct connection_state open(void) override;
-	struct connection_state begin(void) override;
-	struct connection_state commit(void) override;
-	struct connection_state rollback(void) override;
-	struct connection_state execute_many(const char*, void* /*struct array *params*/) override;
-	struct connection_state execute(const char*) override;
+	struct connection_result open(void) override;
+	struct connection_result begin(void) override;
+	struct connection_result commit(void) override;
+	struct connection_result rollback(void) override;
+	struct connection_result execute_many(const char*, void* /*struct array *params*/) override;
+	struct connection_result execute(const char*) override;
 
 	protected:
-	struct connection_state close(void) override;
+	struct connection_result close(void) override;
 
 	private:
 	PGconn* pg_conn = nullptr;

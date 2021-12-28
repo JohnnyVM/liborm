@@ -15,8 +15,6 @@ struct oracle_connection_data {
 	sql_context ctx; /**< Thread context, required for multithread connectionss */
 	unsigned char input_descriptor[32]; /**< Necesary string for identify a descriptor */
 	unsigned char output_descriptor[32]; /**< Necesary string for identify a descriptor */
-	/*@}*/
-	unsigned int cursor_open;
 };
 
 #endif

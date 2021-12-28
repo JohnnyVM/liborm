@@ -20,22 +20,24 @@ namespace driver::oracle {
 
 /** A Cursor that is representing state from a DBAPI cursor.
  *	Its in charge of handle the memory used
+ * \warning The ORACLE DBAPI is designed in way taht the cursor are global variables at file unit
+ * this api only provide a cursor, any THREAD aplication have to be designed VERY carefully 
+ * around that limitation, or think how remove that
  * */
 class Cursor : public PCursor {
 	friend class driver::oracle::Connection;
 	public:
-	//virtual void fetch(void) = 0; // fetch the default quantity determined by the driver
-	//virtual unsigned fields(void) = 0;
+
 	~Cursor();
 	Cursor(struct oracle_connection_data arg_data);
-	[[nodiscard]] conn_error close(void) override;
-	[[nodiscard]] conn_error fetch(void) override;
+	[[nodiscard]] conn_state close(void) override;
+	[[nodiscard]] conn_state fetch(void) override;
 	[[nodiscard]] unsigned nfields() override {return _nfields;};
 	[[nodiscard]] unsigned nrows() override {return _ntuples;};
 	[[nodiscard]] unsigned changes() override {return _changes;};
 	[[nodiscard]] bool is_open() override {return _is_open;}
 	protected:
-	[[nodiscard]] conn_error open(void) override;
+	[[nodiscard]] conn_state open(void) override;
 	private:
 	std::vector<std::unique_ptr<TypeEngine> > _values;
 	struct oracle_connection_data conn;

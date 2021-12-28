@@ -9,14 +9,14 @@ TEST_GROUP(driver_postgres){};
 
 TEST(driver_postgres, dual)
 {
-	struct connection_state state = INIT_CONNECTION_STATE;
+	struct connection_result state = INIT_CONNECTION_RESULT;
 	char uri[] ="postgres+postgres://localhost/postgres";
 
 	Engine* engine = create_engine(uri);
 	Connection* conn = engine_connect(engine);
 
 	state = conn->execute("select 1");
-	if(state.error) {
+	if(state.state) {
 		FAIL("simple select failed");
 	}
 
