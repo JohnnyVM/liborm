@@ -1,39 +1,12 @@
 #include <memory>
 #include <stdexcept>
 
-#include "factory.hpp"
+#include "driver/oracle/factory.hpp"
 #include "oracle_types.h"
 #include "inner_driver_oracle.h"
 
-driver::oracle::TypeFactory::TypeFactory (
-		enum sql_code arg_type,
-		int arg_length,
-		short arg_returned_length,
-		int arg_octet_length,
-		short arg_returned_octet_length,
-		int arg_precision,
-		int arg_scale,
-		int arg_nullable,
-		short arg_indicator,
-		char* arg_name,
-		char* arg_character_set_name,
-		unsigned char* arg_data)
-:
-		type(arg_type),
-		length(arg_length),
-		returned_length(arg_returned_length),
-		octet_length(arg_octet_length),
-		returned_octet_length(arg_returned_octet_length),
-		precision(arg_precision),
-		scale(arg_scale),
-		nullable(arg_nullable),
-		indicator(arg_indicator),
-		name(arg_name),
-		character_set_name(arg_character_set_name),
-		data(arg_data, free_ptrm) {}
-
 const std::type_info& driver::oracle::TypeFactory::coerced_type() {
-	switch(type) {
+	switch(data.get()->type) {
 		case ORA_NUMBER:
 			return typeid(orm::type::Numeric);
 		case ORA_CHARACTER:
@@ -53,12 +26,11 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() {
 		case ORA_BINARY_FLOAT:
 		case ORA_BINARY_DOUBLE:
 		default:
-			assert(0);
-			throw std::logic_error("Not implemented");
+			assert(!"Not implemented");
 			return typeid(nullptr);
 	}
 }
 
 orm::type::Numeric* driver::oracle::TypeFactory::Numeric() {
-			return new orm::type::Numeric(precision, scale, number_to_Decimal128(data.get(), returned_length));
+	return new orm::type::Numeric(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
 }

@@ -3,6 +3,10 @@
 
 #define INDICATOR_NAME_LENGTH 32
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum sql_code {
 	// positive ansi types
 	ORA_CHARACTER = 1,
@@ -44,6 +48,12 @@ struct ora_database_type {
 	unsigned char* data;
 };
 
+// in C23 move this to [[attribute]]
+__attribute__((nothrow, warn_unused_result)) struct ora_database_type* ora_database_type_clone(struct ora_database_type *result);
+__attribute__((nothrow)) void free_ora_database_type(struct ora_database_type* result);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

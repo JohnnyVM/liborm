@@ -219,6 +219,8 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 	int len;
 	EXEC SQL END DECLARE SECTION;
 
+	result->indicator = -1;
+
 	EXEC SQL CONTEXT USE :ctx;
 
 	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :pos
@@ -252,6 +254,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 		:data = DATA,
 		:indicator = INDICATOR;
 	if(sqlca.sqlcode) {
+		free(data);
 		state.error = DATABASE_ERROR;
 		return state;
 	}
@@ -268,6 +271,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 	len = snprintf(result->name, INDICATOR_NAME_LENGTH, "%s", name);
 	if(len < 0 || len >= (int)INDICATOR_NAME_LENGTH) {
 		assert(!"indicator_name_length too short or nasty error");
+		free(data);
 		state.error = NO_MEMORY;
 		return state;
 	}

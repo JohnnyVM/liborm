@@ -16,7 +16,7 @@ class Cursor {
 	[[nodiscard]] virtual unsigned changes(void) = 0;
 	[[nodiscard]] virtual bool is_open(void) = 0;
 	[[nodiscard]] virtual conn_error open(void) = 0;
-	virtual conn_error close(void) = 0;
+	[[nodiscard]] virtual conn_error close(void) = 0;
 };
 
 #endif

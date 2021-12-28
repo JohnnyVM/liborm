@@ -9,7 +9,7 @@ class TypeEngine { // Keep that separate for class slicing
 	public:
 	const size_t length;
 	const std::string name;
-	virtual ~TypeEngine(){}
+	virtual ~TypeEngine() {}
 	TypeEngine(std::string arg_name, size_t arg_length) : length(arg_length), name(arg_name) {}
 	std::string bind_expression() { return (std::string)":" + name; }
 	/* \todo

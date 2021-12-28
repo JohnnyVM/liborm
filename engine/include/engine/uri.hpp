@@ -16,7 +16,14 @@ struct RFC1738 {
 	std::string resource = "";
 
 	RFC1738() = default;
-	RFC1738(const RFC1738&) {}
+	RFC1738(const RFC1738& arg) :
+		dialect(arg.dialect),
+		driver(arg.driver),
+		user(arg.user),
+		password(arg.password),
+		host(arg.host),
+		port(arg.port),
+		resource(arg.resource){}
 	RFC1738(const char* arg) : RFC1738((std::string)arg) {}
 	RFC1738(const std::string& arg) : RFC1738(parse(arg)) {}
 	static RFC1738 parse(std::string uri);

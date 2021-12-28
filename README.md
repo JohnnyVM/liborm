@@ -3,4 +3,9 @@
 ### Driver
 ---
 
-A driver must implement the classes Connection, Cursor and engine
+A driver must implement the classes Connection, Cursor, TypeFactory and engine
+
+### Conventions
+---
+
+ - Assume optimistic allocation / alloc can't fail;

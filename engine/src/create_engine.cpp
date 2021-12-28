@@ -22,12 +22,14 @@ Engine* create_engine(const char* uri_arg) {
 	#ifdef ORACLE
 	if(uri.driver == "oracle") {
 		engine = new driver::oracle::Engine(uri);
+		return engine;
 	}
 	#endif
 
 	#ifdef POSTGRES
 	if(uri.driver == "postgres") {
 		engine = new driver::postgres::Engine(uri);
+		return engine;
 	}
 	#endif
 
