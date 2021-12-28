@@ -16,14 +16,14 @@ target_include_directories(engine PUBLIC
 
 target_link_libraries(engine types connection)
 
-if(DRIVER_POSTGRES)
+if(POSTGRES)
 target_link_libraries(engine postgres)
-add_compile_definitions(DRIVER_POSTGRES)
+add_compile_definitions(POSTGRES)
 endif()
 
-if(DRIVER_ORACLE)
+if(ORACLE)
 target_link_libraries(engine oracle)
-add_compile_definitions(DRIVER_ORACLE)
+add_compile_definitions(ORACLE)
 endif()
 
 install(TARGETS engine DESTINATION lib)

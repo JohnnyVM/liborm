@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <system_error>
 
 #include "connection.h"
 #include "driver/oracle/engine.hpp"
@@ -14,8 +15,9 @@
 		}\
 	}while(0)
 
-driver::oracle::Engine::params_to_conn() {
+struct oracle_connection_data driver::oracle::Engine::params_to_conn() {
 	int length;
+	struct oracle_connection_data data;
 	// \todo mutext ward this
 	static int counter = 0;
 
@@ -37,13 +39,13 @@ driver::oracle::Engine::params_to_conn() {
 	length = snprintf((char*)data.output_descriptor, sizeof data.output_descriptor, "output_descriptor_%i", counter);
 	CHECK_OUTPUT_SNPRINTF(length, sizeof data.output_descriptor);
 
-	data.cursor_open = 0;
-
 	counter++;
+
+	return data;
 }
 #undef CHECK_OUTPUT
 
-driver::oracle::Engine::connect() {
+driver::oracle::Connection* driver::oracle::Engine::connect() {
 	struct oracle_connection_data conn = params_to_conn();
 
 	struct connection_state state = driver_ora_connect(&conn);

@@ -37,6 +37,7 @@ add_library(${driver} STATIC
 	src/factory.cpp
 	src/number_to_Decimal.c
 	src/cursor.cpp
+	src/engine.cpp
 	src/connection.cpp)
 
 target_include_directories(${driver}

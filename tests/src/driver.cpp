@@ -23,10 +23,10 @@ TEST(driver, connection)
 {
 	// TODO move this to environment variables
 	const char* uri[] = {
-#ifdef DRIVER_ORACLE
+#ifdef ORACLE
 		"oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA",
 #endif
-#ifdef DRIVER_POSTGRES
+#ifdef POSTGRES
 		"postgres+postgres://localhost/postgres",
 #endif
 		NULL

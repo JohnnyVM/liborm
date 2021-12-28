@@ -35,6 +35,16 @@ conn_error driver::oracle::Connection::rollback(void) {
 	return NO_CONNECTION_ERROR;
 }
 
+unsigned driver::oracle::Connection::changes(void) {
+	assert(!"TODO");
+	return 0;
+}
+
+bool driver::oracle::Connection::is_open(void) {
+	assert(!"TODO");
+	return false;
+}
+
 std::tuple<Cursor*, conn_error> driver::oracle::Connection::execute(const std::string& stmt) {
 	struct connection_state state = INIT_CONNECTION_STATE;
 	state = driver_ora_execute_many(&data, stmt.c_str(), nullptr);

@@ -13,7 +13,6 @@ class Cursor;
 class Connection {
 	public:
 	virtual ~Connection() {};
-	Connection(const Connection&) = delete;
 	void operator=(const Connection&) = delete;
 	virtual conn_error close() = 0;
 	[[nodiscard]] virtual conn_error begin() = 0;

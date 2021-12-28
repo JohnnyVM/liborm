@@ -3,7 +3,8 @@
 
 #include <string>
 
-#include "connection.h"
+#include "engine.h"
+#include "driver/oracle/connection.hpp"
 
 using PEngine = Engine;
 
@@ -13,9 +14,11 @@ namespace driver::oracle {
  *	Its in charge of handle the memory used
  * */
 class Engine : public PEngine {
+	public:
+	~Engine() {}
 	Engine(const std::string& uri) : PEngine(uri) {}
+	Engine(const engine::RFC1738& uri) : PEngine(uri) {}
 	[[nodiscard]] Connection* connect() override; /**< returna open connection to the dbapi */
-
 	private:
 	struct oracle_connection_data params_to_conn();
 };

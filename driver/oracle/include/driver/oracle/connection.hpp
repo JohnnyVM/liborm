@@ -19,6 +19,9 @@ class Connection : virtual public PConnection {
 	[[nodiscard]] conn_error rollback(void) override;
 	[[nodiscard]] virtual std::tuple<PCursor*, conn_error> execute(const std::string& stmt) override;
 
+	[[nodiscard]] bool is_open() override; /**< the connection is open */
+	[[nodiscard]] unsigned changes() override;
+
 	private:
 	struct oracle_connection_data data;
 };
