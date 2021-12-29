@@ -10,6 +10,9 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#define __STDC_WANT_DEC_FP__
+#include <float.h>
+
 #include "inner_driver_oracle.h"
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
@@ -162,13 +165,16 @@ driver_ora_cursor_open(struct oracle_connection_data* dbconn, unsigned nfields) 
 			state.state = DATABASE_ERROR;
 			return state;
 		}
-		// the precision have to be setted in advance
+		// the type Number have to be setted forward
 		if(type == ORA_NUMBER && scale <= 0 && precision == 0) {
-			precision = 40; // Maximun oracle precision
+			precision = DEC128_MANT_DIG;
+			length = 8; // maximun oracle size
+			scale = scale < 0 ? 0 : scale;
 		}
 		EXEC SQL SET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
 			TYPE = :type,
 			LENGTH = :length,
+			SCALE = :scale,
 			PRECISION = :precision;
 		if(sqlca.sqlcode) {
 			driver_ora_cursor_close(dbconn);
@@ -231,6 +237,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 		:precision = PRECISION,
 		:scale = SCALE,
 		:nullable = NULLABLE,
+		:indicator = INDICATOR,
 		:name = NAME;
 	if(sqlca.sqlcode) {
 		state.state = DATABASE_ERROR;
@@ -243,19 +250,20 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 		return state;
 	}
 
-	data = malloc((size_t)octet_length);
-	if(data == NULL) {
-		state.state = NO_MEMORY;
-		return state;
-	}
+	if(indicator != -1) { // Not null
+		data = malloc((size_t)octet_length);
+		if(data == NULL) {
+			state.state = NO_MEMORY;
+			return state;
+		}
 
-	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :pos
-		:data = DATA,
-		:indicator = INDICATOR;
-	if(sqlca.sqlcode) {
-		free(data);
-		state.state = DATABASE_ERROR;
-		return state;
+		EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :pos
+			:data = DATA;
+		if(sqlca.sqlcode) {
+			free(data);
+			state.state = DATABASE_ERROR;
+			return state;
+		}
 	}
 
 	result->type = type;

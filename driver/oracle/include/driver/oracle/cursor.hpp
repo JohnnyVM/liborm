@@ -32,10 +32,10 @@ class Cursor : public PCursor {
 	Cursor(struct oracle_connection_data arg_data);
 	[[nodiscard]] conn_state close(void) override;
 	[[nodiscard]] conn_state fetch(void) override;
-	[[nodiscard]] unsigned nfields() override {return _nfields;};
-	[[nodiscard]] unsigned nrows() override {return _ntuples;};
-	[[nodiscard]] unsigned changes() override {return _changes;};
-	[[nodiscard]] bool is_open() override {return _is_open;}
+	[[nodiscard]] unsigned nfields(void) override {return _nfields;};
+	[[nodiscard]] unsigned nrows(void) override {return _ntuples;};
+	[[nodiscard]] unsigned changes(void) override {return _changes;};
+	[[nodiscard]] bool is_open(void) override {return _is_open;}
 	protected:
 	[[nodiscard]] conn_state open(void) override;
 	private:

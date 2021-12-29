@@ -21,6 +21,7 @@ driver::oracle::Connection::~Connection() {
 
 conn_state driver::oracle::Connection::close(void) {
 	struct connection_result state = driver_ora_close(&data);
+	assert(!state.state || !"Error at close connection");
 	return state.state;
 }
 
@@ -31,6 +32,7 @@ conn_state driver::oracle::Connection::begin(void) {
 
 conn_state driver::oracle::Connection::commit(void) {
 	struct connection_result state = driver_ora_commit(&data);
+	assert(!state.state || !"Error at commit");
 	return state.state;
 }
 
@@ -54,6 +56,7 @@ std::tuple<Cursor*, conn_state> driver::oracle::Connection::execute(const std::s
 	Cursor* cursor = new driver::oracle::Cursor(data);
 	state.state = cursor->open();
 	if(state.state) {
+		assert(!"Error at cursor open");
 		delete cursor;
 		return std::tuple<Cursor*, conn_state>(nullptr, state.state);
 	}

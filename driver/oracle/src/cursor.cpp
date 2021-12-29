@@ -1,5 +1,6 @@
 #include <vector>
 #include <stdexcept>
+#include <cassert>
 
 #include <stddef.h>
 
@@ -20,7 +21,7 @@ driver::oracle::Cursor::Cursor(struct oracle_connection_data arg_conn) :
 driver::oracle::Cursor::~Cursor() {
 	if(_is_open) {
 		conn_state err = this->close();
-		assert(!err || !"Atempt to close cursor failed");
+		assert(!err);
 	}
 }
 
@@ -33,6 +34,8 @@ conn_state driver::oracle::Cursor::open(void) {
 	state = driver_ora_cursor_open(&conn, _nfields);
 	if(!state.state) {
 		_is_open = true;
+	} else {
+		assert(!state.state || !"Atempt to open cursor failed");
 	}
 
 	return state.state;
@@ -46,6 +49,7 @@ conn_state driver::oracle::Cursor::open(void) {
 conn_state driver::oracle::Cursor::fetch(void) {
 	struct connection_result state = driver_ora_fetch(&conn, &_changes);
 	if(state.state) {
+		assert(!state.state || !"Invalid operation fetch over cursor");
 		return state.state;
 	}
 
@@ -53,7 +57,7 @@ conn_state driver::oracle::Cursor::fetch(void) {
 	_values.resize(osize + _nfields);
 	for(unsigned i = 0; i < _nfields; i++) {
 		struct ora_database_type *ptr = (struct ora_database_type *)malloc(sizeof *ptr);
-		state = driver_ora_get_descriptor_column(&conn, _nfields + 1, ptr);
+		state = driver_ora_get_descriptor_column(&conn, i + 1, ptr);
 		if(state.state) {
 			free(ptr);
 			_values.resize(osize);
@@ -73,6 +77,8 @@ conn_state driver::oracle::Cursor::close(void) {
 	struct connection_result state = driver_ora_cursor_close(&conn);
 	if(!state.state) {
 		_is_open = false;
+	} else {
+		assert(!state.state || !"Atempt to close cursor failed");
 	}
 	return state.state;
 }

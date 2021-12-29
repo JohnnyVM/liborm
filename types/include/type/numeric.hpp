@@ -3,10 +3,12 @@
 
 #include <cassert>
 #include <decimal/decimal>
-#include <limits>
 #include <string>
 #include <cstdint>
 #include <type_traits>
+
+#define __STDC_WANT_DEC_FP__
+#include <float.h>
 
 #include "type/engine.hpp"
 
@@ -17,12 +19,12 @@ class Numeric : virtual public TypeEngine { // Keep that separate for class slic
 	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
 		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale), _value(arg_value) {
-			assert(precision <= std::numeric_limits<std::decimal::decimal128>::digits10);
+			assert(precision <= DEC128_MANT_DIG);
 		}
 	Numeric(unsigned arg_precision, unsigned arg_scale) :
 		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale) {
-			assert(precision <= std::numeric_limits<std::decimal::decimal128>::digits10);
+			assert(precision <= DEC128_MANT_DIG);
 		}
 
 	const unsigned precision;
