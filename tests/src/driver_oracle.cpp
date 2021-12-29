@@ -21,7 +21,7 @@ TEST(driver_oracle, dual)
 	}
 
 	error = cursor->fetch();
-	CHECK_TEXT(!error, conn->error_message());
+	CHECK_TEXT(!error && cursor->changes() > 0, conn->error_message());
 
 	delete cursor;
 	delete engine;

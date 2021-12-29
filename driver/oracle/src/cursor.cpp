@@ -4,6 +4,10 @@
 
 #include <stddef.h>
 
+#define SQLCA_STORAGE_CLASS extern
+#define ORACA_STORAGE_CLASS extern
+#include <sqlca.h>
+
 #include "driver/oracle/cursor.hpp"
 #include "inner_driver_oracle.h"
 #include "driver/oracle/connection_data.h"
@@ -69,7 +73,7 @@ conn_state driver::oracle::Cursor::fetch(void) {
 		_values[osize + i].reset(value);
 		free_ora_database_type(ptr);
 	}
-	_ntuples++;
+	_ntuples += sqlca.sqlerrd[2];
 	return state.state;
 }
 
