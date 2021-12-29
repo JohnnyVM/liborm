@@ -304,10 +304,11 @@ driver_ora_fetch(struct oracle_connection_data* dbconn, unsigned* changes) {
 
 	EXEC SQL AT :database FETCH db_execute_cursor INTO DESCRIPTOR GLOBAL :output_descriptor;
 
+	state.state = SQL_ROWS;
 	if(sqlca.sqlcode) {
 		state.state = DATABASE_ERROR;
 		if(sqlca.sqlcode == ORA_NOT_FOUND) {
-			state.state = STMT_DONE;
+			state.state = SQL_DONE;
 			return state;
 		}
 	}

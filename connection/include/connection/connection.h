@@ -8,12 +8,10 @@
 #include "connection/cursor.hpp"
 #include "connection/connection.hpp"
 
-#else
+#endif
 
 #include "connection/cursor_c.h"
 #include "connection/connection_c.h"
-
-#endif
 
 #include "connection/state.h"
 

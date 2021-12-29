@@ -6,8 +6,7 @@ enum connection_state {
 	SQL_ROWS, /**< if ok, connection can be fetched, it doesnt mean some rows have to be returned */
 	SQL_MISUSE, /**< Bad use of the API, reopen a closed cursor, fetch closed cursors etc*/
 	DATABASE_ERROR, /**< DBAPI error */
-	NO_MEMORY, /**< allocation error */
-	STMT_DONE /**< no more queries */
+	NO_MEMORY
 };
 
 #define conn_state enum connection_state

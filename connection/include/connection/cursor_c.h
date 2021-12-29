@@ -3,7 +3,9 @@
 
 #include "connection/types.h"
 
+#ifndef __cplusplus
 typedef struct Cursor Cursor;
+#endif
 
 #ifdef __cplusplus
 extern "C" {
