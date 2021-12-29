@@ -10,19 +10,29 @@
 #include "connection.h"
 #include "driver/oracle/connection_data.h"
 
+/**
+ * \brief enable thread
+ * \warning this set a global variable that cant be free or accessed in any normal way
+ * Normally should be considered a memory leak but is a expected and defined behaviour https://docs.oracle.com/cd/A58617_01/server.804/a58233/adv.htm#421518
+ * at least for old version, i dont found new information about that
+ * for now we will ignore that but have to be treated carefully and memory usage reviewed 
+ * \return struct connection_result 
+ */
+ struct connection_result
+driver_ora_enable_threads(void) {
+	struct connection_result state = {0};
+	EXEC SQL ENABLE THREADS;
+	if(sqlca.sqlcode) {
+		assert(!"Enable threads error");
+		state.state = DATABASE_ERROR;
+		return state;
+	}
+	return state;
+};
+
 struct connection_result
 driver_ora_connect(struct oracle_connection_data* dbconn) {
 	struct connection_result state = {0};
-	static int enable_threads = 1; // Since c11 this is no longer safe
-
-	if(enable_threads) {
-		EXEC SQL ENABLE THREADS;
-		if(sqlca.sqlcode) {
-			state.state = DATABASE_ERROR;
-			return state;
-		}
-		enable_threads = 0;
-	}
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;

@@ -38,11 +38,11 @@ class Engine {
 extern "C" {
 #endif
 
-Engine* create_engine(const char* uri);
+__attribute__ ((warn_unused_result)) Engine* create_engine(const char* uri);
 
 void free_engine(Engine* engine);
 
-Connection* engine_connect(Engine* engine);
+__attribute__ ((warn_unused_result)) Connection* engine_connect(Engine* engine);
 
 #ifdef __cplusplus
 }

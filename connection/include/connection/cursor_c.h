@@ -9,13 +9,13 @@ typedef struct Cursor Cursor;
 extern "C" {
 #endif
 
-conn_state cursor_open(Cursor* c);
-conn_state cursor_close(Cursor* c);
+__attribute__ ((warn_unused_result)) conn_state cursor_open(Cursor* c);
+__attribute__ ((warn_unused_result)) conn_state cursor_close(Cursor* c);
 void free_cursor(Cursor* c);
 
-unsigned cursor_nfields(Cursor *c);
-unsigned cursor_ntuples(Cursor *c);
-unsigned cursor_changes(Cursor *c);
+__attribute__ ((warn_unused_result)) unsigned cursor_nfields(Cursor *c);
+__attribute__ ((warn_unused_result)) unsigned cursor_ntuples(Cursor *c);
+__attribute__ ((warn_unused_result)) unsigned cursor_changes(Cursor *c);
 
 #ifdef __cplusplus
 }

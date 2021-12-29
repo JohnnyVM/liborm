@@ -22,6 +22,7 @@ using _Decimal128 = std::decimal::decimal128;
 extern "C" {
 #endif
 
+struct connection_result driver_ora_enable_threads(void);
 struct connection_result driver_ora_connect(struct oracle_connection_data* conn);
 struct connection_result driver_ora_commit(struct oracle_connection_data* conn);
 struct connection_result driver_ora_close(struct oracle_connection_data* conn);
