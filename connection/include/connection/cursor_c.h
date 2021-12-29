@@ -13,6 +13,7 @@ extern "C" {
 
 __attribute__ ((warn_unused_result)) conn_state cursor_open(Cursor* c);
 __attribute__ ((warn_unused_result)) conn_state cursor_close(Cursor* c);
+__attribute__ ((warn_unused_result)) conn_state cursor_fetch(Cursor* c);
 void free_cursor(Cursor* c);
 
 __attribute__ ((warn_unused_result)) unsigned cursor_nfields(Cursor *c);

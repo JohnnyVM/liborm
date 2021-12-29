@@ -11,6 +11,10 @@ conn_state cursor_close(Cursor* c) {
 	return c->close();
 }
 
+conn_state cursor_fetch(Cursor* c) {
+	return c->fetch();
+}
+
 unsigned cursor_nrows(Cursor* c) {
 	return c->nrows();
 }
