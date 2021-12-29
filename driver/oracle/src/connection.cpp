@@ -2,10 +2,10 @@
 #include <system_error>
 #include <string>
 
-#include "engine.h"
+#include "engine/engine.h"
 #include "driver/oracle/cursor.hpp"
 #include "driver/oracle/connection.hpp"
-#include "connection.h"
+#include "connection/connection.h"
 #include "inner_driver_oracle.h"
 
 /** The desctructor close the connection

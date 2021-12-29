@@ -2,7 +2,7 @@
 #include <system_error>
 #include <mutex>
 
-#include "connection.h"
+#include "connection/connection.h"
 #include "driver/oracle/engine.hpp"
 #include "inner_driver_oracle.h"
 

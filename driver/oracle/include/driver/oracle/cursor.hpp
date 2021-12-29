@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "connection.h"
+#include "connection/connection.h"
 #include "driver/oracle/connection.hpp"
 #include "inner_driver_oracle.h"
 #include "connection_data.h"

@@ -1,8 +1,8 @@
 #ifndef LIBORM_DRIVER_POSTGRES_HPP
 #define LIBORM_DRIVER_POSTGRES_HPP
 
-#include "engine.h"
-#include "connection.h"
+#include "engine/engine.h"
+#include "connection/connection.h"
 
 #include <libpq-fe.h>
 

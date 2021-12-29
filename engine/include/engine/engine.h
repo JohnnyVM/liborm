@@ -1,7 +1,7 @@
 #ifndef LIBORM_ENGINE_ENGINE_H
 #define LIBORM_ENGINE_ENGINE_H
 
-#include "connection.h"
+#include "connection/connection.h"
 
 #ifndef __cplusplus
 

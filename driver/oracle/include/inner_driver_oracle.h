@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-#include "connection.h"
+#include "connection/connection.h"
 #include "driver/oracle/connection_data.h"
 #include "oracle_types.h"
 

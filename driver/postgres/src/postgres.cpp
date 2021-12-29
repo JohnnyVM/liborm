@@ -1,8 +1,8 @@
 #include <string>
 
 #include "driver/postgres.hpp"
-#include "engine.h"
-#include "connection.h"
+#include "engine/engine.h"
+#include "connection/connection.h"
 #include "driver/postgres.hpp"
 
 #include <libpq-fe.h>

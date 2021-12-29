@@ -1,8 +1,8 @@
 #include <string>
 
 #include "CppUTest/TestHarness.h"
-#include "connection.h"
-#include "engine.h"
+#include "connection/connection.h"
+#include "engine/engine.h"
 
 
 TEST_GROUP(driver_oracle){};

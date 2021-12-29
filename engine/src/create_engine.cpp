@@ -2,7 +2,7 @@
 #include <memory>
 #include <cassert>
 
-#include "engine.h"
+#include "engine/engine.h"
 
 // Lets keep all dirty work in one function
 #ifdef ORACLE

@@ -27,7 +27,7 @@ add_compile_definitions(ORACLE)
 endif()
 
 install(TARGETS engine DESTINATION lib)
-install(DIRECTORY include DESTINATION include)
+install(DIRECTORY engine DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)

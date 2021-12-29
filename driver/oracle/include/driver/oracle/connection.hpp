@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "connection.h"
+#include "connection/connection.h"
 #include "driver/oracle/connection_data.h"
 
 using PConnection = Connection;
