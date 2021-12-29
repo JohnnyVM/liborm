@@ -12,7 +12,7 @@ target_include_directories(connection PUBLIC
 	include)
 
 install(TARGETS connection DESTINATION lib)
-install(DIRECTORY connection DESTINATION include)
+install(DIRECTORY include/connection DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)
