@@ -10,11 +10,12 @@ extern "C" {
 struct connection_result connection_execute(Connection* conn, const char* stmt) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 	auto [cursor, err] = conn->execute((std::string)stmt);
-	if(err) {
+	if(err != SQL_DONE && err != SQL_ROWS) {
 		state.state = err;
 		return state;
 	}
 
+	state.state = err;
 	state.changes = conn->changes();
 	state.cursor = cursor->clone_c();
 	return state;
@@ -22,6 +23,14 @@ struct connection_result connection_execute(Connection* conn, const char* stmt) 
 
 void free_connection(Connection* conn) {
 	delete conn;
+}
+
+const char* connection_error_message(Connection* conn) {
+	return conn->error_message();
+}
+
+unsigned connection_changes(Connection* conn) {
+	return conn->changes();
 }
 
 }

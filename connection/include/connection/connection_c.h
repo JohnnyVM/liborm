@@ -11,6 +11,8 @@ extern "C" {
 
 __attribute__ ((warn_unused_result)) struct connection_result connection_execute_many(Connection* conn, const char* stmt, void*);
 __attribute__ ((warn_unused_result)) struct connection_result connection_execute(Connection* conn, const char* stmt);
+__attribute__ ((warn_unused_result)) const char* connection_error_message(Connection* conn);
+__attribute__ ((warn_unused_result)) unsigned connection_changes(Connection* conn);
 void free_connection(Connection* conn);
 
 #ifdef __cplusplus

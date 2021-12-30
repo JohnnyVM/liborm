@@ -22,13 +22,13 @@ std::shared_ptr<Engine> create_engine(const std::string& uri_arg) {
 
 	#ifdef ORACLE
 	if(driver == "oracle") {
-		return std::static_cast<Engine>(std::make_shared<driver::oracle::Engine>(uri));
+		return std::static_pointer_cast<Engine>(std::make_shared<driver::oracle::Engine>(uri));
 	}
 	#endif
 
 	#ifdef POSTGRES
 	if(driver == "postgres") {
-		return std::static_cast<Engine>(std::make_shared<driver::postgres::Engine>(uri));
+		return std::static_pointer_cast<Engine>(std::make_shared<driver::postgres::Engine>(uri));
 	}
 	#endif
 

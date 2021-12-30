@@ -3,6 +3,7 @@
 #include <mutex>
 #include <memory>
 
+#include "engine/engine.h"
 #include "connection/connection.h"
 #include "driver/oracle/engine.hpp"
 #include "inner_driver_oracle.h"
@@ -49,7 +50,7 @@ struct oracle_connection_data driver::oracle::Engine::params_to_conn() {
 }
 #undef CHECK_OUTPUT
 
-std::shared_ptr<Connection> driver::oracle::Engine::connect() {
+std::shared_ptr<PConnection> driver::oracle::Engine::connect() {
 	struct oracle_connection_data conn = params_to_conn();
 
 	std::call_once(enable_threads, driver_ora_enable_threads);
@@ -61,9 +62,9 @@ std::shared_ptr<Connection> driver::oracle::Engine::connect() {
 	return std::static_pointer_cast<Connection>(std::make_shared<driver::oracle::Connection>(conn));
 }
 
-Engine* driver::oracle::Engine::clone_c(void) {
-	driver::oracle::Engine *engine = new driver::oracle::Engine(Engine.compose(params));
+PEngine* driver::oracle::Engine::clone_c(void) {
+	driver::oracle::Engine *engine = new driver::oracle::Engine(engine::RFC1738::compose(params));
 	*engine = *this;
-	return dynamic_cast<Engine*>(engine);
+	return dynamic_cast<PEngine*>(engine);
 }
 

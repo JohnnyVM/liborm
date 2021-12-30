@@ -51,12 +51,12 @@ const char* driver::oracle::Connection::error_message(void) {
 	return  driver_ora_short_error_message();
 }
 
-std::tuple<Cursor*, conn_state> driver::oracle::Connection::execute(const std::string& stmt) {
+std::tuple<std::shared_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt) {
 	_changes = 0;
 
 	struct connection_result state = driver_ora_execute_many(&data, stmt.c_str(), nullptr);
 	if(state.state != SQL_ROWS) {
-		return std::tuple<Cursor*, conn_state>(nullptr, state.state);
+		return std::tuple<std::shared_ptr<Cursor>, conn_state>(nullptr, state.state);
 	}
 
 	Cursor* cursor = new driver::oracle::Cursor(data);
@@ -64,11 +64,11 @@ std::tuple<Cursor*, conn_state> driver::oracle::Connection::execute(const std::s
 	if(state.state) {
 		assert(!"Error at cursor open");
 		delete cursor;
-		return std::tuple<Cursor*, conn_state>(nullptr, state.state);
+		return std::tuple<std::shared_ptr<Cursor>, conn_state>(nullptr, state.state);
 	}
 
 	state.state = SQL_ROWS;
 	cursor->_changes = _changes = state.changes;
-	return std::tuple<Cursor*, conn_state>(cursor, state.state);
+	return std::tuple<std::shared_ptr<Cursor>, conn_state>(cursor, state.state);
 }
 

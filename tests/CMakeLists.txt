@@ -9,7 +9,9 @@ else()
 endif()
 
 if(ORACLE)
-	set(OPTIONAL_SOURCES ${OPTIONAL_SOURCES} src/driver_oracle.cpp)
+	set(OPTIONAL_SOURCES ${OPTIONAL_SOURCES} 
+		src/driver_oracle.cpp
+		src/driver_oracle_c.c)
 endif()
 
 if(POSTGRES)
