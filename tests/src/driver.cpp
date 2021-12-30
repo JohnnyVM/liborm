@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "engine/engine.h"
 #include "connection/connection.h"
 #include "connection/state.h"
@@ -9,14 +11,12 @@ TEST_GROUP(driver){};
 static void connection_battery_test(const char* uri) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 
-	Engine* engine = create_engine(uri);
-	Connection* conn = engine->connect();
+	std::shared_ptr<Engine>engine = create_engine(uri);
+	std::shared_ptr<Connection>conn = engine->connect();
 	// If we arrived here no exception launched
 	if(state.state) {
 		FAIL("Connection error");
 	}
-	delete engine;
-	delete conn;
 }
 
 TEST(driver, connection)

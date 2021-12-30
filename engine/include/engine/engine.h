@@ -26,11 +26,14 @@ class Engine {
 	Engine(const std::string& uri) : Engine(engine::RFC1738{uri}) {}
 	Engine(const engine::RFC1738& uri) : params(uri) {}
 
+	[[nodiscard]] virtual Engine* clone_c() = 0;
 	[[nodiscard]] virtual std::shared_ptr<Connection> connect() = 0; /**< returna open connection to the dbapi */
 
 	protected:
 	engine::RFC1738 params;
 };
+
+[[nodiscard]] std::shared_ptr<Engine> create_engine(const std::string& uri);
 
 #endif
 
@@ -38,11 +41,11 @@ class Engine {
 extern "C" {
 #endif
 
-__attribute__ ((warn_unused_result)) Engine* create_engine(const char* uri);
+__attribute__((warn_unused_result)) Engine* create_engine_p(const char* uri);
 
 void free_engine(Engine* engine);
 
-__attribute__ ((warn_unused_result)) Connection* engine_connect(Engine* engine);
+__attribute__((warn_unused_result)) Connection* engine_connect(Engine* engine);
 
 #ifdef __cplusplus
 }

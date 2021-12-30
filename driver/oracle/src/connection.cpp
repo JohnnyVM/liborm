@@ -22,7 +22,7 @@ driver::oracle::Connection::~Connection() {
 Connection* driver::oracle::Connection::clone_c(void) {
 	driver::oracle::Connection *conn = new driver::oracle::Connection(data);
 	*conn = *this;
-	return dynamic_cast<Connection*>(*conn);
+	return dynamic_cast<Connection*>(conn);
 }
 
 conn_state driver::oracle::Connection::close(void) {

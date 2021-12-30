@@ -13,11 +13,8 @@
 #include "driver/postgres/engine.hpp"
 #endif
 
-extern "C" {
-
-Engine* create_engine(const char* uri_arg) {
+std::shared_ptr<Engine> create_engine(const std::string& uri_arg) {
 	engine::RFC1738 uri{uri_arg};
-	Engine* engine = nullptr;
 	std::string driver = uri.driver;
 	if(uri.driver.empty()) {
 		driver = uri.dialect;
@@ -25,21 +22,27 @@ Engine* create_engine(const char* uri_arg) {
 
 	#ifdef ORACLE
 	if(driver == "oracle") {
-		engine = new driver::oracle::Engine(uri);
-		return engine;
+		return std::static_cast<Engine>(std::make_shared<driver::oracle::Engine>(uri));
 	}
 	#endif
 
 	#ifdef POSTGRES
 	if(driver == "postgres") {
-		engine = new driver::postgres::Engine(uri);
-		return engine;
+		return std::static_cast<Engine>(std::make_shared<driver::postgres::Engine>(uri));
 	}
 	#endif
 
 	assert(!"Driver not known");
 
-	return engine;
+	return nullptr;
+}
+
+extern "C" {
+
+Engine* create_engine_p(const char* uri){
+	std::shared_ptr<Engine> engine = create_engine((std::string)uri);
+
+	return engine->clone_c();
 }
 
 }

@@ -7,7 +7,7 @@
 static void connection_battery_test(const char* uri) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 
-	Engine* engine = create_engine(uri);
+	Engine* engine = create_engine_p(uri);
 	Connection* conn = engine_connect(engine);
 	// If we arrived here no exception launched
 	if(state.state) {

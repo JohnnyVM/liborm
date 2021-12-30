@@ -61,3 +61,9 @@ std::shared_ptr<Connection> driver::oracle::Engine::connect() {
 	return std::static_pointer_cast<Connection>(std::make_shared<driver::oracle::Connection>(conn));
 }
 
+Engine* driver::oracle::Engine::clone_c(void) {
+	driver::oracle::Engine *engine = new driver::oracle::Engine(Engine.compose(params));
+	*engine = *this;
+	return dynamic_cast<Engine*>(engine);
+}
+
