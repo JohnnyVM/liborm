@@ -24,7 +24,6 @@ engine::RFC1738 RFC1738::parse(std::string uri) {
 		driver_pos = splitter;
 	}
 	out.dialect = uri.substr(0, driver_pos);
-	out.driver = out.dialect;
 	if(driver_pos != splitter) {
 		out.driver = uri.substr(driver_pos+1, splitter - driver_pos - 1);
 	}
@@ -58,6 +57,32 @@ engine::RFC1738 RFC1738::parse(std::string uri) {
 
 	out.host = uri;
 
+	return out;
+}
+
+std::string RFC1738::compose(const engine::RFC1738& arg) {
+	std::string out;
+	out += arg.dialect;
+	if(not arg.driver.empty()) {
+		out += (std::string)"+" + arg.driver;
+	}
+	out += (std::string)"://";
+	if(not arg.user.empty()) {
+		out += arg.user;
+	}
+	if(not arg.password.empty()) {
+		out += (std::string)"+" + arg.password;
+	}
+	if(not arg.password.empty() or not arg.user.empty()) {
+		out += (std::string)"@";
+	}
+	if(not arg.host.empty()) {
+		out += arg.host;
+	}
+	if(arg.port) {
+		out += std::to_string(arg.port);
+	}
+	out += (std::string)"/" + arg.resource;
 	return out;
 }
 

@@ -2,6 +2,7 @@
 #define LIBORM_CONNECTION_CONNECTION_HPP
 
 #include <tuple>
+#include <memory>
 
 #include "connection/types.h"
 
@@ -12,13 +13,15 @@ class Cursor;
  */
 class Connection {
 	public:
-	virtual ~Connection() {};
-	void operator=(const Connection&) = delete;
-	virtual conn_state close() = 0;
+	virtual ~Connection() = default;
+	Connection(const Connection&) = delete;
+	Connection& operator=(const Connection&) = delete;
+	[[nodiscard]] virtual Connection* clone_c() = 0; /**< warning: clone a engine have a lot of side effects, try not have 2 copy of the same object at the same time */
+	[[nodiscard]] virtual conn_state close() = 0;
 	[[nodiscard]] virtual conn_state begin() = 0;
 	[[nodiscard]] virtual conn_state commit() = 0;
 	[[nodiscard]] virtual conn_state rollback() = 0;
-	[[nodiscard]] virtual std::tuple<Cursor*, conn_state> execute(const std::string& stmt) = 0;
+	[[nodiscard]] virtual std::tuple<std::shared_ptr<Cursor>, conn_state> execute(const std::string& stmt) = 0;
 
 	[[nodiscard]] virtual bool is_open() = 0; /**< the connection is open */
 	[[nodiscard]] virtual unsigned changes() = 0; /**< list of rows modified by the last statement */

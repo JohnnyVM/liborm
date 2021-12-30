@@ -18,16 +18,20 @@ extern "C" {
 Engine* create_engine(const char* uri_arg) {
 	engine::RFC1738 uri{uri_arg};
 	Engine* engine = nullptr;
+	std::string driver = uri.driver;
+	if(uri.driver.empty()) {
+		driver = uri.dialect;
+	}
 
 	#ifdef ORACLE
-	if(uri.driver == "oracle") {
+	if(driver == "oracle") {
 		engine = new driver::oracle::Engine(uri);
 		return engine;
 	}
 	#endif
 
 	#ifdef POSTGRES
-	if(uri.driver == "postgres") {
+	if(driver == "postgres") {
 		engine = new driver::postgres::Engine(uri);
 		return engine;
 	}

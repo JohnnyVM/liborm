@@ -8,8 +8,10 @@
  * */
 class Cursor {
 	public:
-	virtual ~Cursor() {}
-	void operator=(const Cursor&) = delete;
+	virtual ~Cursor() = default;
+	Cursor& operator=(const Cursor&) = delete;
+	Cursor(const Cursor&) = delete;
+	[[nodiscard]] virtual Cursor* clone_c(void) = 0;
 	[[nodiscard]] virtual conn_state fetch(void) = 0; /**< fetch the default quantity determined by the driver */
 	[[nodiscard]] virtual unsigned nfields(void) = 0;
 	[[nodiscard]] virtual unsigned nrows(void) = 0;

@@ -19,6 +19,12 @@ driver::oracle::Connection::~Connection() {
 	}
 }
 
+Connection* driver::oracle::Connection::clone_c(void) {
+	driver::oracle::Connection *conn = new driver::oracle::Connection(data);
+	*conn = *this;
+	return dynamic_cast<Connection*>(*conn);
+}
+
 conn_state driver::oracle::Connection::close(void) {
 	struct connection_result state = driver_ora_close(&data);
 	assert(!state.state || !"Error at close connection");
@@ -52,7 +58,7 @@ std::tuple<Cursor*, conn_state> driver::oracle::Connection::execute(const std::s
 	if(state.state != SQL_ROWS) {
 		return std::tuple<Cursor*, conn_state>(nullptr, state.state);
 	}
-		
+
 	Cursor* cursor = new driver::oracle::Cursor(data);
 	state.state = cursor->open();
 	if(state.state) {

@@ -18,15 +18,15 @@ class Connection;
 
 class Engine {
 	public:
-	Engine(const Engine&) = delete;
-	void operator=(const Engine&) = delete;
-	virtual ~Engine() {}
+	Engine(const Engine&) = delete; // avoid object slicing
+	Engine& operator=(const Engine&) = delete;
+	virtual ~Engine() = default;
 	Engine(const char* uri) : Engine((std::string)uri) {}
 	// teorically it should pass a class Dialect (see the documentation)
 	Engine(const std::string& uri) : Engine(engine::RFC1738{uri}) {}
 	Engine(const engine::RFC1738& uri) : params(uri) {}
 
-	[[nodiscard]] virtual Connection* connect() = 0; /**< returna open connection to the dbapi */
+	[[nodiscard]] virtual std::shared_ptr<Connection> connect() = 0; /**< returna open connection to the dbapi */
 
 	protected:
 	engine::RFC1738 params;

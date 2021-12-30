@@ -2,6 +2,7 @@
 #define LIBORM_DRIVER_ORACLE_ENGINE_H
 
 #include <string>
+#include <memory>
 
 #include "engine/engine.h"
 #include "driver/oracle/connection.hpp"
@@ -15,10 +16,11 @@ namespace driver::oracle {
  * */
 class Engine : public PEngine {
 	public:
-	~Engine() {}
+	~Engine() override {}
 	Engine(const std::string& uri) : PEngine(uri) {}
 	Engine(const engine::RFC1738& uri) : PEngine(uri) {}
-	[[nodiscard]] Connection* connect() override; /**< returna open connection to the dbapi */
+	[[nodiscard]] std::shared_ptr<Connection> connect(void) override; /**< returna open connection to the dbapi */
+
 	private:
 	struct oracle_connection_data params_to_conn();
 };
