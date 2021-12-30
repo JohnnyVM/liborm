@@ -1,5 +1,18 @@
+#include <string>
+#include <memory>
+#include <cassert>
+
 #include "engine/engine.h"
 #include "connection/connection.h"
+
+// Lets keep all dirty work in one function
+#ifdef ORACLE
+#include "driver/oracle/engine.hpp"
+#endif
+
+#ifdef POSTGRES
+#include "driver/postgres/engine.hpp"
+#endif
 
 extern "C" {
 
@@ -11,7 +24,9 @@ void free_engine(Engine* engine) {
 }
 
 Connection* engine_connect(Engine* engine) {
-	return engine->connect();
+	std::shared_ptr<Connection>conn = engine->connect();
+
+	return conn->clone_c();
 }
 
 }

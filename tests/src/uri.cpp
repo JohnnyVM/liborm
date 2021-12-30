@@ -52,7 +52,7 @@ TEST(uri, crf1738_test_1)
 	engine::RFC1738 uri_p(uri);
 
 	CHECK_EQUAL((std::string)"dialect", uri_p.dialect);
-	CHECK_EQUAL((std::string)"dialect", uri_p.driver);
+	CHECK(uri_p.driver.empty());
 	CHECK_EQUAL((std::string)"host.com", uri_p.host);
 	CHECK_EQUAL(1234, uri_p.port);
 	CHECK_EQUAL((std::string)"service", uri_p.resource);
@@ -64,7 +64,7 @@ TEST(uri, crf1738_test_2)
 	engine::RFC1738 uri_p(uri);
 
 	CHECK_EQUAL((std::string)"dialect", uri_p.dialect);
-	CHECK_EQUAL((std::string)"dialect", uri_p.driver);
+	CHECK(uri_p.driver.empty());
 	CHECK_EQUAL(0, uri_p.port);
 	CHECK_EQUAL((std::string)"service", uri_p.resource);
 }
