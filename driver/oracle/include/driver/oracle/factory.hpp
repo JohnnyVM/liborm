@@ -22,7 +22,7 @@ class TypeFactory : virtual public orm::TypeFactory {
 	public:
 	TypeFactory(struct ora_database_type *arg_data) : data(private_copy_data(arg_data)) {}
 	const std::type_info& coerced_type() override;
-	orm::type::Numeric* Numeric() override;
+	std::unique_ptr<TypeEngine> Numeric() override;
 	~TypeFactory() = default;
 	private:
 	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> data;

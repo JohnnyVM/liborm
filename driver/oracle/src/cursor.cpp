@@ -70,18 +70,16 @@ conn_state driver::oracle::Cursor::fetch(void) {
 	size_t osize = _values.size();
 	_values.resize(osize + _nfields);
 	for(unsigned i = 0; i < _nfields; i++) {
-		struct ora_database_type *ptr = (struct ora_database_type *)malloc(sizeof *ptr);
-		state = driver_ora_get_descriptor_column(&conn, i + 1, ptr);
+		struct ora_database_type ptr;
+		state = driver_ora_get_descriptor_column(&conn, i + 1, &ptr);
 		if(state.state) {
-			free(ptr);
 			_values.resize(osize);
 			return state.state;
 		}
 		
-		driver::oracle::TypeFactory factory{ptr};
-		TypeEngine* value = factory.factory();
-		_values[osize + i].reset(value);
-		free_ora_database_type(ptr);
+		driver::oracle::TypeFactory factory{&ptr};
+		_values[osize + i] = factory.factory();
+		if(ptr.indicator != -1) { free(ptr.data); }
 	}
 	_ntuples += sqlca.sqlerrd[2];
 	_changes += sqlca.sqlerrd[2];

@@ -1,8 +1,5 @@
-#ifndef LIBORM_MAPPER_COLUMN_INTEGER_HPP
-#define LIBORM_MAPPER_COLUMN_INTEGER_HPP
-
-#include <string>
-#include <cstdint>
+#ifndef LIBORM_TYPE_INTEGER_HPP
+#define LIBORM_TYPE_INTEGER_HPP
 
 #include "type/engine.hpp"
 

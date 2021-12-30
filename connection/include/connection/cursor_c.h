@@ -17,7 +17,7 @@ __attribute__ ((warn_unused_result)) conn_state cursor_fetch(Cursor* c);
 void free_cursor(Cursor* c);
 
 __attribute__ ((warn_unused_result)) unsigned cursor_nfields(Cursor *c);
-__attribute__ ((warn_unused_result)) unsigned cursor_ntuples(Cursor *c);
+__attribute__ ((warn_unused_result)) unsigned cursor_nrows(Cursor *c);
 __attribute__ ((warn_unused_result)) unsigned cursor_changes(Cursor *c);
 
 #ifdef __cplusplus

@@ -22,6 +22,6 @@ TEST(driver_oracle, select_number_16)
 	}
 
 	error = cursor->fetch();
-	CHECK_TEXT(!error && cursor->changes() > 0, conn->error_message());
+	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 }
 

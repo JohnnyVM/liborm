@@ -5,11 +5,9 @@
 #include <cassert>
 #include <stdexcept>
 #include <string>
+#include <memory>
 
-#include "type/string.hpp"
-#include "type/numeric.hpp"
-#include "type/integer.hpp"
-#include "type/engine.hpp"
+#include "type/types.hpp"
 
 namespace orm {
 
@@ -21,15 +19,15 @@ namespace orm {
 class TypeFactory {
 	public:
 	virtual ~TypeFactory() {};
-	virtual TypeEngine* String() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual TypeEngine* Integer() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual TypeEngine* Numeric() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual TypeEngine* Date() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual TypeEngine* DateTime() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual TypeEngine* Boolean() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual TypeEngine* Float() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> String() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> Integer() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> Numeric() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> Date() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> DateTime() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> Boolean() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<TypeEngine> Float() { assert(!"Type not supported by driver"); return nullptr; }
 	virtual const std::type_info& coerced_type() = 0; /**< return the expected type */
-	TypeEngine* factory(const std::type_info& type) {
+	std::unique_ptr<TypeEngine> factory(const std::type_info& type) {
 		if(type == typeid(orm::type::String)) { // UGH...
 			return String();
 		}
@@ -39,10 +37,22 @@ class TypeFactory {
 		if(type == typeid(orm::type::Numeric)) {
 			return Numeric();
 		}
+		if(type == typeid(orm::type::Date)) {
+			return Numeric();
+		}
+		if(type == typeid(orm::type::Datetime)) {
+			return Numeric();
+		}
+		if(type == typeid(orm::type::Boolean)) {
+			return Numeric();
+		}
+		if(type == typeid(orm::type::Float)) {
+			return Numeric();
+		}
 		assert(!"Type not supported");
 		return nullptr;
 	}
-	TypeEngine* factory() {
+	std::unique_ptr<TypeEngine> factory() {
 		return factory(coerced_type());
 	}
 };

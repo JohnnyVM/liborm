@@ -14,7 +14,7 @@
 
 namespace orm::type {
 
-class Numeric : virtual public TypeEngine { // Keep that separate for class slicing
+class Numeric : virtual public TypeEngine {
 	public:
 	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
 		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),

@@ -17,7 +17,7 @@ TEST_C(driver_oracle_c, select_number_16_c)
 	}
 
 	error = cursor_fetch(res.cursor);
-	CHECK_C_TEXT(!error && cursor_changes(res.cursor) > 0, connection_error_message(conn));
+	CHECK_C_TEXT(!error && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
 
 	free_engine(engine);
 	free_connection(conn);
