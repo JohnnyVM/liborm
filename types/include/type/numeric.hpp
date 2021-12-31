@@ -44,6 +44,8 @@ class Numeric : virtual public orm::TypeEngine {
 	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
 	inline explicit operator T() const { return (T)std::decimal::decimal_to_long_long(_value); }
 
+	inline friend bool operator==(const Numeric& lhs, const Numeric& rhs) {return lhs._value == rhs._value;}
+
 	template<typename U, std::enable_if_t<std::is_integral<U>::value, bool> = true>
 	inline friend bool operator==(const Numeric& lhs, const U& rhs) {return lhs._value == std::decimal::decimal128(rhs);}
 	// todo float point have to be equal until the precision

@@ -12,5 +12,6 @@ TEST(numeric, cast_and_equal)
     // cast to int
     CHECK(12 != numeric);
     CHECK(numeric != 12);
+    CHECK(numeric == numeric);
     //CHECK(numeric == 12.546); // not allowed
 }
