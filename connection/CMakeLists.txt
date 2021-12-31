@@ -11,6 +11,8 @@ add_library(connection STATIC
 target_include_directories(connection PUBLIC
 	include)
 
+	target_link_libraries(connection types)
+
 install(TARGETS connection DESTINATION lib)
 install(DIRECTORY include/connection DESTINATION include)
 install(DIRECTORY

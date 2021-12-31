@@ -27,17 +27,19 @@ class Cursor final : public PCursor {
 	~Cursor();
 	Cursor(struct oracle_connection_data arg_data);
 	Cursor& operator=(const Cursor& arg);
-	[[nodiscard]] conn_state close(void) override final;
-	[[nodiscard]] conn_state fetch(void) override final;
-	[[nodiscard]] unsigned nfields(void) override final {return _nfields;};
-	[[nodiscard]] unsigned nrows(void) override final {return _ntuples;};
-	[[nodiscard]] unsigned changes(void) override final {return _changes;};
-	[[nodiscard]] bool is_open(void) override final {return _is_open;}
-	[[nodiscard]] PCursor* clone_c(void) override final;
+	[[nodiscard]] conn_state close(void) override;
+	[[nodiscard]] conn_state fetch(void) override;
+	[[nodiscard]] unsigned nfields(void) override {return _nfields;};
+	[[nodiscard]] unsigned nrows(void) override {return _ntuples;};
+	[[nodiscard]] unsigned changes(void) override {return _changes;};
+	[[nodiscard]] bool is_open(void) override {return _is_open;}
+	[[nodiscard]] std::shared_ptr<orm::TypeEngine> _getValue(unsigned row, unsigned column);
+	[[nodiscard]] PCursor* clone_c(void) override;
 	protected:
-	[[nodiscard]] conn_state open(void) override final;
+	[[nodiscard]] conn_state open(void) override;
 	private:
-	std::vector<std::unique_ptr<TypeEngine> > _values;
+	std::vector<std::shared_ptr<orm::TypeEngine>> _values;
+	std::vector<std::string> names;
 	struct oracle_connection_data conn;
 	unsigned _nfields;
 	unsigned _ntuples;

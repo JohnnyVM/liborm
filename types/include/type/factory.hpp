@@ -19,15 +19,15 @@ namespace orm {
 class TypeFactory {
 	public:
 	virtual ~TypeFactory() {};
-	virtual std::unique_ptr<TypeEngine> String() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<TypeEngine> Integer() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<TypeEngine> Numeric() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<TypeEngine> Date() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<TypeEngine> DateTime() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<TypeEngine> Boolean() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<TypeEngine> Float() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> String() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> Integer() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> Numeric() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> Date() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> DateTime() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> Boolean() { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::shared_ptr<orm::TypeEngine> Float() { assert(!"Type not supported by driver"); return nullptr; }
 	virtual const std::type_info& coerced_type() = 0; /**< return the expected type */
-	std::unique_ptr<TypeEngine> factory(const std::type_info& type) {
+	std::shared_ptr<orm::TypeEngine> factory(const std::type_info& type) {
 		if(type == typeid(orm::type::String)) { // UGH...
 			return String();
 		}
@@ -52,7 +52,7 @@ class TypeFactory {
 		assert(!"Type not supported");
 		return nullptr;
 	}
-	std::unique_ptr<TypeEngine> factory() {
+	std::shared_ptr<orm::TypeEngine> factory() {
 		return factory(coerced_type());
 	}
 };

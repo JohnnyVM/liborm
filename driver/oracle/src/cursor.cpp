@@ -19,7 +19,7 @@ driver::oracle::Cursor::Cursor(struct oracle_connection_data arg_conn) :
 	conn(arg_conn), _nfields(0U), _ntuples(0U), _changes(0), _is_open(false) {}
 
 driver::oracle::Cursor& driver::oracle::Cursor::operator=(const driver::oracle::Cursor& arg) {
-	//std::vector<std::unique_ptr<TypeEngine> > _values;
+	//std::vector<std::shared_ptr<TypeEngine> > _values;
 	conn = arg.conn;
 	_nfields = arg._nfields;
 	_ntuples = arg._ntuples;
@@ -102,3 +102,7 @@ PCursor* driver::oracle::Cursor::clone_c() {
 	return dynamic_cast<PCursor*>(c);
 }
 
+std::shared_ptr<orm::TypeEngine> driver::oracle::Cursor::_getValue(unsigned row, unsigned column) {
+	std::shared_ptr<orm::TypeEngine>value = _values[row * nfields() + column];
+	return value;
+}

@@ -7,9 +7,9 @@
 
 namespace orm::type {
 
-class Date : public TypeEngine {
+class Date : public orm::TypeEngine {
 	public:
-	Date() : TypeEngine("date", sizeof(struct tm)) {}
+	Date() : orm::TypeEngine("date", sizeof(struct tm)) {}
 };
 
 }

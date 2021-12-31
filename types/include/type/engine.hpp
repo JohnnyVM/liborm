@@ -5,6 +5,8 @@
 #include <string>
 #include <stdexcept>
 
+namespace orm {
+
 class TypeEngine { // Keep that separate for class slicing
 	public:
 	const size_t length;
@@ -16,5 +18,7 @@ class TypeEngine { // Keep that separate for class slicing
 	 * bind_processor() Return a conversion function for processing bind values.
 	 */
 };
+
+}
 
 #endif

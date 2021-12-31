@@ -7,9 +7,9 @@
 
 namespace orm::type {
 
-class Datetime : public TypeEngine {
+class Datetime : public orm::TypeEngine {
 	public:
-	Datetime() : TypeEngine("datetime", 0) {} // TODO
+	Datetime() : orm::TypeEngine("datetime", 0) {} // TODO
 };
 
 }

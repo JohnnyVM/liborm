@@ -5,7 +5,8 @@ project(types VERSION 0.1 DESCRIPTION "liborm types library")
 configure_file(version.h.in include/types/version.h)
 
 add_library(types STATIC
-	src/factory.cpp)
+	src/factory.cpp
+	src/types.cpp)
 
 target_include_directories(types PUBLIC
 	include

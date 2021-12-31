@@ -9,10 +9,10 @@
 namespace orm::type {
 
 // https://docs.sqlalchemy.org/en/14/core/type_basics.html
-class String : public TypeEngine { // Keep that separate for class slicing
+class String : public orm::TypeEngine { // Keep that separate for class slicing
 	public:
 	String(size_t arg_length) :
-		TypeEngine(init_name(minimun_is_1(arg_length)), minimun_is_1(arg_length)) {}
+		orm::TypeEngine(init_name(minimun_is_1(arg_length)), minimun_is_1(arg_length)) {}
 
 	private:
 	static std::string init_name(size_t length) {

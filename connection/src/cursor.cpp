@@ -1,5 +1,12 @@
+#include <cassert>
+
 #include "connection/cursor.hpp"
 #include "connection/state.h"
+
+std::shared_ptr<orm::TypeEngine> Cursor::getValue(unsigned row, unsigned column) {
+	assert(row < nrows() and column < nfields()); // out of index
+	return _getValue(row, column);
+}
 
 extern "C" {
 

@@ -32,6 +32,6 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() {
 	}
 }
 
-std::unique_ptr<TypeEngine> driver::oracle::TypeFactory::Numeric() {
-	return std::make_unique<orm::type::Numeric>(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
+std::shared_ptr<orm::TypeEngine> driver::oracle::TypeFactory::Numeric() {
+	return std::make_shared<orm::type::Numeric>(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
 }

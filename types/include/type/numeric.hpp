@@ -14,15 +14,15 @@
 
 namespace orm::type {
 
-class Numeric : virtual public TypeEngine {
+class Numeric : virtual public orm::TypeEngine {
 	public:
 	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
-		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
+		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale), _value(arg_value) {
 			assert(precision <= DEC128_MANT_DIG);
 		}
 	Numeric(unsigned arg_precision, unsigned arg_scale) :
-		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
+		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale) {
 			assert(precision <= DEC128_MANT_DIG);
 		}
