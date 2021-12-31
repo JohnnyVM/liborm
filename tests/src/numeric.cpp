@@ -10,6 +10,7 @@ TEST(numeric, cast_and_equal)
 {
     orm::type::Numeric numeric{10, 10, 12.546};
     // cast to int
-    CHECK(12 == numeric);
-    CHECK(numeric == 12);
+    CHECK(12 != numeric);
+    CHECK(numeric != 12);
+    //CHECK(numeric == 12.546); // not allowed
 }

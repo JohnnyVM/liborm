@@ -45,13 +45,14 @@ class Numeric : virtual public orm::TypeEngine {
 	inline explicit operator T() const { return (T)std::decimal::decimal_to_long_long(_value); }
 
 	template<typename U, std::enable_if_t<std::is_integral<U>::value, bool> = true>
-	inline friend bool operator==(const Numeric& lhs, const U& rhs) { U cast = (U)lhs; return cast == rhs; }
-
+	inline friend bool operator==(const Numeric& lhs, const U& rhs) {return lhs._value == std::decimal::decimal128(rhs);}
+	// todo float point have to be equal until the precision
 	template<typename X>
 	inline friend bool operator==(const X& lhs, const Numeric& rhs) { return rhs == lhs; }
-
 	template<typename V>
 	inline friend bool operator!=(const Numeric& lhs, const V& rhs) { return !(lhs == rhs); } // remove in C++20
+	template<typename Y>
+	inline friend bool operator!=(const Y& lhs, const Numeric& rhs) { return !(rhs == lhs); } // remove in C++20
 	/** \todo ... */
 
 	private:
