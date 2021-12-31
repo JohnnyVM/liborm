@@ -5,7 +5,7 @@
 
 namespace orm::type {
 
-class Boolean : public orm::TypeEngine {
+class Boolean : public virtual orm::TypeEngine {
 	public:
 	Boolean() : orm::TypeEngine("boolean", sizeof(bool)) {}
 };

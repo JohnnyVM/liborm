@@ -23,10 +23,10 @@ class Cursor {
 	[[nodiscard]] virtual conn_state open(void) = 0;
 	[[nodiscard]] virtual conn_state close(void) = 0;
 	//[[nodiscard]] virtual std::string name(unsigned n) = 0; /**< return the name of the column at n position*/
-	[[nodiscard]] std::shared_ptr<orm::TypeEngine> getValue(unsigned row, unsigned column);
+	[[nodiscard]] orm::TypeEngine* getValue(unsigned row, unsigned column);
 	//[[nodiscard]] virtual conn_state getValue(void) = 0;
 	protected:
-	[[nodiscard]] virtual std::shared_ptr<orm::TypeEngine> _getValue(unsigned row, unsigned column) = 0;
+	[[nodiscard]] virtual orm::TypeEngine* _getValue (unsigned row, unsigned column) = 0;
 };
 
 #endif

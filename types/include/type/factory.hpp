@@ -19,15 +19,15 @@ namespace orm {
 class TypeFactory {
 	public:
 	virtual ~TypeFactory() {};
-	virtual std::shared_ptr<orm::TypeEngine> String() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::shared_ptr<orm::TypeEngine> Integer() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::shared_ptr<orm::TypeEngine> Numeric() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::shared_ptr<orm::TypeEngine> Date() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::shared_ptr<orm::TypeEngine> DateTime() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::shared_ptr<orm::TypeEngine> Boolean() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::shared_ptr<orm::TypeEngine> Float() { assert(!"Type not supported by driver"); return nullptr; }
-	virtual const std::type_info& coerced_type() = 0; /**< return the expected type */
-	std::shared_ptr<orm::TypeEngine> factory(const std::type_info& type) {
+	virtual std::unique_ptr<orm::type::String> String() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::Integer> Integer() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::Numeric> Numeric() const = 0;
+	virtual std::unique_ptr<orm::type::Date> Date() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::DateTime> DateTime() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::Boolean> Boolean() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::Float> Float() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual const std::type_info& coerced_type() const = 0; /**< return the expected type */
+	std::unique_ptr<orm::TypeEngine> factory(const std::type_info& type) const {
 		if(type == typeid(orm::type::String)) { // UGH...
 			return String();
 		}
@@ -40,7 +40,7 @@ class TypeFactory {
 		if(type == typeid(orm::type::Date)) {
 			return Numeric();
 		}
-		if(type == typeid(orm::type::Datetime)) {
+		if(type == typeid(orm::type::DateTime)) {
 			return Numeric();
 		}
 		if(type == typeid(orm::type::Boolean)) {
@@ -52,7 +52,7 @@ class TypeFactory {
 		assert(!"Type not supported");
 		return nullptr;
 	}
-	std::shared_ptr<orm::TypeEngine> factory() {
+	std::unique_ptr<orm::TypeEngine> factory() const  {
 		return factory(coerced_type());
 	}
 };

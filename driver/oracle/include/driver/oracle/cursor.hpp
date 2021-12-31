@@ -33,7 +33,7 @@ class Cursor final : public PCursor {
 	[[nodiscard]] unsigned nrows(void) override {return _ntuples;};
 	[[nodiscard]] unsigned changes(void) override {return _changes;};
 	[[nodiscard]] bool is_open(void) override {return _is_open;}
-	[[nodiscard]] std::shared_ptr<orm::TypeEngine> _getValue(unsigned row, unsigned column);
+	[[nodiscard]] orm::TypeEngine* _getValue(unsigned row, unsigned column);
 	[[nodiscard]] PCursor* clone_c(void) override;
 	protected:
 	[[nodiscard]] conn_state open(void) override;

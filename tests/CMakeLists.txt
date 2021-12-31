@@ -22,11 +22,12 @@ add_executable(tests
 	src/uri.cpp
 	src/driver.cpp
 	src/driver_c.c
+	src/numeric.cpp
 	${OPTIONAL_SOURCES}
 	src/main.cpp)
 
 target_link_libraries(tests
-	PRIVATE orm engine ${CPPUTEST_LDFLAGS})
+	PRIVATE orm ${CPPUTEST_LDFLAGS})
 target_include_directories(tests PRIVATE ${CPPUTEST_INCLUDE_DIRS})
 target_link_directories(tests PRIVATE ${CPPUTEST_LIBRARIES})
 

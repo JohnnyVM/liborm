@@ -6,7 +6,7 @@
 #include "oracle_types.h"
 #include "inner_driver_oracle.h"
 
-const std::type_info& driver::oracle::TypeFactory::coerced_type() {
+const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 	switch(data.get()->type) {
 		case ORA_NUMBER:
 			return typeid(orm::type::Numeric);
@@ -32,6 +32,6 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() {
 	}
 }
 
-std::shared_ptr<orm::TypeEngine> driver::oracle::TypeFactory::Numeric() {
-	return std::make_shared<orm::type::Numeric>(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
+std::unique_ptr<orm::type::Numeric> driver::oracle::TypeFactory::Numeric() const {
+	return std::make_unique<orm::type::Numeric>(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
 }

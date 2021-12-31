@@ -102,7 +102,6 @@ PCursor* driver::oracle::Cursor::clone_c() {
 	return dynamic_cast<PCursor*>(c);
 }
 
-std::shared_ptr<orm::TypeEngine> driver::oracle::Cursor::_getValue(unsigned row, unsigned column) {
-	std::shared_ptr<orm::TypeEngine>value = _values[row * nfields() + column];
-	return value;
+orm::TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) {
+	return _values[row * nfields() + column].get();
 }

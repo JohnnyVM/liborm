@@ -18,15 +18,15 @@ typedef struct OracleTypeFactory OracleTypeFactory;
 
 namespace driver::oracle {
 
-class TypeFactory : virtual public orm::TypeFactory {
+class TypeFactory final : virtual public orm::TypeFactory {
 	public:
 	TypeFactory(struct ora_database_type *arg_data) : data(private_copy_data(arg_data)) {}
-	const std::type_info& coerced_type() override;
-	std::shared_ptr<orm::TypeEngine> Numeric() override;
+	const std::type_info& coerced_type() const  override;
+	std::unique_ptr<orm::type::Numeric> Numeric() const override;
 	~TypeFactory() = default;
 	private:
 	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> data;
-	static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> private_copy_data(struct ora_database_type* arg) noexcept {
+	inline static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> private_copy_data(struct ora_database_type* arg) noexcept {
 		std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> ptr(ora_database_type_clone(arg), &free_ora_database_type);
 		return ptr;
 	}

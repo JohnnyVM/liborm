@@ -23,5 +23,10 @@ TEST(driver_oracle, select_number_16)
 
 	error = cursor->fetch();
 	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+
+	orm::TypeEngine* val = cursor->getValue(0,0);
+	CHECK_TEXT(dynamic_cast<orm::type::Numeric*>(val), "invalid returned type");
+	//const orm::type::Numeric& num = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
+	//CHECK(num == 16);
 }
 

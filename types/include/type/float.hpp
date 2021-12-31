@@ -10,7 +10,7 @@ namespace orm::type {
  * 
  * basically the diference with numeric is that this is a 64 bits base 2
  */
-class Float : public TypeEngine {
+class Float : public virtual TypeEngine {
 	public:
 	Float() : TypeEngine("float", sizeof(long double)) {}
 };

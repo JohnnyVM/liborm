@@ -7,7 +7,7 @@
 
 namespace orm::type {
 
-class Date : public orm::TypeEngine {
+class Date : public virtual orm::TypeEngine {
 	public:
 	Date() : orm::TypeEngine("date", sizeof(struct tm)) {}
 };

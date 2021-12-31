@@ -15,10 +15,10 @@ class String : public orm::TypeEngine { // Keep that separate for class slicing
 		orm::TypeEngine(init_name(minimun_is_1(arg_length)), minimun_is_1(arg_length)) {}
 
 	private:
-	static std::string init_name(size_t length) {
+	inline static std::string init_name(size_t length) {
 		return "character varying(" + std::to_string(length) + ")";
 	}
-	static size_t minimun_is_1(size_t len) { return len >= 1 ? len : 1; }
+	inline static size_t minimun_is_1(size_t len) { return len >= 1 ? len : 1; }
 };
 
 }
