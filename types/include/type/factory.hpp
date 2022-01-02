@@ -27,32 +27,8 @@ class TypeFactory {
 	virtual std::unique_ptr<orm::type::Boolean> Boolean() const { assert(!"Type not supported by driver"); return nullptr; }
 	virtual std::unique_ptr<orm::type::Float> Float() const { assert(!"Type not supported by driver"); return nullptr; }
 	virtual const std::type_info& coerced_type() const = 0; /**< return the expected type */
-	std::unique_ptr<orm::TypeEngine> factory(const std::type_info& type) const {
-		if(type == typeid(orm::type::String)) { // UGH...
-			return String();
-		}
-		if(type == typeid(orm::type::Integer)) {
-			return Integer();
-		}
-		if(type == typeid(orm::type::Numeric)) {
-			return Numeric();
-		}
-		if(type == typeid(orm::type::Date)) {
-			return Numeric();
-		}
-		if(type == typeid(orm::type::DateTime)) {
-			return Numeric();
-		}
-		if(type == typeid(orm::type::Boolean)) {
-			return Numeric();
-		}
-		if(type == typeid(orm::type::Float)) {
-			return Numeric();
-		}
-		assert(!"Type not supported");
-		return nullptr;
-	}
-	std::unique_ptr<orm::TypeEngine> factory() const  {
+	std::unique_ptr<orm::TypeEngine> factory(const std::type_info& type) const;
+	inline std::unique_ptr<orm::TypeEngine> factory() const  {
 		return factory(coerced_type());
 	}
 };

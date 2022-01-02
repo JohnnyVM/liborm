@@ -6,6 +6,8 @@ configure_file(version.h.in include/types/version.h)
 
 add_library(types STATIC
 	src/factory.cpp
+	src/engine.cpp
+	src/numeric.cpp
 	src/types.cpp)
 
 target_include_directories(types PUBLIC

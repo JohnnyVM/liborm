@@ -2,18 +2,23 @@
 #define LIBORM_COLUMN_NUMBER_HPP
 
 #include <cassert>
+#include <stdexcept>
 #include <decimal/decimal>
 #include <string>
 #include <cstdint>
 #include <type_traits>
-
-#define __STDC_WANT_DEC_FP__
-#include <float.h>
-
+#include <limits>
 #include "type/engine.hpp"
+#define __STDC_WANT_DEC_FP__
+#include <cfloat>
 
 namespace orm::type {
 
+/**
+ * \brief Numeric class especialization
+ * \warning floating point arithmetic ios not defined
+ * 
+ */
 class Numeric : virtual public orm::TypeEngine {
 	public:
 	template<typename W,
@@ -24,38 +29,83 @@ class Numeric : virtual public orm::TypeEngine {
 	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
 		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale), _value(arg_value) {
-			assert(precision <= DEC128_MANT_DIG);
-		}
+			assert(precision <= DEC128_MANT_DIG);}
 	Numeric(unsigned arg_precision, unsigned arg_scale) :
 		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale) {
-			assert(precision <= DEC128_MANT_DIG);
-		}
+			assert(precision <= DEC128_MANT_DIG);}
 
 	const unsigned precision;
 	const unsigned scale;
 
+	template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+	inline explicit operator I() const {
+		assert(_value < std::numeric_limits<I>::lowest() || std::numeric_limits<I>::max() > _value); // overflow
+		return (I)std::decimal::decimal128_to_long_long(_value); }
+	inline explicit operator long double() const {
+		assert(_value < (std::decimal::decimal128)std::numeric_limits<long double>::lowest() || (std::decimal::decimal128)std::numeric_limits<long double>::max() > _value); // overflow
+		return std::decimal::decimal128_to_long_double(_value); }
+	inline explicit operator double() const {
+		assert(_value < (std::decimal::decimal128)std::numeric_limits<double>::lowest() || (std::decimal::decimal128)std::numeric_limits<double>::max() > _value); // overflow
+		return std::decimal::decimal128_to_double(_value); }
+	inline explicit operator float() const {
+		assert(_value < (std::decimal::decimal128)std::numeric_limits<float>::lowest() || (std::decimal::decimal128)std::numeric_limits<float>::max() > _value); // overflow
+		return std::decimal::decimal128_to_float(_value); }
+
 	/**
-	 * \brief cast to arithmetic (int, float, etc) marked as implicit as reminder you are losing precision
-	 * \warning you lost the decimal part
-	 * \tparam T output type cast
-	 * \return T returning value of type \p T
+	 * \brief Comparations between numeric
+	 * \param lhs 
+	 * \param rhs 
+	 * \return true if are equal
+	 * \return false if not are equal
 	 */
-	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-	inline explicit operator T() const { return (T)std::decimal::decimal_to_long_long(_value); }
+#define _DECLARE_TYPE_NUMERIC_COMPARISON(_Op) __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
+#define __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, TID, TID2) \
+	template<typename TID, std::enable_if_t<std::is_arithmetic<TID>::value, bool> = true>\
+	inline friend bool operator _Op(const Numeric& __lhs, const TID& __rhs) {return (TID)__lhs _Op __rhs;};\
+	template<typename TID2, std::enable_if_t<std::is_arithmetic<TID2>::value, bool> = true>\
+	inline friend bool operator _Op(const TID2& __lhs, const Numeric& __rhs) {return __lhs _Op (TID2)__rhs;};\
+	inline friend bool operator _Op(const Numeric& __lhs, const Numeric& __rhs) {return __lhs._value _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal128 __rhs) {return __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(std::decimal::decimal128 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal64 __rhs) {return __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(std::decimal::decimal64 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal32 __rhs) {return __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(std::decimal::decimal32 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;}
+	_DECLARE_TYPE_NUMERIC_COMPARISON(==);
+	_DECLARE_TYPE_NUMERIC_COMPARISON(!=);
+	_DECLARE_TYPE_NUMERIC_COMPARISON(>);
+	_DECLARE_TYPE_NUMERIC_COMPARISON(<);
+	_DECLARE_TYPE_NUMERIC_COMPARISON(>=);
+	_DECLARE_TYPE_NUMERIC_COMPARISON(<=);
+/// \todo define comparaision with floating point
 
-	inline friend bool operator==(const Numeric& lhs, const Numeric& rhs) {return lhs._value == rhs._value;}
+#define _DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op) __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
+#define __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, TID, TID2) \
+	inline Numeric& operator _Op##=(const Numeric& rhs) {_value _Op##= rhs._value; return *this;};\
+	inline friend Numeric operator _Op(Numeric lhs, const Numeric& rhs) { lhs _Op##= rhs; return lhs;};\
+	inline Numeric& operator _Op##=(const std::decimal::decimal128& rhs) {_value _Op##= rhs; return *this;};\
+	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal128& rhs) { lhs _Op##= rhs; return lhs;};\
+	inline Numeric& operator _Op##=(const std::decimal::decimal64& rhs) {_value _Op##= rhs; return *this;};\
+	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal64& rhs) { lhs _Op##= rhs; return lhs;};\
+	inline Numeric& operator _Op##=(const std::decimal::decimal32& rhs) {_value _Op##= rhs; return *this;};\
+	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal32& rhs) { lhs _Op##= rhs; return lhs;};\
+	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>\
+	inline Numeric& operator _Op##=(const TID& rhs) {_value _Op##= rhs; return *this;};\
+	template<typename TID2, std::enable_if_t<std::is_integral<TID2>::value, bool> = true>\
+	inline friend Numeric operator _Op(Numeric lhs, const TID2& rhs) { lhs _Op##= rhs; return lhs;}
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(+);
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(-);
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(*);
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(/);
 
-	template<typename U, std::enable_if_t<std::is_integral<U>::value, bool> = true>
-	inline friend bool operator==(const Numeric& lhs, const U& rhs) {return lhs._value == std::decimal::decimal128(rhs);}
-	// todo float point have to be equal until the precision
-	template<typename X>
-	inline friend bool operator==(const X& lhs, const Numeric& rhs) { return rhs == lhs; }
-	template<typename V>
-	inline friend bool operator!=(const Numeric& lhs, const V& rhs) { return !(lhs == rhs); } // remove in C++20
-	template<typename Y>
-	inline friend bool operator!=(const Y& lhs, const Numeric& rhs) { return !(rhs == lhs); } // remove in C++20
-	/** \todo ... */
+	/**
+	 * \brief Output the number as string
+	 * \warning if the output is truncated throw, if you want be sure not throw do a explicit cast before
+	 * \todo use a byte correct cast
+	 * \return std::string 
+	 */
+	explicit operator std::string() const;
 
 	private:
 	std::decimal::decimal128 _value;
