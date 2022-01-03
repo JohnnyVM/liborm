@@ -12,7 +12,9 @@ namespace orm::type {
 // https://docs.sqlalchemy.org/en/14/core/type_basics.html
 class String : public orm::TypeEngine { // Keep that separate for class slicing
 	public:
-	String(size_t arg_length, const char* value) : String(arg_length, std::string(value)) {}
+	String(size_t arg_length, unsigned char* value) : String(arg_length, std::string(reinterpret_cast< char const* >(value))) {}
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+	String(size_t arg_length, T value) : String(arg_length, std::string(value)) {}
 	String(size_t arg_length, const std::string& value) :
 		orm::TypeEngine(init_name(minimun_is_1(arg_length)), minimun_is_1(arg_length)), _value(value)
 		{ if(_value.length() > length) { throw std::length_error("Input string truncated"); } }

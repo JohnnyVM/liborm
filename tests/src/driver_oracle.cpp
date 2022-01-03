@@ -26,7 +26,7 @@ TEST(driver_oracle, select_number_16)
 
 	orm::TypeEngine* val = cursor->getValue(0,0);
 	CHECK_TEXT(dynamic_cast<orm::type::Numeric*>(val), "invalid returned type");
-	const orm::type::Numeric& num = *cursor->getValue(0,0);
+	const orm::type::Numeric& num = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(num == 16);
 }
 
@@ -48,6 +48,6 @@ TEST(driver_oracle, select_char_16)
 
 	orm::TypeEngine* val = cursor->getValue(0,0);
 	CHECK_TEXT(dynamic_cast<orm::type::String*>(val), "invalid returned type");
-	const orm::type::String& num = *cursor->getValue(0,0);
+	const orm::type::String& num = dynamic_cast<orm::type::String&>(*cursor->getValue(0,0));
 	CHECK(num == "16");
 }

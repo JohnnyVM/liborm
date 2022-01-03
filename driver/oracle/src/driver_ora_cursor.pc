@@ -139,6 +139,7 @@ driver_ora_cursor_open(struct oracle_connection_data* dbconn, unsigned nfields) 
 	unsigned char* output_descriptor = dbconn->output_descriptor;
 	int type;
 	int precision;
+	int octet_length;
 	int length;
 	int scale;
 	int i;
@@ -159,11 +160,17 @@ driver_ora_cursor_open(struct oracle_connection_data* dbconn, unsigned nfields) 
 			:type = TYPE,
 			:precision = PRECISION,
 			:length = LENGTH,
+			:octet_length = OCTET_LENGTH,
 			:scale = SCALE;
 		if(sqlca.sqlcode) {
 			driver_ora_cursor_close(dbconn);
 			state.state = DATABASE_ERROR;
 			return state;
+		}
+		/// \todo move this to other part
+		// the type String have to be setted forward
+		if(type == ORA_CHARACTER_VARYING || type == ORA_CHARACTER) {
+			length = octet_length + 1; // add \0 at the end
 		}
 		// the type Number have to be setted forward
 		if(type == ORA_NUMBER && scale <= 0 && precision == 0) {

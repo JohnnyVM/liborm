@@ -38,7 +38,5 @@ std::unique_ptr<orm::type::Numeric> driver::oracle::TypeFactory::Numeric() const
 }
 
 std::unique_ptr<orm::type::String> driver::oracle::TypeFactory::String() const {
-	char tmp[data.get()->returned_octect_length+1];
-	snprintf(tmp, data.get()->returned_octect_length+1, "%*.s", data->get()->returned_octect_length, data->get()->data);
-	return std::make_unique<orm::type::String>(data.get()->octect_length, tmp));
+	return std::make_unique<orm::type::String>(data.get()->length, data.get()->data);
 }
