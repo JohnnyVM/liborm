@@ -18,9 +18,13 @@ class TypeEngine { // Keep that separate for class slicing
 	 * bind_processor() Return a conversion function for processing bind values.
 	 */
 	virtual explicit operator std::string() const = 0; /**< convenience method */
+	inline friend std::string StringFrom(TypeEngine& arg) {
+		return std::string(arg);
+	}
 	inline friend std::string to_string(const TypeEngine& _engine) {
     	return std::string(_engine);
   	}
+
 };
 
 }

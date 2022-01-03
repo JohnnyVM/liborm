@@ -38,6 +38,8 @@ class Numeric : virtual public orm::TypeEngine {
 	const unsigned precision;
 	const unsigned scale;
 
+	Numeric(const Numeric& other) : Numeric(other.precision, other.scale, other._value) {}
+
 	template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
 	inline explicit operator I() const {
 		assert(_value < std::numeric_limits<I>::lowest() || std::numeric_limits<I>::max() > _value); // overflow
@@ -54,8 +56,8 @@ class Numeric : virtual public orm::TypeEngine {
 
 	/**
 	 * \brief Comparations between numeric
-	 * \param lhs 
-	 * \param rhs 
+	 * \param lhs left operator
+	 * \param rhs right oeprator
 	 * \return true if are equal
 	 * \return false if not are equal
 	 */

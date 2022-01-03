@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 project(orm VERSION 0.1 DESCRIPTION "liborm library")
 
-# CMake modules
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-
 option(CHECK_MEMORY "Build with memory sanitize support" OFF)
 option(CHECK_THREADS "Build with memory sanitize threads support (todo)" OFF)
 option(POSTGRES "Build postgresql support" OFF)
@@ -20,12 +17,15 @@ configure_file(version.h.in include/version.h)
 
 add_compile_options(-Wall -Wextra -Werror -fno-common)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
+
 if(CHECK_MEMORY)
 add_compile_options(-fsanitize=undefined -fsanitize=address -fsanitize=leak -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize-recover=all)
 add_link_options(-fsanitize=undefined -fsanitize=address -fsanitize=leak -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize-recover=all)
 endif()
 
 if(COVERAGE)
+# CMake modules
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include(CodeCoverage)
 append_coverage_compiler_flags("-fprofile-arcs -ftest-coverage")
 setup_target_for_coverage_gcovr_html(

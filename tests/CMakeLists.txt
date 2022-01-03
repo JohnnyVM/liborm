@@ -23,6 +23,7 @@ add_executable(tests
 	src/driver.cpp
 	src/driver_c.c
 	src/numeric.cpp
+	src/string.cpp
 	src/type_engine.cpp
 	${OPTIONAL_SOURCES}
 	src/main.cpp)
