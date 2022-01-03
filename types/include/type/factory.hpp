@@ -19,7 +19,7 @@ namespace orm {
 class TypeFactory {
 	public:
 	virtual ~TypeFactory() {};
-	virtual std::unique_ptr<orm::type::String> String() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::String> String() const = 0;
 	virtual std::unique_ptr<orm::type::Integer> Integer() const { assert(!"Type not supported by driver"); return nullptr; }
 	virtual std::unique_ptr<orm::type::Numeric> Numeric() const = 0;
 	virtual std::unique_ptr<orm::type::Date> Date() const { assert(!"Type not supported by driver"); return nullptr; }

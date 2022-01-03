@@ -8,10 +8,15 @@
 
 const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 	switch(data.get()->type) {
+		case ORA_ORACLE_NUMBER: /**< char[n] (n<=22) */
 		case ORA_NUMBER:
 			return typeid(orm::type::Numeric);
 		case ORA_CHARACTER:
 		case ORA_CHARACTER_VARYING:
+		case ORA_STRING: /**< char[n+1] */
+		case ORA_ORACLE_VARCHAR: /**< char[n+2] */
+		case ORA_VARCHAR2: /**< char[n] */
+			return typeid(orm::type::String);
 		case ORA_DATE:
 		case ORA_DECIMAL:
 		case ORA_DOUBLE_PRECISION:
@@ -19,11 +24,7 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 		case ORA_INTEGER:
 		case ORA_REAL:
 		case ORA_SMALLINT:
-		case ORA_VARCHAR2: /**< char[n] */
-		case ORA_ORACLE_NUMBER: /**< char[n] (n<=22) */
 		case ORA_ORACLE_FLOAT: /**< float */
-		case ORA_STRING: /**< char[n+1] */
-		case ORA_ORACLE_VARCHAR: /**< char[n+2] */
 		case ORA_BINARY_FLOAT:
 		case ORA_BINARY_DOUBLE:
 		default:
@@ -34,4 +35,10 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 
 std::unique_ptr<orm::type::Numeric> driver::oracle::TypeFactory::Numeric() const {
 	return std::make_unique<orm::type::Numeric>(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
+}
+
+std::unique_ptr<orm::type::String> driver::oracle::TypeFactory::String() const {
+	char tmp[data.get()->returned_octect_length+1];
+	snprintf(tmp, data.get()->returned_octect_length+1, "%*.s", data->get()->returned_octect_length, data->get()->data);
+	return std::make_unique<orm::type::String>(data.get()->octect_length, tmp));
 }
