@@ -8,6 +8,7 @@ configure_file(include/version.h.in include/driver/oracle/version.h)
 set(PROC_SOURCES
 	src/allocate_descriptor_global.pc
 	src/commit.pc
+	src/rollback.pc
 	src/driver_ora_cursor.pc
 	src/close.pc
 	src/ora_connect.pc)

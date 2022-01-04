@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <system_error>
 #include <string>
+#include <mutex>
 
 #include "engine/engine.h"
 #include "driver/oracle/cursor.hpp"
@@ -13,10 +14,7 @@
  * die if error
  */
 driver::oracle::Connection::~Connection() {
-	if(_is_open) {
-		conn_state err = this->close();
-		assert(!err || !"Couldn't close the connection");
-	}
+		close();
 }
 
 Connection* driver::oracle::Connection::clone_c(void) {
@@ -26,8 +24,14 @@ Connection* driver::oracle::Connection::clone_c(void) {
 }
 
 conn_state driver::oracle::Connection::close(void) {
-	struct connection_result state = driver_ora_close(&data);
-	assert(!state.state || !"Error at close connection");
+	conn_state err = rollback();
+	assert(!err || !"Error at rollback connection");
+	struct connection_result state = INIT_CONNECTION_RESULT;
+	std::call_once(close_connection_flag, [&,this]() {
+		driver_ora_close(&data);
+		assert(!state.state || !"Error at close connection");
+	});
+	_is_open = false;
 	return state.state;
 }
 
@@ -43,20 +47,21 @@ conn_state driver::oracle::Connection::commit(void) {
 }
 
 conn_state driver::oracle::Connection::rollback(void) {
-	assert(!"TODO");
-	return SQL_DONE;
+	struct connection_result state = driver_ora_rollback(&data);
+	assert(!state.state || !"Error at commit");
+	return state.state;
 }
 
 const char* driver::oracle::Connection::error_message(void) {
 	return  driver_ora_short_error_message();
 }
 
-std::tuple<std::shared_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt) {
+std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt) {
 	_changes = 0;
 
 	struct connection_result state = driver_ora_execute_many(&data, stmt.c_str(), nullptr);
 	if(state.state != SQL_ROWS) {
-		return std::tuple<std::shared_ptr<Cursor>, conn_state>(nullptr, state.state);
+		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
 	}
 
 	Cursor* cursor = new driver::oracle::Cursor(data);
@@ -64,11 +69,11 @@ std::tuple<std::shared_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 	if(state.state) {
 		assert(!"Error at cursor open");
 		delete cursor;
-		return std::tuple<std::shared_ptr<Cursor>, conn_state>(nullptr, state.state);
+		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
 	}
 
 	state.state = SQL_ROWS;
 	cursor->_changes = _changes = state.changes;
-	return std::tuple<std::shared_ptr<Cursor>, conn_state>(cursor, state.state);
+	return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(cursor, state.state);
 }
 

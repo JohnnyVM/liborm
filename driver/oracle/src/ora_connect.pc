@@ -48,6 +48,7 @@ driver_ora_connect(struct oracle_connection_data* dbconn) {
 
 	EXEC SQL CONTEXT ALLOCATE :ctx;
 	if(sqlca.sqlcode) {
+		assert(!"Error at close connection");
 		state.state = DATABASE_ERROR;
 		dbconn->ctx = NULL;
 		return state;
@@ -57,16 +58,19 @@ driver_ora_connect(struct oracle_connection_data* dbconn) {
 
 	state = allocate_descriptor_global(dbconn, dbconn->input_descriptor);
 	if(state.state) {
+		assert(!"Error at close connection");
 		return state;
 	}
 
 	state = allocate_descriptor_global(dbconn, dbconn->output_descriptor);
 	if(state.state) {
+		assert(!"Error at close connection");
 		return state;
 	}
 
 	EXEC SQL CONNECT :user IDENTIFIED BY :password AT :database USING :connect_string;
 	if(sqlca.sqlcode) {
+		assert(!"Error at close connection");
 		state.state = DATABASE_ERROR;
 		EXEC SQL CONTEXT FREE :ctx;
 		dbconn->ctx = NULL;

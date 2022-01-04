@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+#define SQLCA_STORAGE_CLASS extern
+#include <sqlca.h>
+
+#include "driver/oracle/connection_data.h"
+#include "connection/connection.h"
+
+struct connection_result
+driver_ora_rollback(struct oracle_connection_data* dbconn) {
+	struct connection_result db_stat = {0};
+
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL AT :database ROLLBACK WORK RELEASE;
+	if(sqlca.sqlcode) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	return db_stat;
+}

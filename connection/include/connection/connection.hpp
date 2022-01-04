@@ -20,7 +20,7 @@ class Connection {
 	[[nodiscard]] virtual conn_state begin() = 0;
 	[[nodiscard]] virtual conn_state commit() = 0;
 	[[nodiscard]] virtual conn_state rollback() = 0;
-	[[nodiscard]] virtual std::tuple<std::shared_ptr<Cursor>, conn_state> execute(const std::string& stmt) = 0;
+	[[nodiscard]] virtual std::tuple<std::unique_ptr<Cursor>, conn_state> execute(const std::string& stmt) = 0;
 
 	[[nodiscard]] virtual bool is_open() = 0; /**< the connection is open */
 	[[nodiscard]] virtual unsigned changes() = 0; /**< list of rows modified by the last statement */

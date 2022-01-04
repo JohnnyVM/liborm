@@ -8,6 +8,7 @@
 #include "oracle_types.h"
 
 #define ORA_NOT_FOUND 100
+#define ORA_CURSOR_ALREADY_CLOSED -2114
 
 #if defined(ORA_PROC)
 typedef long double _Decimal128;
@@ -25,6 +26,7 @@ extern "C" {
 struct connection_result driver_ora_enable_threads(void);
 struct connection_result driver_ora_connect(struct oracle_connection_data* conn);
 struct connection_result driver_ora_commit(struct oracle_connection_data* conn);
+struct connection_result driver_ora_rollback(struct oracle_connection_data* conn);
 struct connection_result driver_ora_close(struct oracle_connection_data* conn);
 struct connection_result allocate_descriptor_global(struct oracle_connection_data* dbconn, unsigned char* descriptor);
 struct connection_result driver_ora_execute_many(struct oracle_connection_data* dbconn, const char* stmt, void* rows);

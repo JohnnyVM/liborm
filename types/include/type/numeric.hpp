@@ -16,15 +16,17 @@ namespace orm::type {
 
 /**
  * \brief Numeric class especialization
- * \warning floating point arithmetic ios not defined
+ * \warning floating point arithmetic/operators are not defined
  * 
  */
 class Numeric : virtual public orm::TypeEngine {
 	public:
 	template<typename W,
-			 std::enable_if_t<std::is_arithmetic<W>::value, bool> = true
-	>
-	Numeric(unsigned arg_precision, unsigned arg_scale, W arg_value) : Numeric(arg_precision, arg_scale, (std::decimal::decimal128)arg_value) {}
+			 std::enable_if_t<std::is_arithmetic<W>::value, bool> = true>
+	Numeric(unsigned arg_precision, unsigned arg_scale, W arg_value) :
+	Numeric(arg_precision, arg_scale, (std::decimal::decimal128)arg_value) {
+		assert(not(std::is_floating_point<W>::value ^ (scale >0)));
+	}
 
 	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
 		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
@@ -56,6 +58,7 @@ class Numeric : virtual public orm::TypeEngine {
 
 	/**
 	 * \brief Comparations between numeric
+	 * \todo flaoting point operations
 	 * \param lhs left operator
 	 * \param rhs right oeprator
 	 * \return true if are equal
@@ -63,10 +66,10 @@ class Numeric : virtual public orm::TypeEngine {
 	 */
 #define _DECLARE_TYPE_NUMERIC_COMPARISON(_Op) __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
 #define __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, TID, TID2) \
-	template<typename TID, std::enable_if_t<std::is_arithmetic<TID>::value, bool> = true>\
-	inline friend bool operator _Op(const Numeric& __lhs, const TID& __rhs) {return (TID)__lhs _Op __rhs;};\
-	template<typename TID2, std::enable_if_t<std::is_arithmetic<TID2>::value, bool> = true>\
-	inline friend bool operator _Op(const TID2& __lhs, const Numeric& __rhs) {return __lhs _Op (TID2)__rhs;};\
+	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>\
+	inline friend bool operator _Op(const Numeric& __lhs, const TID& __rhs) {return __lhs._value _Op __rhs;};\
+	template<typename TID2, std::enable_if_t<std::is_integral<TID2>::value, bool> = true>\
+	inline friend bool operator _Op(const TID2& __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
 	inline friend bool operator _Op(const Numeric& __lhs, const Numeric& __rhs) {return __lhs._value _Op __rhs._value;};\
 	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal128 __rhs) {return __lhs._value _Op __rhs;};\
 	inline friend bool operator _Op(std::decimal::decimal128 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\

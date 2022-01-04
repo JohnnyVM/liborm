@@ -56,10 +56,11 @@ std::shared_ptr<PConnection> driver::oracle::Engine::connect() {
 	std::call_once(enable_threads, driver_ora_enable_threads);
 	struct connection_result state = driver_ora_connect(&conn);
 	if(state.state) {
+		assert(!"Could not open connection to the database");
 		throw std::runtime_error("Could not open connection to the database"); // TODO move to custom exception
 	}
-
-	return std::static_pointer_cast<Connection>(std::make_shared<driver::oracle::Connection>(conn));
+	auto connection = std::static_pointer_cast<Connection>(std::make_shared<driver::oracle::Connection>(conn));
+	return connection;
 }
 
 PEngine* driver::oracle::Engine::clone_c(void) {
