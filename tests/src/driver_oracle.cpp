@@ -14,10 +14,10 @@ TEST(driver_oracle, select_char_16)
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
 	std::shared_ptr<Engine> engine = create_engine(uri);
-	std::shared_ptr<Connection> conn = engine->connect();
+	std::unique_ptr<Connection> conn = engine->connect();
 
 	auto [cursor, err] = conn->execute("select '16' from dual");
-	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
+	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr || cursor->changes() != 0 || cursor->nrows() != 0) {
 		FAIL(conn->error_message());
 	}
 
@@ -30,7 +30,7 @@ TEST(driver_oracle, select_char_16)
 	CHECK(num == "16");
 }
 
-TEST(driver_oracle, select_number_16)
+/*TEST(driver_oracle, select_number_16)
 {
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
@@ -60,4 +60,4 @@ TEST(driver_oracle, select_number_16)
 
 	const orm::type::Numeric& minus = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(minus == -1);
-}
+}*/

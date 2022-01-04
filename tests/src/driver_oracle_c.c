@@ -3,7 +3,7 @@
 
 #include "CppUTest/TestHarness_c.h"
 
-TEST_C(driver_oracle_c, select_number_16_c)
+/*TEST_C(driver_oracle_c, select_number_16_c)
 {
 	conn_state error;
 	char uri[] ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
@@ -22,5 +22,5 @@ TEST_C(driver_oracle_c, select_number_16_c)
 	free_engine(engine);
 	free_connection(conn);
 	free_cursor(res.cursor);
-}
+}*/
 

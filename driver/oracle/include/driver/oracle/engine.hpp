@@ -22,7 +22,7 @@ class Engine final : public PEngine {
 	Engine(const std::string& uri) : PEngine(uri) {}
 	Engine(const engine::RFC1738& uri) : PEngine(uri) {}
 	Engine& operator=(const Engine& arg) { params = arg.params; return *this; } 
-	[[nodiscard]] std::shared_ptr<PConnection> connect(void) override; /**< returna open connection to the dbapi */
+	[[nodiscard]] std::unique_ptr<PConnection> connect(void) override; /**< returna open connection to the dbapi */
 	[[nodiscard]] PEngine* clone_c(void) override; /**< return open connection to the dbapi */
 
 	private:

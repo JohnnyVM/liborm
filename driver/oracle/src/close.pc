@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #define SQLCA_STORAGE_CLASS extern
 #include <sqlca.h>
@@ -21,19 +22,19 @@ driver_ora_close(struct oracle_connection_data* dbconn) {
 	EXEC SQL CONTEXT USE :ctx;
 	EXEC SQL DEALLOCATE DESCRIPTOR GLOBAL :input_descriptor;
 	if(sqlca.sqlcode) {
+		assert(!"Error at close connection");
 		db_stat.state = DATABASE_ERROR;
-		return db_stat;
 	}
 	EXEC SQL DEALLOCATE DESCRIPTOR GLOBAL :output_descriptor;
 	if(sqlca.sqlcode) {
+		assert(!"Error at close connection");
 		db_stat.state = DATABASE_ERROR;
-		return db_stat;
 	}
 
 	EXEC SQL AT :database ROLLBACK WORK RELEASE;
 	if(sqlca.sqlcode) {
+		assert(!"Error at close connection");
 		db_stat.state = DATABASE_ERROR;
-		return db_stat;
 	}
 
 	EXEC SQL CONTEXT FREE :ctx;

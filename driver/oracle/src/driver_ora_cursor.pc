@@ -79,15 +79,15 @@ driver_ora_execute_many(struct oracle_connection_data* dbconn, const char* stmt,
 		return db_stat;
 	}
 
-	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor :output_count = COUNT;
-	if(sqlca.sqlcode) {
+	EXEC SQL AT :database EXECUTE db_execute_stmt USING SQL DESCRIPTOR GLOBAL :input_descriptor;
+	// the library return "NOT ROW FOUND" for operations that return 0 rows affected
+	if(sqlca.sqlcode && sqlca.sqlcode != ORA_NOT_FOUND) {
 		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}
 
-	EXEC SQL AT :database EXECUTE db_execute_stmt USING SQL DESCRIPTOR GLOBAL :input_descriptor;
-	// the library return "NOT ROW FOUND" for operations that return 0 rows affected
-	if(sqlca.sqlcode && sqlca.sqlcode != ORA_NOT_FOUND) {
+	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor :output_count = COUNT;
+	if(sqlca.sqlcode) {
 		db_stat.state = DATABASE_ERROR;
 		return db_stat;
 	}

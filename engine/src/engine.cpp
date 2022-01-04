@@ -24,7 +24,7 @@ void free_engine(Engine* engine) {
 }
 
 Connection* engine_connect(Engine* engine) {
-	std::shared_ptr<Connection>conn = engine->connect();
+	std::unique_ptr<Connection>conn = engine->connect();
 
 	return conn->clone_c();
 }

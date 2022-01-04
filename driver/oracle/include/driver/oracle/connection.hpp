@@ -18,7 +18,7 @@ class Connection final : virtual public PConnection {
 	~Connection();
 	Connection& operator=(Connection& arg) { data = arg.data; _changes = arg._changes; _is_open = arg._is_open; return *this; }
 	[[nodiscard]] PConnection* clone_c() override; /**< warning: clone a engine have a lot of side effects, try not have 2 copy of the same object at the same time */
-	conn_state close(void) override;
+	[[nodiscard]] conn_state close(void) override;
 	[[nodiscard]] conn_state begin(void) override;
 	[[nodiscard]] conn_state commit(void) override;
 	[[nodiscard]] conn_state rollback(void) override;

@@ -50,7 +50,7 @@ struct oracle_connection_data driver::oracle::Engine::params_to_conn() {
 }
 #undef CHECK_OUTPUT
 
-std::shared_ptr<PConnection> driver::oracle::Engine::connect() {
+std::unique_ptr<PConnection> driver::oracle::Engine::connect() {
 	struct oracle_connection_data conn = params_to_conn();
 
 	std::call_once(enable_threads, driver_ora_enable_threads);
@@ -59,7 +59,7 @@ std::shared_ptr<PConnection> driver::oracle::Engine::connect() {
 		assert(!"Could not open connection to the database");
 		throw std::runtime_error("Could not open connection to the database"); // TODO move to custom exception
 	}
-	auto connection = std::static_pointer_cast<Connection>(std::make_shared<driver::oracle::Connection>(conn));
+	std::unique_ptr<PConnection>connection = std::make_unique<driver::oracle::Connection>(conn);
 	return connection;
 }
 

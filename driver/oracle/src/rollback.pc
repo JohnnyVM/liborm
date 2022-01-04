@@ -16,7 +16,7 @@ driver_ora_rollback(struct oracle_connection_data* dbconn) {
 	EXEC SQL END DECLARE SECTION;
 
 	EXEC SQL CONTEXT USE :ctx;
-	EXEC SQL AT :database ROLLBACK WORK RELEASE;
+	EXEC SQL AT :database ROLLBACK;
 	if(sqlca.sqlcode) {
 		db_stat.state = DATABASE_ERROR;
 		return db_stat;
