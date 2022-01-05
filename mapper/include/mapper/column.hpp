@@ -8,7 +8,7 @@
 #include <variant>
 
 #include "mapper/table_element.hpp"
-#include "type/engine.hpp"
+#include "type/engine.h"
 #include "mapper/table.hpp"
 
 namespace orm {

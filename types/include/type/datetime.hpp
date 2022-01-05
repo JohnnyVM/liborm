@@ -3,13 +3,13 @@
 
 #include <chrono>
 
-#include "type/engine.hpp"
+#include "type/engine.h"
 
 namespace orm::type {
 
-class DateTime : public virtual orm::TypeEngine {
+class DateTime : public virtual TypeEngine {
 	public:
-	DateTime() : orm::TypeEngine("datetime", 0) {} // TODO
+	DateTime() : TypeEngine("datetime", 0) {} // TODO
 };
 
 }

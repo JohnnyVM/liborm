@@ -1,7 +1,7 @@
 #ifndef LIBORM_TYPE_INTEGER_HPP
 #define LIBORM_TYPE_INTEGER_HPP
 
-#include "type/engine.hpp"
+#include "type/engine.h"
 
 namespace orm::type {
 

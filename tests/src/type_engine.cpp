@@ -14,7 +14,7 @@ TEST(typeengine, numeric_to_string)
     std::stringstream stream;
     long double fnum = 12.546L;
     orm::type::Numeric numeric{2, 3, fnum};
-    const orm::TypeEngine &alias = numeric;
+    const TypeEngine &alias = numeric;
 
     using std::to_string;
     stream << std::fixed << std::setprecision(numeric.scale) << fnum;

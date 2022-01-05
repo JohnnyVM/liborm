@@ -8,7 +8,7 @@
 #include "driver/oracle/connection.hpp"
 #include "inner_driver_oracle.h"
 #include "connection_data.h"
-#include "type/engine.hpp"
+#include "type/engine.h"
 
 using PCursor = Cursor;
 using resource_ora_cursor = struct resource_ora_cursor;
@@ -33,7 +33,7 @@ class Cursor final : public PCursor {
 	[[nodiscard]] unsigned nrows(void) override {return _ntuples;};
 	[[nodiscard]] unsigned changes(void) override {return _changes;};
 	[[nodiscard]] bool is_open(void) override {return cursor.use_count() > 0;}
-	[[nodiscard]] orm::TypeEngine* _getValue(unsigned row, unsigned column);
+	[[nodiscard]] TypeEngine* _getValue(unsigned row, unsigned column);
 	[[nodiscard]] PCursor* clone_c(void) override;
 	protected:
 	[[nodiscard]] conn_state open(void) override;
@@ -41,7 +41,7 @@ class Cursor final : public PCursor {
 	std::shared_ptr<struct resource_ora_cursor> cursor;
 	void open_cursor(void);
 	void close_cursor(void);
-	std::vector<std::shared_ptr<orm::TypeEngine>> _values;
+	std::vector<std::shared_ptr<TypeEngine>> _values;
 	std::vector<std::string> names;
 	struct oracle_connection_data conn;
 	unsigned _nfields;

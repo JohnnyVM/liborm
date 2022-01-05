@@ -10,9 +10,6 @@ static void connection_battery_test(const char* uri) {
 	Engine* engine = create_engine_p(uri);
 	Connection* conn = engine_connect(engine);
 	// If we arrived here no exception launched
-	if(state.state) {
-		FAIL_C();
-	}
 	free_engine(engine);
 	free_connection(conn);
 }

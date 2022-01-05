@@ -2,8 +2,9 @@
 
 #include "connection/cursor.hpp"
 #include "connection/state.h"
+#include "type/engine.h"
 
-orm::TypeEngine* Cursor::getValue(unsigned row, unsigned column) {
+TypeEngine* Cursor::getValue(unsigned row, unsigned column) {
 	assert(row < nrows() and column < nfields()); // out of index
 	return _getValue(row, column);
 }
@@ -36,6 +37,10 @@ unsigned cursor_changes(Cursor* c) {
 
 void free_cursor(Cursor* c) {
 	delete c;
+}
+
+TypeEngine* cursor_getValue(Cursor *c, unsigned row, unsigned column){
+	return c->getValue(row, column);
 }
 
 }

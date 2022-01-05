@@ -2,6 +2,7 @@
 #define LIBORM_CONNECTION_CURSOR_C_H
 
 #include "connection/types.h"
+#include "type/engine.h"
 
 #ifndef __cplusplus
 typedef struct Cursor Cursor;
@@ -19,6 +20,7 @@ void free_cursor(Cursor* c);
 __attribute__ ((warn_unused_result)) unsigned cursor_nfields(Cursor *c);
 __attribute__ ((warn_unused_result)) unsigned cursor_nrows(Cursor *c);
 __attribute__ ((warn_unused_result)) unsigned cursor_changes(Cursor *c);
+__attribute__ ((warn_unused_result)) TypeEngine* cursor_getValue(Cursor *c, unsigned row, unsigned column);
 
 #ifdef __cplusplus
 }

@@ -2,7 +2,7 @@
 
 #include "type/factory.hpp"
 
-std::unique_ptr<orm::TypeEngine> orm::TypeFactory::factory(const std::type_info& type) const {
+std::unique_ptr<TypeEngine> orm::TypeFactory::factory(const std::type_info& type) const {
     if(type == typeid(orm::type::String)) { // UGH...
         return String();
     }

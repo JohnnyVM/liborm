@@ -113,6 +113,6 @@ PCursor* driver::oracle::Cursor::clone_c() {
 	return dynamic_cast<PCursor*>(c);
 }
 
-orm::TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) {
+TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) {
 	return _values[row * nfields() + column].get();
 }

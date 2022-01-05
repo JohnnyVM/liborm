@@ -3,13 +3,13 @@
 
 #include <ctime>
 
-#include "type/engine.hpp"
+#include "type/engine.h"
 
 namespace orm::type {
 
-class Date : public virtual orm::TypeEngine {
+class Date : public virtual TypeEngine {
 	public:
-	Date() : orm::TypeEngine("date", sizeof(struct tm)) {}
+	Date() : TypeEngine("date", sizeof(struct tm)) {}
 };
 
 }

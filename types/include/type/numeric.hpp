@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <limits>
-#include "type/engine.hpp"
+#include "type/engine.h"
 #define __STDC_WANT_DEC_FP__
 #include <cfloat>
 
@@ -19,7 +19,7 @@ namespace orm::type {
  * \warning floating point arithmetic/operators are not defined
  * 
  */
-class Numeric : virtual public orm::TypeEngine {
+class Numeric : virtual public TypeEngine {
 	public:
 	template<typename W,
 			 std::enable_if_t<std::is_arithmetic<W>::value, bool> = true>
@@ -29,11 +29,11 @@ class Numeric : virtual public orm::TypeEngine {
 	}
 
 	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
-		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
+		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale), _value(arg_value) {
 			assert(precision <= DEC128_MANT_DIG);}
 	Numeric(unsigned arg_precision, unsigned arg_scale) :
-		orm::TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
+		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale) {
 			assert(precision <= DEC128_MANT_DIG);}
 
@@ -55,6 +55,9 @@ class Numeric : virtual public orm::TypeEngine {
 	inline explicit operator float() const {
 		assert(_value < (std::decimal::decimal128)std::numeric_limits<float>::lowest() || (std::decimal::decimal128)std::numeric_limits<float>::max() > _value); // overflow
 		return std::decimal::decimal128_to_float(_value); }
+	inline explicit operator std::decimal::decimal128() const { return _value; }
+	inline explicit operator std::decimal::decimal64() const { return std::decimal::decimal64(_value); }
+	inline explicit operator std::decimal::decimal32() const { return std::decimal::decimal32(_value); }
 
 	/**
 	 * \brief Comparations between numeric

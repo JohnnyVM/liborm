@@ -1,13 +1,13 @@
 #ifndef LIBORM_TYPE_BOOLEAN_HPP
 #define LIBORM_TYPE_BOOLEAN_HPP
 
-#include "type/engine.hpp"
+#include "type/engine.h"
 
 namespace orm::type {
 
-class Boolean : public virtual orm::TypeEngine {
+class Boolean : public virtual TypeEngine {
 	public:
-	Boolean() : orm::TypeEngine("boolean", sizeof(bool)) {}
+	Boolean() : TypeEngine("boolean", sizeof(bool)) {}
 };
 
 }

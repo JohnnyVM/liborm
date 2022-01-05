@@ -1,5 +1,5 @@
 #include <decimal/decimal>
-#include "type/engine.hpp"
+#include "type/engine.h"
 #include "type/numeric.hpp"
 
 #include "CppUTest/TestHarness.h"

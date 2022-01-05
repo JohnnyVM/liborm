@@ -24,7 +24,7 @@ TEST(driver_oracle, select_char_16)
 	error = cursor->fetch();
 	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 
-	orm::TypeEngine* val = cursor->getValue(0,0);
+	TypeEngine* val = cursor->getValue(0,0);
 	CHECK_TEXT(dynamic_cast<orm::type::String*>(val), "invalid returned type");
 	const orm::type::String& num = dynamic_cast<orm::type::String&>(*cursor->getValue(0,0));
 	CHECK(num == "16");
@@ -45,7 +45,7 @@ TEST(driver_oracle, select_number_16)
 	conn_state error = cursor->fetch();
 	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 
-	orm::TypeEngine* val = cursor->getValue(0,0);
+	TypeEngine* val = cursor->getValue(0,0);
 	CHECK_TEXT(dynamic_cast<orm::type::Numeric*>(val), "invalid returned type");
 	const orm::type::Numeric& num = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(num == 16);
@@ -57,7 +57,16 @@ TEST(driver_oracle, select_number_16)
 
 	error = cursor->fetch();
 	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
-
 	const orm::type::Numeric& minus = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(minus == -1);
+
+	std::tie(cursor, err) = conn->execute("SELECT CAST(9999999999.999999999 AS NUMBER(19,9)) AS LONG_DOUBLE FROM DUAL");
+	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
+		FAIL(conn->error_message());
+	}
+
+	error = cursor->fetch();
+	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+	const orm::type::Numeric& canido = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
+	CHECK(canido == std::decimal::decimal128(9999999999.999999999DL));
 }

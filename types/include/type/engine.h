@@ -1,11 +1,25 @@
-#ifndef LIBORM_TYPE_ENGINE_HPP
-#define LIBORM_TYPE_ENGINE_HPP
+#ifndef LIBORM_TYPE_ENGINE_H
+#define LIBORM_TYPE_ENGINE_H
+
+#include <stddef.h>
+
+#ifndef __cplusplus
+
+typedef struct TypeEngine TypeEngine;
+#ifndef ORA_PROC
+typedef _Decimal128 decimal128;
+#else
+typedef long long decimal128;
+#endif
+
+#else
+
+#include <decimal/decimal>
+using decimal128 = std::decimal::decimal128;
 
 #include <cstdlib>
 #include <string>
 #include <stdexcept>
-
-namespace orm {
 
 class TypeEngine { // Keep that separate for class slicing
 	public:
@@ -27,6 +41,23 @@ class TypeEngine { // Keep that separate for class slicing
 
 };
 
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int column_as_char(TypeEngine*, char**buf, size_t len);
+int column_as_int(TypeEngine* val);
+long column_as_long(TypeEngine* val);
+float column_as_float(TypeEngine* val);
+double column_as_double(TypeEngine* val);
+long long column_as_long_long(TypeEngine* val);
+long double column_as_long_double(TypeEngine* val);
+decimal128 column_as_decimal128(TypeEngine* val);
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif
