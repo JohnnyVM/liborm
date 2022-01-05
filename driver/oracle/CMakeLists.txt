@@ -9,7 +9,9 @@ set(PROC_SOURCES
 	src/allocate_descriptor_global.pc
 	src/commit.pc
 	src/rollback.pc
-	src/driver_ora_cursor.pc
+	src/driver_ora_common.pc
+	src/driver_ora_cursor_0.pc
+	src/driver_ora_cursor_1.pc
 	src/close.pc
 	src/ora_connect.pc)
 

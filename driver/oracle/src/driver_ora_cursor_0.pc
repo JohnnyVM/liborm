@@ -1,0 +1,196 @@
+#define SQLCA_STORAGE_CLASS extern
+#include <sqlca.h>
+#include <stdio.h>
+
+#define __STDC_WANT_DEC_FP__
+#include <float.h>
+#include <assert.h>
+#include <stdlib.h>
+
+#include "inner_driver_oracle.h"
+#include "connection/connection.h"
+#include "driver/oracle/connection_data.h"
+#include "oracle_types.h"
+
+/* resource 0 */
+struct connection_result
+driver_ora_execute_many_0(struct oracle_connection_data* dbconn, const char* stmt, void* rows) {
+	struct connection_result db_stat = {0};
+
+	EXEC SQL BEGIN DECLARE SECTION;
+	int i;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* input_descriptor = dbconn->input_descriptor;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	int input_count, output_count;
+	const char* statement = stmt;
+	char name[INDICATOR_NAME_LENGTH];
+	int type;
+	int length;
+	short indicator;
+	unsigned char* data;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL AT :database DECLARE db_execute_stmt_0 STATEMENT;
+	EXEC SQL AT :database PREPARE db_execute_stmt_0 FROM :statement;
+	if(sqlca.sqlcode) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	EXEC SQL AT :database DESCRIBE INPUT db_execute_stmt_0 USING SQL DESCRIPTOR GLOBAL :input_descriptor;
+	if(sqlca.sqlcode) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	EXEC SQL GET DESCRIPTOR GLOBAL :input_descriptor :input_count = COUNT;
+	if(sqlca.sqlcode) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	if(rows) { assert(0); } // todo bind input parameters
+
+	EXEC SQL AT :database DESCRIBE OUTPUT db_execute_stmt_0 USING SQL DESCRIPTOR GLOBAL :output_descriptor;
+	if(sqlca.sqlcode) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	EXEC SQL AT :database EXECUTE db_execute_stmt_0 USING SQL DESCRIPTOR GLOBAL :input_descriptor;
+	// the library return "NOT ROW FOUND" for operations that return 0 rows affected
+	if(sqlca.sqlcode && sqlca.sqlcode != ORA_NOT_FOUND) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor :output_count = COUNT;
+	if(sqlca.sqlcode) {
+		db_stat.state = DATABASE_ERROR;
+		return db_stat;
+	}
+
+	db_stat.changes = sqlca.sqlerrd[2];
+	if(output_count) {
+		db_stat.state = SQL_ROWS;
+	}
+
+	return db_stat;
+}
+
+/**
+ * Quirks, in the documentation said that
+ * CURSOR are declared values at scope file(but in other parts of the documentation are declared as function level)
+ * and seem like some gramaticals error too happen, well in general y dont understad why this happen BUT
+ * after a few try-error tests... (with threads cursor declared a function level?) this work
+ * specify nathing... probably is worth of a further study... becouse sometimes too work in diferent files
+ * anyway, open cursor and seem like open/fetch/close work better toghether (sometimes)
+ * \param many number of rows required, can be returned less
+ * \
+ */
+struct connection_result
+driver_ora_cursor_open_0(struct oracle_connection_data* dbconn, unsigned nfields) {
+	struct connection_result state = {0};
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	int type;
+	int precision;
+	int octet_length;
+	int length;
+	int scale;
+	int i;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL AT :database DECLARE db_execute_cursor_0 CURSOR FOR db_execute_stmt_0;
+
+	EXEC SQL AT :database OPEN db_execute_cursor_0;
+	if(sqlca.sqlcode) {
+		state.state = DATABASE_ERROR;
+		return state;
+	}
+
+	for(i = 1; (unsigned)i <= nfields; ++i) {
+		EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
+			:type = TYPE,
+			:precision = PRECISION,
+			:length = LENGTH,
+			:octet_length = OCTET_LENGTH,
+			:scale = SCALE;
+		if(sqlca.sqlcode) {
+			state.state = DATABASE_ERROR;
+			return state;
+		}
+		/// \todo move this to other part
+		// the type String have to be setted forward
+		if(type == ORA_CHARACTER_VARYING || type == ORA_CHARACTER) {
+			length = octet_length + 1; // add \0 at the end
+		}
+		// the type Number have to be setted forward
+		if(type == ORA_NUMBER && scale <= 0 && precision == 0) {
+			precision = DEC128_MANT_DIG;
+			length = 8; // maximun oracle size
+			scale = scale < 0 ? 0 : scale;
+		}
+		EXEC SQL SET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
+			TYPE = :type,
+			LENGTH = :length,
+			SCALE = :scale,
+			PRECISION = :precision;
+		if(sqlca.sqlcode) {
+			state.state = DATABASE_ERROR;		
+			return state;
+		}
+	}
+	return state;
+}
+
+struct connection_result
+driver_ora_fetch_0(struct oracle_connection_data* dbconn, unsigned* changes) {
+	struct connection_result state = {0};
+
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL AT :database FETCH db_execute_cursor_0 INTO DESCRIPTOR GLOBAL :output_descriptor;
+
+	state.state = SQL_ROWS;
+	if(sqlca.sqlcode) {
+		state.state = DATABASE_ERROR;
+		if(sqlca.sqlcode == ORA_NOT_FOUND) {
+			state.state = SQL_DONE;
+			return state;
+		}
+	}
+
+	(*changes) += sqlca.sqlerrd[2];
+	return state;
+}
+
+struct connection_result
+driver_ora_cursor_close_0(struct oracle_connection_data* dbconn) {
+	struct connection_result state = {0};
+	EXEC SQL BEGIN DECLARE SECTION;
+	unsigned char* database = dbconn->dbname; // Nasty dragon, not remove
+	sql_context ctx = dbconn->ctx;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL CLOSE db_execute_cursor_0;
+
+	if(sqlca.sqlcode) {
+		state.state = DATABASE_ERROR;
+	}
+	return state;
+}
+
+/* resource 0 */

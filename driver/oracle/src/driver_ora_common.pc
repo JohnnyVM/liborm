@@ -1,0 +1,123 @@
+#define SQLCA_STORAGE_CLASS extern
+#include <sqlca.h>
+#include <stdio.h>
+
+#include <assert.h>
+#include <stdlib.h>
+
+#include "inner_driver_oracle.h"
+#include "connection/connection.h"
+#include "driver/oracle/connection_data.h"
+#include "oracle_types.h"
+
+
+char* driver_ora_short_error_message(void) {
+	return sqlca.sqlerrm.sqlerrmc;
+}
+
+struct connection_result
+driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned nfield, struct ora_database_type *result) {
+	struct connection_result state = {0};
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	int type;
+	int length;
+	char name[INDICATOR_NAME_LENGTH];
+	unsigned char* data;
+	int octet_length;
+	short returned_length;
+	short returned_octet_length;
+	int precision;
+	int scale;
+	int nullable;
+	short indicator;
+	const int pos = nfield;
+	int len;
+	EXEC SQL END DECLARE SECTION;
+
+	result->indicator = -1;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :pos
+		:type = TYPE,
+		:length = LENGTH,
+		:octet_length = OCTET_LENGTH,
+		:returned_length = RETURNED_LENGTH,
+		:returned_octet_length = RETURNED_OCTET_LENGTH,
+		:precision = PRECISION,
+		:scale = SCALE,
+		:nullable = NULLABLE,
+		:indicator = INDICATOR,
+		:name = NAME;
+	if(sqlca.sqlcode) {
+		state.state = DATABASE_ERROR;
+		return state;
+	}
+	len = snprintf(NULL, 0, "%s", name);
+	if(len < 0 ||len >= (int)sizeof name) {
+		assert(!"indicator_name_length too short or nasty error");
+		state.state = NO_MEMORY;
+		return state;
+	}
+
+	if(indicator != -1) { // Not null
+		data = malloc((size_t)octet_length);
+		if(data == NULL) {
+			state.state = NO_MEMORY;
+			return state;
+		}
+
+		EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :pos
+			:data = DATA;
+		if(sqlca.sqlcode) {
+			free(data);
+			state.state = DATABASE_ERROR;
+			return state;
+		}
+	}
+
+	result->type = type;
+	result->length = length;
+	result->returned_length = returned_length;
+	result->octet_length = octet_length;
+	result->returned_octet_length = returned_octet_length;
+	result->precision = precision;
+	result->scale = scale;
+	result->nullable = nullable;
+	result->indicator = indicator;
+	len = snprintf(result->name, INDICATOR_NAME_LENGTH, "%s", name);
+	if(len < 0 || len >= (int)INDICATOR_NAME_LENGTH) {
+		assert(!"indicator_name_length too short or nasty error");
+		free(data);
+		state.state = NO_MEMORY;
+		return state;
+	}
+	result->character_set_name = NULL;
+	result->data = data;
+
+	state.changes = sqlca.sqlerrd[2];
+
+	return state;
+}
+
+struct connection_result
+driver_ora_fields_count(struct oracle_connection_data* dbconn, unsigned* i) {
+	struct connection_result state = {0};
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	int output_count;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor :output_count = COUNT;
+	if(sqlca.sqlcode) {
+		state.state = DATABASE_ERROR;
+		return state;
+	}
+	*i = output_count;
+	return state;
+}

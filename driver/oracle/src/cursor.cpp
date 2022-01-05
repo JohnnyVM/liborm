@@ -8,6 +8,7 @@
 #define ORACA_STORAGE_CLASS extern
 #include <sqlca.h>
 
+#include "driver/oracle/driver_ora_cursor.h"
 #include "driver/oracle/cursor.hpp"
 #include "inner_driver_oracle.h"
 #include "driver/oracle/connection_data.h"
@@ -15,8 +16,8 @@
 #include "connection/state.h"
 #include "driver/oracle/factory.hpp"
 
-driver::oracle::Cursor::Cursor(struct oracle_connection_data arg_conn) :
-	conn(arg_conn), _nfields(0U), _ntuples(0U), _changes(0), _is_open(false) {}
+driver::oracle::Cursor::Cursor(struct oracle_connection_data arg_conn, std::shared_ptr<struct resource_ora_cursor> arg_cursor) :
+	cursor(arg_cursor), conn(arg_conn), _nfields(0U), _ntuples(0U), _changes(0) {}
 
 driver::oracle::Cursor& driver::oracle::Cursor::operator=(const driver::oracle::Cursor& arg) {
 	//std::vector<std::shared_ptr<TypeEngine> > _values;
@@ -24,7 +25,7 @@ driver::oracle::Cursor& driver::oracle::Cursor::operator=(const driver::oracle::
 	_nfields = arg._nfields;
 	_ntuples = arg._ntuples;
 	_changes = arg._changes;
-	_is_open = _is_open;
+	cursor = arg.cursor;
 	return *this;	
 }
 
@@ -44,12 +45,8 @@ conn_state driver::oracle::Cursor::open(void) {
 
 void driver::oracle::Cursor::open_cursor(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
-	m.lock();
-	state = driver_ora_cursor_open(&conn, _nfields);
-	if(!state.state) {
-		_is_open = true;
-	} else {
-		m.unlock();
+	state = cursor->open(&conn, _nfields);
+	if(state.state) {
 		assert(!"Atempt to open cursor failed");
 		throw std::runtime_error("Couldn't open the cursor");
 	}
@@ -64,19 +61,13 @@ conn_state driver::oracle::Cursor::fetch(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 
 	std::call_once(open_cursor_flag, [this](){ open_cursor(); });
-	if(not _is_open) {
-		assert(!"Atempt to fetch closed cursor");
-		return SQL_MISUSE;
-	}
 
-	state = driver_ora_fetch(&conn, &_changes);
+	state = cursor->fetch(&conn, &_changes);
 	if(state.state != SQL_DONE && state.state != SQL_ROWS) {
 		assert(!state.state || !"Invalid operation fetch over cursor");
 		return state.state;
 	}
-	if(state.state == SQL_DONE) {
-		_is_open = false;
-	}
+
 	size_t osize = _values.size();
 	_values.resize(osize + _nfields);
 	for(unsigned i = 0; i < _nfields; i++) {
@@ -99,16 +90,13 @@ conn_state driver::oracle::Cursor::fetch(void) {
 void driver::oracle::Cursor::close_cursor(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 
-	if(_is_open) {
-		state = driver_ora_cursor_close(&conn);
-		m.unlock(); // doesnt matter 
-		if(!state.state) {
-			_is_open = false;
-		} else { // this is a very bad situation
-			assert(!"Atempt to close cursor failed");
-			throw std::runtime_error("Couldn't close the cursor");
-		}
+	state = cursor->close(&conn);
+	if(state.state) {
+		assert(!"Atempt to close cursor failed");
+		throw std::runtime_error("Couldn't close the cursor");
 	}
+	cursor.reset(); // free de resource
+	assert(cursor.use_count() == 0);
 }
 
 conn_state driver::oracle::Cursor::close(void) {
@@ -120,7 +108,7 @@ conn_state driver::oracle::Cursor::close(void) {
 }
 
 PCursor* driver::oracle::Cursor::clone_c() {
-	driver::oracle::Cursor* c = new driver::oracle::Cursor(conn);
+	driver::oracle::Cursor* c = new driver::oracle::Cursor(conn, cursor);
 	*c = *this;
 	return dynamic_cast<PCursor*>(c);
 }

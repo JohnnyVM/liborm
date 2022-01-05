@@ -30,7 +30,7 @@ TEST(driver_oracle, select_char_16)
 	CHECK(num == "16");
 }
 
-/*TEST(driver_oracle, select_number_16)
+TEST(driver_oracle, select_number_16)
 {
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
@@ -60,4 +60,4 @@ TEST(driver_oracle, select_char_16)
 
 	const orm::type::Numeric& minus = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(minus == -1);
-}*/
+}

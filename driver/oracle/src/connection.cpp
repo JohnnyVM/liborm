@@ -1,14 +1,21 @@
 #include <stdexcept>
 #include <system_error>
 #include <string>
-#include <mutex>
-#include <utility>
+#include <memory>
+#include <optional>
 
+#include "driver/oracle/acbuffer.hpp"
 #include "engine/engine.h"
 #include "driver/oracle/cursor.hpp"
 #include "driver/oracle/connection.hpp"
 #include "connection/connection.h"
 #include "inner_driver_oracle.h"
+#include "driver/oracle/driver_ora_cursor.h"
+
+/* debatable implementation */
+static acbuffer<struct resource_ora_cursor> gora_cursors = {
+	INIT_ORA_CURSOR(0),
+	INIT_ORA_CURSOR(1)};
 
 /** The desctructor close the connection
  * Here if fail is not posible recover the connetion then the program is bad
@@ -56,13 +63,17 @@ const char* driver::oracle::Connection::error_message(void) {
 }
 
 std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt) {
+	std::optional<std::shared_ptr<struct resource_ora_cursor>>oracle_cursor = gora_cursors.get();
+	if(not oracle_cursor.has_value()) {
+		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
+	}
 
-	struct connection_result state = driver_ora_execute_many(&data, stmt.c_str(), nullptr);
+	struct connection_result state = oracle_cursor.value().get()->execute(&data, stmt.c_str(), nullptr);
 	if(state.state != SQL_ROWS) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
 	}
 
-	std::unique_ptr<driver::oracle::Cursor> cursor = std::make_unique<driver::oracle::Cursor>(data);
+	std::unique_ptr<driver::oracle::Cursor> cursor = std::make_unique<driver::oracle::Cursor>(data, oracle_cursor.value());
 	state.state = cursor->open();
 	if(state.state) {
 		assert(!"Error at cursor open");

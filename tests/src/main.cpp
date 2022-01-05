@@ -9,7 +9,8 @@ TEST_GROUP_C_WRAPPER(driver_oracle_c) {};
 TEST_C_WRAPPER(driver_oracle_c, select_number_16_c);
 #endif
 
-int main(int ac, char** av)
+int main(int argc, char** argv)
 {
-	  return RUN_ALL_TESTS(ac, av);
+	MemoryLeakWarningPlugin::turnOffNewDeleteOverloads();
+	return CommandLineTestRunner::RunAllTests(argc, argv);
 }

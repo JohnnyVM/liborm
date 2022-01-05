@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <memory>
-#include <mutex>
 
 #include "connection/connection.h"
 #include "driver/oracle/connection.hpp"
@@ -12,6 +11,7 @@
 #include "type/engine.hpp"
 
 using PCursor = Cursor;
+using resource_ora_cursor = struct resource_ora_cursor;
 
 namespace driver::oracle {
 
@@ -25,19 +25,20 @@ class Cursor final : public PCursor {
 	friend class driver::oracle::Connection;
 	public:
 	~Cursor();
-	Cursor(struct oracle_connection_data arg_data);
+	Cursor(struct oracle_connection_data arg_data, std::shared_ptr<resource_ora_cursor> cursor);
 	Cursor& operator=(const Cursor& arg);
 	[[nodiscard]] conn_state close(void) override;
 	[[nodiscard]] conn_state fetch(void) override;
 	[[nodiscard]] unsigned nfields(void) override {return _nfields;};
 	[[nodiscard]] unsigned nrows(void) override {return _ntuples;};
 	[[nodiscard]] unsigned changes(void) override {return _changes;};
-	[[nodiscard]] bool is_open(void) override {return _is_open;}
+	[[nodiscard]] bool is_open(void) override {return cursor.use_count() > 0;}
 	[[nodiscard]] orm::TypeEngine* _getValue(unsigned row, unsigned column);
 	[[nodiscard]] PCursor* clone_c(void) override;
 	protected:
 	[[nodiscard]] conn_state open(void) override;
 	private:
+	std::shared_ptr<struct resource_ora_cursor> cursor;
 	void open_cursor(void);
 	void close_cursor(void);
 	std::vector<std::shared_ptr<orm::TypeEngine>> _values;
@@ -46,9 +47,7 @@ class Cursor final : public PCursor {
 	unsigned _nfields;
 	unsigned _ntuples;
 	unsigned _changes;
-	bool _is_open;
-	inline static std::mutex m;
-	std::once_flag open_cursor_flag, close_cursor_flag;
+	std::once_flag execute_flag, open_cursor_flag, close_cursor_flag;
 };
 
 }
