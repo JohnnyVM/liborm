@@ -8,8 +8,7 @@ add_library(connection STATIC
 	src/connection.cpp
 	src/cursor.cpp)
 
-target_include_directories(connection PUBLIC
-	include)
+target_include_directories(connection PUBLIC include)
 
 	target_link_libraries(connection types)
 
