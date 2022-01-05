@@ -4,7 +4,7 @@
 #include "CppUTest/TestHarness_c.h"
 
 
-/*static void connection_battery_test(const char* uri) {
+static void connection_battery_test(const char* uri) {
 	//struct connection_result state = INIT_CONNECTION_RESULT;
 
 	Engine* engine = create_engine_p(uri);
@@ -15,7 +15,7 @@
 	}
 	free_engine(engine);
 	free_connection(conn);
-}*/
+}
 
 TEST_C(driver_c, connection)
 {
@@ -31,7 +31,7 @@ TEST_C(driver_c, connection)
 	};
 
 	for(unsigned i = 0; uri[i] != NULL; i++) {
-		//connection_battery_test(uri[i]);
+		connection_battery_test(uri[i]);
 	}
 }
 
