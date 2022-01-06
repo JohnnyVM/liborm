@@ -25,6 +25,7 @@ add_executable(tests
 	src/numeric.cpp
 	src/string.cpp
 	src/type_engine.cpp
+	src/mapper.cpp
 	${OPTIONAL_SOURCES}
 	src/main.cpp)
 

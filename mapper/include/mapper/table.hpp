@@ -17,11 +17,11 @@ class Column;
 class Table : public orm::SchemaElement {
 	public:
 	Table& operator=(const Table&) = delete;
-	Table(const std::string& name, std::initializer_list<std::shared_ptr<TableElement> >args);
+	Table(const std::string& name, std::initializer_list<std::unique_ptr<TableElement> >args);
 
 	/* Class variables */
-	std::vector<std::shared_ptr<orm::Column> >c;
-	std::vector<std::shared_ptr<orm::TableRestriction> >restrictions;
+	std::vector<std::unique_ptr<orm::Column> >c;
+	std::vector<std::unique_ptr<orm::TableRestriction> >restrictions;
 
 	/* Class methods */
 };
