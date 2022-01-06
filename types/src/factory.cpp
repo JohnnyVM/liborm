@@ -15,8 +15,8 @@ std::unique_ptr<TypeEngine> orm::TypeFactory::factory(const std::type_info& type
     if(type == typeid(orm::type::Date)) {
         return Date();
     }
-    if(type == typeid(orm::type::DateTime)) {
-        return DateTime();
+    if(type == typeid(orm::type::Datetime)) {
+        return Datetime();
     }
     if(type == typeid(orm::type::Boolean)) {
         return Boolean();

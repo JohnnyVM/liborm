@@ -8,6 +8,7 @@ add_library(types STATIC
 	src/factory.cpp
 	src/engine.cpp
 	src/numeric.cpp
+	src/datetime.cpp
 	src/types.cpp)
 
 target_include_directories(types PUBLIC
