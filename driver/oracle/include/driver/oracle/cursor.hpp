@@ -47,7 +47,7 @@ class Cursor final : public PCursor {
 	unsigned _nfields;
 	unsigned _ntuples;
 	unsigned _changes;
-	std::once_flag execute_flag, open_cursor_flag, close_cursor_flag;
+	std::once_flag open_cursor_flag, close_cursor_flag;
 };
 
 }

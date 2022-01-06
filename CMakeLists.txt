@@ -15,7 +15,7 @@ option(DOXYGEN "Generate doxygen documentation" OFF)
 
 configure_file(version.h.in include/version.h)
 
-add_compile_options(-Wall -Wextra -Werror -fno-common)
+add_compile_options(-g -Wall -Wextra -Werror -fno-common)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
 
 if(CHECK_MEMORY)
@@ -31,7 +31,8 @@ append_coverage_compiler_flags("-fprofile-arcs -ftest-coverage")
 setup_target_for_coverage_gcovr_html(
 	NAME coverage
 	EXECUTABLE tests
-	BASE_DIRECTORY "${PROJECT_SOURCE_DIR}")
+	BASE_DIRECTORY "${PROJECT_SOURCE_DIR}"
+	EXCLUDE "${PROJECT_SOURCE_DIR}/tests/*")
 endif()
 
 if(DOXYGEN)

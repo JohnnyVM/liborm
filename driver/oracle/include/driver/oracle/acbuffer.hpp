@@ -25,7 +25,7 @@ class acbuffer
 	inline std::optional<std::shared_ptr<C>>get() { // todo move this to atomic<shared in c++20
 		std::scoped_lock lock(slock);
 		unsigned i;
-		for(i = 0; i < container.size() && observer[i].lock(); i++);
+		for(i = 0; i < container.size() and not observer[i].expired(); i++);
 		if(i == container.size()) {
 			return std::nullopt;
 		}

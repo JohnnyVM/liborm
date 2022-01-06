@@ -37,12 +37,6 @@ driver::oracle::Cursor::~Cursor() {
 	std::call_once(close_cursor_flag, [this](){ close_cursor(); });
 }
 
-conn_state driver::oracle::Cursor::open(void) {
-	struct connection_result state = driver_ora_fields_count(&conn, &_nfields);
-
-	return state.state;
-}
-
 void driver::oracle::Cursor::open_cursor(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 	state = cursor->open(&conn, _nfields);
@@ -52,6 +46,13 @@ void driver::oracle::Cursor::open_cursor(void) {
 	}
 }
 
+conn_state driver::oracle::Cursor::open(void) {
+	struct connection_result state = driver_ora_fields_count(&conn, &_nfields);
+	std::call_once(open_cursor_flag, [this](){ open_cursor(); });
+
+	return state.state;
+}
+
 /**
  * \brief fetch one row in memory
  * \warning if this function return error even if retry the fetched row is lost
@@ -59,8 +60,6 @@ void driver::oracle::Cursor::open_cursor(void) {
  */
 conn_state driver::oracle::Cursor::fetch(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
-
-	std::call_once(open_cursor_flag, [this](){ open_cursor(); });
 
 	state = cursor->fetch(&conn, &_changes);
 	if(state.state != SQL_DONE && state.state != SQL_ROWS) {

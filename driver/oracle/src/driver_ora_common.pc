@@ -25,7 +25,7 @@ driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned
 	int type;
 	int length;
 	char name[INDICATOR_NAME_LENGTH];
-	unsigned char* data;
+	unsigned char* data = result->data;
 	int octet_length;
 	short returned_length;
 	short returned_octet_length;
