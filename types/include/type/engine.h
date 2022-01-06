@@ -47,14 +47,14 @@ class TypeEngine { // Keep that separate for class slicing
 extern "C" {
 #endif
 
-int column_as_char(TypeEngine*, char**buf, size_t len);
-int column_as_int(TypeEngine* val);
-long column_as_long(TypeEngine* val);
-float column_as_float(TypeEngine* val);
-double column_as_double(TypeEngine* val);
-long long column_as_long_long(TypeEngine* val);
-long double column_as_long_double(TypeEngine* val);
-decimal128 column_as_decimal128(TypeEngine* val);
+int column_as_char(TypeEngine* const, char**buf, size_t len);
+int column_as_int(TypeEngine* const val);
+long column_as_long(TypeEngine* const val);
+float column_as_float(TypeEngine* const val);
+double column_as_double(TypeEngine* const val);
+long long column_as_long_long(TypeEngine* const val);
+long double column_as_long_double(TypeEngine* const val);
+decimal128 column_as_decimal128(TypeEngine* const val);
 
 #ifdef __cplusplus
 }

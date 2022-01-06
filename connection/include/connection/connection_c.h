@@ -9,11 +9,11 @@ typedef struct Connection Connection;
 extern "C" {
 #endif
 
-__attribute__ ((warn_unused_result)) struct connection_result connection_execute_many(Connection* conn, const char* stmt, void*);
-__attribute__ ((warn_unused_result)) struct connection_result connection_execute(Connection* conn, const char* stmt);
-__attribute__ ((warn_unused_result)) const char* connection_error_message(Connection* conn);
-__attribute__ ((warn_unused_result)) unsigned connection_changes(Connection* conn);
-void free_connection(Connection* conn);
+__attribute__ ((warn_unused_result)) struct connection_result connection_execute_many(Connection* const conn, const char* const stmt, void*);
+__attribute__ ((warn_unused_result)) struct connection_result connection_execute(Connection* const conn, const char* const stmt);
+__attribute__ ((warn_unused_result)) const char* connection_error_message(Connection* const conn);
+__attribute__ ((warn_unused_result)) unsigned connection_changes(Connection* const conn);
+void free_connection(Connection* const conn);
 
 #ifdef __cplusplus
 }

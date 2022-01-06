@@ -19,11 +19,11 @@ extern "C" {
 /** \brief free the engine connection
  * \todo move this inside engine class
  * */
-void free_engine(Engine* engine) {
+void free_engine(Engine* const engine) {
 	delete engine;
 }
 
-Connection* engine_connect(Engine* engine) {
+Connection* engine_connect(Engine* const engine) {
 	std::unique_ptr<Connection>conn = engine->connect();
 
 	return conn->clone_c();

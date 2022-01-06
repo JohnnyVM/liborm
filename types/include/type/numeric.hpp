@@ -80,12 +80,12 @@ class Numeric : virtual public TypeEngine {
 	inline friend bool operator _Op(std::decimal::decimal64 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
 	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal32 __rhs) {return __lhs._value _Op __rhs;};\
 	inline friend bool operator _Op(std::decimal::decimal32 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;}
-	_DECLARE_TYPE_NUMERIC_COMPARISON(==);
-	_DECLARE_TYPE_NUMERIC_COMPARISON(!=);
-	_DECLARE_TYPE_NUMERIC_COMPARISON(>);
-	_DECLARE_TYPE_NUMERIC_COMPARISON(<);
-	_DECLARE_TYPE_NUMERIC_COMPARISON(>=);
-	_DECLARE_TYPE_NUMERIC_COMPARISON(<=);
+	_DECLARE_TYPE_NUMERIC_COMPARISON(==)
+	_DECLARE_TYPE_NUMERIC_COMPARISON(!=)
+	_DECLARE_TYPE_NUMERIC_COMPARISON(>)
+	_DECLARE_TYPE_NUMERIC_COMPARISON(<)
+	_DECLARE_TYPE_NUMERIC_COMPARISON(>=)
+	_DECLARE_TYPE_NUMERIC_COMPARISON(<=)
 /// \todo define comparaision with floating point
 
 #define _DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op) __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)

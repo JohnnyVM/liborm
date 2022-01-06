@@ -7,7 +7,7 @@
 
 extern "C" {
 
-struct connection_result connection_execute(Connection* conn, const char* stmt) {
+struct connection_result connection_execute(Connection* const conn, const char* const stmt) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 	auto [cursor, err] = conn->execute((std::string)stmt);
 	if(err != SQL_DONE && err != SQL_ROWS) {
@@ -21,15 +21,15 @@ struct connection_result connection_execute(Connection* conn, const char* stmt) 
 	return state;
 }
 
-void free_connection(Connection* conn) {
+void free_connection(Connection* const conn) {
 	delete conn;
 }
 
-const char* connection_error_message(Connection* conn) {
+const char* connection_error_message(Connection* const conn) {
 	return conn->error_message();
 }
 
-unsigned connection_changes(Connection* conn) {
+unsigned connection_changes(Connection* const conn) {
 	return conn->changes();
 }
 

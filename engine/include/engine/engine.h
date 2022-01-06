@@ -42,10 +42,8 @@ extern "C" {
 #endif
 
 __attribute__((warn_unused_result)) Engine* create_engine_p(const char* uri);
-
-void free_engine(Engine* engine);
-
-__attribute__((warn_unused_result)) Connection* engine_connect(Engine* engine);
+void free_engine(Engine* const engine);
+__attribute__((warn_unused_result)) Connection* engine_connect(Engine* const engine);
 
 #ifdef __cplusplus
 }

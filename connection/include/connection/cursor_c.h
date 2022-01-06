@@ -12,15 +12,15 @@ typedef struct Cursor Cursor;
 extern "C" {
 #endif
 
-__attribute__ ((warn_unused_result)) conn_state cursor_open(Cursor* c);
-__attribute__ ((warn_unused_result)) conn_state cursor_close(Cursor* c);
-__attribute__ ((warn_unused_result)) conn_state cursor_fetch(Cursor* c);
-void free_cursor(Cursor* c);
+__attribute__ ((warn_unused_result)) conn_state cursor_open(Cursor* const c);
+__attribute__ ((warn_unused_result)) conn_state cursor_close(Cursor* const c);
+__attribute__ ((warn_unused_result)) conn_state cursor_fetch(Cursor* const c);
+void free_cursor(Cursor* const c);
 
-__attribute__ ((warn_unused_result)) unsigned cursor_nfields(Cursor *c);
-__attribute__ ((warn_unused_result)) unsigned cursor_nrows(Cursor *c);
-__attribute__ ((warn_unused_result)) unsigned cursor_changes(Cursor *c);
-__attribute__ ((warn_unused_result)) TypeEngine* cursor_getValue(Cursor *c, unsigned row, unsigned column);
+__attribute__ ((warn_unused_result)) unsigned cursor_nfields(Cursor* const c);
+__attribute__ ((warn_unused_result)) unsigned cursor_nrows(Cursor* const c);
+__attribute__ ((warn_unused_result)) unsigned cursor_changes(Cursor* const c);
+__attribute__ ((warn_unused_result)) TypeEngine* cursor_getValue(Cursor* const c, unsigned row, unsigned column);
 
 #ifdef __cplusplus
 }
