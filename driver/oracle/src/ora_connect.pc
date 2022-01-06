@@ -12,12 +12,6 @@
 
 /**
  * \brief enable thread
- *
- * Normally should be considered a memory leak but is a expected and defined behaviour https://docs.oracle.com/cd/A58617_01/server.804/a58233/adv.htm#421518
- * at least for old version, i didnt found new information about that
- * for now we will ignore that but have to be treated carefully and memory usage reviewed
- * Preliminary test show taht the leak only appear with CPOOL=YES and oposite that documentation claim in the test seem like a lost
- * in the performace (10%~20% loss of performance) more tests needed
  * 
  * \warning this set a global variable that cant be free or accessed in any normal way (memory leak) but is small
  * \return struct connection_result 
