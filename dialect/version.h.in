@@ -1,0 +1,9 @@
+#ifndef LIBORM_DIALECT_H
+#define LIBORM_DIALECT_H
+
+#define DIALECT_VERSION_MAJOR @dialect_VERSION_MAJOR@
+#define DIALECT_VERSION_MINOR @dialect_VERSION_MINOR@
+
+#endif
+
+

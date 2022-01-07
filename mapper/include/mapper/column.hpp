@@ -7,6 +7,7 @@
 #include <variant>
 #include <cassert>
 #include <memory>
+#include <utility>
 
 #include "mapper/table_element.hpp"
 #include "type/engine.h"
@@ -21,7 +22,15 @@ using default_type = std::variant<
 	type::Datetime>;
 
 struct column_params {
-	const std::string& name;
+	inline column_params& operator=(const column_params& src) {
+		name = src.name;
+		//type = std::move(src.type);
+		primary_key = src.primary_key;
+		nullable = src.nullable;
+		default_value = src.default_value;
+		return *this;
+	}
+	std::string name;
 	std::unique_ptr<TypeEngine> type;
 	bool primary_key;
 	bool nullable;
@@ -35,9 +44,9 @@ class Column : public orm::TableElement {
 	public:
 	Column(const Column&) : TableElement() {};
 	~Column() {}
-	Column(column_params p)
+	Column(const column_params& p)
 		: TableElement(p.name),
-		type(p.type),
+		//type(std::move(p.type)),
 		primary_key(p.primary_key),
 		nullable(p.nullable),
 		default_value(p.default_value)
@@ -49,7 +58,7 @@ class Column : public orm::TableElement {
 };
 
 /** Return a class Column */
-std::unique_ptr<Column> column(column_params p);
+std::unique_ptr<Column> column(const column_params& p);
 
 }
 
