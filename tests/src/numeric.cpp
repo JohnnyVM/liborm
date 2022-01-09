@@ -9,13 +9,13 @@ TEST_GROUP(numeric){};
 TEST(numeric, cast_integer)
 {
     long double fnum = 12.146L;
-    orm::type::Numeric numeric{2, 3, fnum}; // ??? waht happen with the digits, teorically this case is not realistic
+    orm::type::Numeric numeric{2U, 3U, fnum}; // ??? waht happen with the digits, teorically this case is not realistic
     // cast to int
     using std::to_string;
     CHECK(int(fnum) != numeric);
 
     long double fnum2 = 12.546L;
-    orm::type::Numeric numeric2{2, 3, fnum};
+    orm::type::Numeric numeric2{2U, 3U, fnum};
     // cast to int
     try {
         CHECK(int(fnum2) != numeric2); // throw, decimal vs integer
@@ -29,7 +29,7 @@ TEST(numeric, cast_integer)
 TEST(numeric, cast_numeric)
 {
     long double fnum = 12.546L;
-    orm::type::Numeric numeric{2, 3, fnum};
+    orm::type::Numeric numeric{2U, 3U, fnum};
     // cast to int
     CHECK(int(fnum) != numeric);
     CHECK(int(fnum) == int(numeric));
@@ -44,7 +44,7 @@ TEST(numeric, int_op_equivalence)
 {
     int inum = 12.546L;
     //float fnum = 12.546L;
-    orm::type::Numeric numeric{2, 0, inum};
+    orm::type::Numeric numeric{2U, 0U, inum};
     // cast to int
     CHECK(numeric + 1 == inum + 1);
     CHECK(numeric * 2 == inum * 2);
@@ -55,7 +55,7 @@ TEST(numeric, int_op_equivalence)
     CHECK(numeric / 2 != fnum / 2);
     CHECK(numeric - 1 != fnum - 1);*/
 
-    orm::type::Numeric numeric2{2, 1, 12.546L};
+    orm::type::Numeric numeric2{2U, 1U, 12.546L};
     // cast to int
     CHECK(numeric2 + 1 != inum + 1);
     CHECK(numeric2 * 2 != inum * 2);

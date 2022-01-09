@@ -13,7 +13,7 @@ TEST(typeengine, numeric_to_string)
 {
     std::stringstream stream;
     long double fnum = 12.546L;
-    orm::type::Numeric numeric{2, 3, fnum};
+    orm::type::Numeric numeric{2U, 3U, fnum};
     const TypeEngine &alias = numeric;
 
     using std::to_string;

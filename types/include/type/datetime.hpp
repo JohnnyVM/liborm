@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <cassert>
 #include <mutex>
+#include <memory>
 
 #include "type/engine.h"
 
@@ -40,6 +41,9 @@ class Datetime : public virtual TypeEngine {
 			return;
 		}
 	}
+
+	std::unique_ptr<TypeEngine> clone() const override { return std::make_unique<Datetime>(ts); }
+
 
 #define _DATETIME_BINARY_OPERATOR(_Op) \
 	inline friend bool operator _Op(const Datetime& _lhs, const Datetime& _rhs) { \

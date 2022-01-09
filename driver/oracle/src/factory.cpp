@@ -34,7 +34,8 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 }
 
 std::unique_ptr<orm::type::Numeric> driver::oracle::TypeFactory::Numeric() const {
-	return std::make_unique<orm::type::Numeric>(data.get()->precision, data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
+	assert(data.get()->precision >= 0 && data.get()->scale >= 0);
+	return std::make_unique<orm::type::Numeric>((unsigned)data.get()->precision, (unsigned)data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
 }
 
 std::unique_ptr<orm::type::String> driver::oracle::TypeFactory::String() const {

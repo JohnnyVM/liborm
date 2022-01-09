@@ -20,6 +20,7 @@ using decimal128 = std::decimal::decimal128;
 #include <cstdlib>
 #include <string>
 #include <stdexcept>
+#include <memory>
 
 class TypeEngine { // Keep that separate for class slicing
 	public:
@@ -38,7 +39,7 @@ class TypeEngine { // Keep that separate for class slicing
 	inline friend std::string to_string(const TypeEngine& _engine) {
     	return std::string(_engine);
   	}
-
+	virtual std::unique_ptr<TypeEngine> clone() const = 0;
 };
 
 #endif

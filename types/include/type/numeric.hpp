@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <limits>
+#include <memory>
 #include "type/engine.h"
 #define __STDC_WANT_DEC_FP__
 #include <cfloat>
@@ -21,26 +22,40 @@ namespace orm::type {
  */
 class Numeric : virtual public TypeEngine {
 	public:
-	template<typename W,
-			 std::enable_if_t<std::is_arithmetic<W>::value, bool> = true>
-	Numeric(unsigned arg_precision, unsigned arg_scale, W arg_value) :
-	Numeric(arg_precision, arg_scale, (std::decimal::decimal128)arg_value) {
-		assert(not(std::is_floating_point<W>::value ^ (scale >0)));
-	}
-
-	Numeric(unsigned arg_precision, unsigned arg_scale, std::decimal::decimal128 arg_value) :
+	template<typename A,
+			 std::enable_if_t<std::is_integral<A>::value and std::is_unsigned<A>::value, bool> = true,
+			 typename B,
+			 std::enable_if_t<std::is_integral<B>::value and std::is_unsigned<B>::value, bool> = true>
+	Numeric(const A& arg_precision, const B& arg_scale, std::decimal::decimal128 arg_value) :
 		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale), _value(arg_value) {
 			assert(precision <= DEC128_MANT_DIG);}
-	Numeric(unsigned arg_precision, unsigned arg_scale) :
-		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
-		precision(arg_precision), scale(arg_scale) {
+
+	template<typename A,
+			 std::enable_if_t<std::is_integral<A>::value and std::is_unsigned<A>::value, bool> = true,
+			 typename B,
+			 std::enable_if_t<std::is_integral<B>::value and std::is_unsigned<B>::value, bool> = true,
+			 typename W,
+			 std::enable_if_t<std::is_arithmetic<W>::value, bool> = true>
+	Numeric(const A& arg_precision, const B& arg_scale, W arg_value) :
+	Numeric(arg_precision, arg_scale, (std::decimal::decimal128)arg_value) {
+		assert(not(std::is_floating_point<W>::value ^ (scale > 0)));}
+
+	template<typename A,
+			 std::enable_if_t<std::is_integral<A>::value and std::is_unsigned<A>::value, bool> = true,
+			 typename B,
+			 std::enable_if_t<std::is_integral<B>::value and std::is_unsigned<B>::value, bool> = true>
+	Numeric(const A& arg_precision, const B& arg_scale) :
+		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)), precision(arg_precision), scale(arg_scale) {
 			assert(precision <= DEC128_MANT_DIG);}
 
-	const unsigned precision;
-	const unsigned scale;
+	template<typename A,
+			 std::enable_if_t<std::is_integral<A>::value and std::is_unsigned<A>::value, bool> = true>
+	Numeric(const A& arg_precision) : Numeric(arg_precision, 0U) {}
 
 	Numeric(const Numeric& other) : Numeric(other.precision, other.scale, other._value) {}
+
+	std::unique_ptr<TypeEngine> clone() const { return std::make_unique<Numeric>(precision, scale, _value); }
 
 	template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
 	inline explicit operator I() const {
@@ -114,6 +129,9 @@ class Numeric : virtual public TypeEngine {
 	 * \return std::string 
 	 */
 	explicit operator std::string() const;
+
+	const unsigned precision;
+	const unsigned scale;
 
 	private:
 	std::decimal::decimal128 _value;

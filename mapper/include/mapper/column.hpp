@@ -12,7 +12,6 @@
 #include "mapper/table_element.hpp"
 #include "type/engine.h"
 #include "type/types.hpp"
-#include "mapper/table.hpp"
 
 namespace orm {
 
@@ -21,44 +20,58 @@ using default_type = std::variant<
 	type::Numeric,
 	type::Datetime>;
 
-struct column_params {
-	inline column_params& operator=(const column_params& src) {
-		name = src.name;
-		//type = std::move(src.type);
-		primary_key = src.primary_key;
-		nullable = src.nullable;
-		default_value = src.default_value;
-		return *this;
-	}
-	std::string name;
-	std::unique_ptr<TypeEngine> type;
-	bool primary_key;
-	bool nullable;
-	default_type(*default_value)(void);
-};
+struct non_primary_key_nullable { bool primary_key; bool nullable; };
 
 /**
  * \brief necesary definition to pass to class constructor
  */
 class Column : public orm::TableElement {
+	private:
+	/* \todo default value */
+
 	public:
-	Column(const Column&) : TableElement() {};
-	~Column() {}
-	Column(const column_params& p)
-		: TableElement(p.name),
-		//type(std::move(p.type)),
-		primary_key(p.primary_key),
-		nullable(p.nullable),
-		default_value(p.default_value)
+	Column(const Column&) = delete;
+	Column& operator=(const Column&) = delete;
+	~Column() override {}
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	Column(const T& name, std::unique_ptr<TypeEngine>targ)
+		: TableElement(std::string(name)),
+		type(targ->clone()),
+		primary_key(false),
+		nullable(true),
+		default_value(nullptr){}
+
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	Column(const T& name, std::unique_ptr<TypeEngine>targ, bool pk, bool nulla, default_type(*dv)(void))
+		: TableElement(std::string(name)),
+		type(targ->clone()),
+		primary_key(pk),
+		nullable(nulla),
+		default_value(dv)
 	{assert(primary_key!=true || nullable == false);}
+
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	Column(const T& name, std::unique_ptr<TypeEngine>targ, const struct non_primary_key_nullable& pknulla)
+		: TableElement(std::string(name)),
+		type(targ->clone()),
+		primary_key(pknulla.primary_key),
+		nullable(pknulla.nullable),
+		default_value(nullptr)
+	{assert(primary_key!=true || nullable == false);}
+
 	std::unique_ptr<TypeEngine> type;
 	bool primary_key = false;
 	bool nullable = true;
 	default_type(*default_value)(void); /* \todo */
+
 };
 
 /** Return a class Column */
-std::unique_ptr<Column> column(const column_params& p);
+std::unique_ptr<Column> column(const std::string& name, std::unique_ptr<TypeEngine>targ);
+std::unique_ptr<Column> column(const std::string& name, std::unique_ptr<TypeEngine>targ, const struct non_primary_key_nullable& npk);
+std::unique_ptr<TypeEngine> Numeric(unsigned precision);
+std::unique_ptr<TypeEngine> Numeric(unsigned precision, unsigned scale);
+std::unique_ptr<TypeEngine> String(size_t);
 
 }
 

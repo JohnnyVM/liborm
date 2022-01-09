@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <vector>
 #include <memory>
+#include <cassert>
 
 #include "mapper/table_element.hpp"
 #include "mapper/table_restriction.hpp"
@@ -12,8 +13,6 @@
 
 namespace orm {
 
-class Column;
-
 template<class T>
 struct movable_il {
     mutable T t;
@@ -21,24 +20,24 @@ struct movable_il {
     movable_il( T&& in ): t(std::move(in)) {}
 };
 
-template<class T, class A=std::allocator<T>>
-std::vector<T,A> vector_from_il( std::initializer_list< movable_il<T> > il ) {
-    std::vector<T,A> r( std::make_move_iterator(il.begin()), std::make_move_iterator(il.end()) );
-    return r;
-}
-
 class Table : public orm::SchemaElement {
 	public:
 	Table& operator=(const Table&) = delete;
 
-	Table(const std::string& arg_name, std::initializer_list<movable_il<TableElement> >args) : orm::SchemaElement(arg_name) {
+	Table(const std::string& arg_name, std::initializer_list<movable_il<std::unique_ptr<orm::Column>> >args) : orm::SchemaElement(arg_name) {
 		for(auto&& te : args) {
-			if(typeid(te) == typeid(orm::Column)) {
-				c.push_back(te);
-			} else if(typeid(*te) == typeid(orm::TableRestriction)) {
-				restrictions.push_back(te);
+			std::unique_ptr<orm::Column> elem = std::move(te);
+			if(orm::Column* column = dynamic_cast<orm::Column*>(elem.get())) {
+				c.push_back(std::make_unique<orm::Column>(
+							column->name,
+							column->type->clone(),
+							column->primary_key,
+							column->nullable,
+							column->default_value));
+			// todo} else if(dynamic_cast<orm::TableRestriction*>(elem.get())) {
+				// restrictions.push_back(std::move(elem));
 			} else {
-				throw std::invalid_argument("Invalid element pass to table constructor");
+				assert(!"Invalid type derived from table element");
 			}
 		}
 	}
