@@ -29,20 +29,19 @@ class Cursor final : public PCursor {
 	Cursor& operator=(const Cursor& arg);
 	[[nodiscard]] conn_state close(void) override;
 	[[nodiscard]] conn_state fetch(void) override;
-	[[nodiscard]] unsigned nfields(void) override {return _nfields;};
-	[[nodiscard]] unsigned nrows(void) override {return _ntuples;};
-	[[nodiscard]] unsigned changes(void) override {return _changes;};
-	[[nodiscard]] bool is_open(void) override {return cursor.use_count() > 0;}
-	[[nodiscard]] TypeEngine* _getValue(unsigned row, unsigned column);
-	[[nodiscard]] PCursor* clone_c(void) override;
+	[[nodiscard]] unsigned nfields(void) const override { return _nfields; }
+	[[nodiscard]] unsigned nrows(void) const override { return _ntuples; }
+	[[nodiscard]] unsigned changes(void) const override { return _changes; }
+	[[nodiscard]] bool is_open(void) const override { return cursor.use_count() > 0; }
+	[[nodiscard]] TypeEngine* _getValue(unsigned row, unsigned column) const override;
+	[[nodiscard]] PCursor* clone_c(void) const override;
 	protected:
 	[[nodiscard]] conn_state open(void) override;
 	private:
-	std::shared_ptr<struct resource_ora_cursor> cursor;
-	void open_cursor(void);
-	void close_cursor(void);
 	std::vector<std::shared_ptr<TypeEngine>> _values;
-	std::vector<std::string> names;
+	std::shared_ptr<struct resource_ora_cursor> cursor;
+	conn_state open_cursor(void);
+	void close_cursor(void);
 	struct oracle_connection_data conn;
 	unsigned _nfields;
 	unsigned _ntuples;

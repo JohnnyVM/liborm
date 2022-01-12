@@ -82,14 +82,7 @@ driver_ora_execute_many_0(struct oracle_connection_data* dbconn, const char* stm
 }
 
 /**
- * Quirks, in the documentation said that
- * CURSOR are declared values at scope file(but in other parts of the documentation are declared as function level)
- * and seem like some gramaticals error too happen, well in general y dont understad why this happen BUT
- * after a few try-error tests... (with threads cursor declared a function level?) this work
- * specify nathing... probably is worth of a further study... becouse sometimes too work in diferent files
- * anyway, open cursor and seem like open/fetch/close work better toghether (sometimes)
  * \param many number of rows required, can be returned less
- * \
  */
 struct connection_result
 driver_ora_cursor_open_0(struct oracle_connection_data* dbconn, unsigned nfields) {
@@ -192,5 +185,3 @@ driver_ora_cursor_close_0(struct oracle_connection_data* dbconn) {
 	}
 	return state;
 }
-
-/* resource 0 */

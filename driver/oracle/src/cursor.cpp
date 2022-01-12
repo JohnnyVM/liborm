@@ -37,19 +37,30 @@ driver::oracle::Cursor::~Cursor() {
 	std::call_once(close_cursor_flag, [this](){ close_cursor(); });
 }
 
-void driver::oracle::Cursor::open_cursor(void) {
+conn_state driver::oracle::Cursor::open_cursor(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 	state = cursor->open(&conn, _nfields);
 	if(state.state) {
 		assert(!"Atempt to open cursor failed");
 		throw std::runtime_error("Couldn't open the cursor");
+		return state.state;
 	}
+
+	for(unsigned i = 0; i < _nfields; i++) {
+		struct ora_database_type ptr;
+		state = driver_ora_get_descriptor_column(&conn, i + 1, &ptr);
+		if(state.state) {
+			assert(!"Internal error");
+			return state.state;
+		}
+		_names.push_back(std::string(ptr.name));
+	}
+	return state.state;
 }
 
 conn_state driver::oracle::Cursor::open(void) {
 	struct connection_result state = driver_ora_fields_count(&conn, &_nfields);
-	std::call_once(open_cursor_flag, [this](){ open_cursor(); });
-
+	std::call_once(open_cursor_flag, [this, &state](){ state.state = open_cursor();});
 	return state.state;
 }
 
@@ -106,12 +117,12 @@ conn_state driver::oracle::Cursor::close(void) {
 	return state.state;
 }
 
-PCursor* driver::oracle::Cursor::clone_c() {
+PCursor* driver::oracle::Cursor::clone_c() const {
 	driver::oracle::Cursor* c = new driver::oracle::Cursor(conn, cursor);
 	*c = *this;
 	return dynamic_cast<PCursor*>(c);
 }
 
-TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) {
+TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) const {
 	return _values[row * nfields() + column].get();
 }

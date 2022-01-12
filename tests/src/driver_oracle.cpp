@@ -55,10 +55,16 @@ TEST(driver_oracle, select_number_16)
 		FAIL(conn->error_message());
 	}
 
+	CHECK_EQUAL(std::string("LONG_DOUBLE"), cursor->name(0));
+
 	error = cursor->fetch();
 	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 	const orm::type::Numeric& minus = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(minus == -1);
+
+	TypeEngine* nval = cursor->getValue(0, 0);
+	TypeEngine* cval = cursor->getValue(0, cursor->number("LONG_DOUBLE"));
+	CHECK_EQUAL(nval, cval);
 
 	std::tie(cursor, err) = conn->execute("SELECT CAST(9999999999.999999989 AS NUMBER(19,9)) AS LONG_DOUBLE FROM DUAL");
 	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
@@ -87,6 +93,8 @@ TEST(driver_oracle, acbuffer)
 	if(err0 != SQL_ROWS || conn->changes() != 0 || cursor0 == nullptr) {
 		FAIL(conn->error_message());
 	}
+
+	CHECK_EQUAL(std::string("LONG_DOUBLE"), cursor0->name(0));
 
 	// this test fail in debug mode becouse assert
 	#ifndef NDEBUG
