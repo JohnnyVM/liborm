@@ -29,11 +29,10 @@ namespace orm::type {
 class Datetime : public virtual TypeEngine {
 	public:
 	~Datetime() = default;
-	Datetime() noexcept : TypeEngine("datetime", sizeof(struct timespec)) {}
-	Datetime(struct timespec arg) noexcept : TypeEngine("datetime", sizeof(struct timespec)), ts(arg) {}
-	template<typename T,
-		std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
-	Datetime(T arr) : TypeEngine("datetime", sizeof(struct timespec)) {
+	Datetime() noexcept : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)) {}
+	Datetime(struct timespec arg) noexcept : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)), ts(arg) {}
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	Datetime(T arr) : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)) {
 		if(std::string(arr) == "now" or std::string(arr) == "NOW") { // todo unicode
 			int err = clock_gettime(CLOCK_REALTIME, &ts) // time from epoch
 			assert(err == 0);
@@ -47,7 +46,7 @@ class Datetime : public virtual TypeEngine {
 
 #define _DATETIME_BINARY_OPERATOR(_Op) \
 	inline friend bool operator _Op(const Datetime& _lhs, const Datetime& _rhs) { \
-		return (_lhs.ts.tv_sec _Op _rhs.ts.tv_sec) or ((_lhs.ts.tv_sec == _rhs.ts.tv_sec) and (_lhs.ts.tv_nsec _Op _rhs.ts.tv_nsec)); }
+		return _lhs.is_null or _rhs.is_null ? false : (_lhs.ts.tv_sec _Op _rhs.ts.tv_sec) or ((_lhs.ts.tv_sec == _rhs.ts.tv_sec) and (_lhs.ts.tv_nsec _Op _rhs.ts.tv_nsec)); }
 	_DATETIME_BINARY_OPERATOR(==)
 	_DATETIME_BINARY_OPERATOR(!=)
 	_DATETIME_BINARY_OPERATOR(>)
@@ -58,9 +57,9 @@ class Datetime : public virtual TypeEngine {
 
 #define _TIME_T_BINARY_OPERATOR(_Op) \
 	inline friend bool operator _Op(const Datetime& _lhs, const time_t& _rhs) { \
-		return (_lhs.ts.tv_sec _Op _rhs) or ((_lhs.ts.tv_sec == _rhs) and (_lhs.ts.tv_nsec _Op 0L)); } \
+		return _lhs.is_null ? false : (_lhs.ts.tv_sec _Op _rhs) or ((_lhs.ts.tv_sec == _rhs) and (_lhs.ts.tv_nsec _Op 0L)); } \
 	inline friend bool operator _Op(const time_t& _lhs, const Datetime& _rhs) { \
-		return (_lhs _Op _rhs.ts.tv_sec) or ((_lhs == _rhs.ts.tv_sec) and (0L _Op _rhs.ts.tv_nsec)); }
+		return _rhs.is_null ? false : (_lhs _Op _rhs.ts.tv_sec) or ((_lhs == _rhs.ts.tv_sec) and (0L _Op _rhs.ts.tv_nsec)); }
 	_TIME_T_BINARY_OPERATOR(==)
 	_TIME_T_BINARY_OPERATOR(!=)
 	_TIME_T_BINARY_OPERATOR(>)

@@ -27,7 +27,7 @@ class Numeric : virtual public TypeEngine {
 			 typename B,
 			 std::enable_if_t<std::is_integral<B>::value and std::is_unsigned<B>::value, bool> = true>
 	Numeric(const A& arg_precision, const B& arg_scale, std::decimal::decimal128 arg_value) :
-		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)),
+		TypeEngine(init_name(arg_precision, arg_scale), typeid(*this), sizeof(std::decimal::decimal128)),
 		precision(arg_precision), scale(arg_scale), _value(arg_value) {
 			assert(precision <= DEC128_MANT_DIG);}
 
@@ -46,7 +46,7 @@ class Numeric : virtual public TypeEngine {
 			 typename B,
 			 std::enable_if_t<std::is_integral<B>::value and std::is_unsigned<B>::value, bool> = true>
 	Numeric(const A& arg_precision, const B& arg_scale) :
-		TypeEngine(init_name(arg_precision, arg_scale), sizeof(std::decimal::decimal128)), precision(arg_precision), scale(arg_scale) {
+		TypeEngine(init_name(arg_precision, arg_scale), typeid(*this), sizeof(std::decimal::decimal128)), precision(arg_precision), scale(arg_scale) {
 			assert(precision <= DEC128_MANT_DIG);}
 
 	template<typename A,
@@ -85,16 +85,16 @@ class Numeric : virtual public TypeEngine {
 #define _DECLARE_TYPE_NUMERIC_COMPARISON(_Op) __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
 #define __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, TID, TID2) \
 	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>\
-	inline friend bool operator _Op(const Numeric& __lhs, const TID& __rhs) {return __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(const Numeric& __lhs, const TID& __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;};\
 	template<typename TID2, std::enable_if_t<std::is_integral<TID2>::value, bool> = true>\
-	inline friend bool operator _Op(const TID2& __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
-	inline friend bool operator _Op(const Numeric& __lhs, const Numeric& __rhs) {return __lhs._value _Op __rhs._value;};\
-	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal128 __rhs) {return __lhs._value _Op __rhs;};\
-	inline friend bool operator _Op(std::decimal::decimal128 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
-	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal64 __rhs) {return __lhs._value _Op __rhs;};\
-	inline friend bool operator _Op(std::decimal::decimal64 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;};\
-	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal32 __rhs) {return __lhs._value _Op __rhs;};\
-	inline friend bool operator _Op(std::decimal::decimal32 __lhs, const Numeric& __rhs) {return __lhs _Op __rhs._value;}
+	inline friend bool operator _Op(const TID2& __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, const Numeric& __rhs) {return __lhs.is_null or __rhs.is_null ? false : __lhs._value _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal128 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(std::decimal::decimal128 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal64 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(std::decimal::decimal64 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;};\
+	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal32 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;};\
+	inline friend bool operator _Op(std::decimal::decimal32 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}
 	_DECLARE_TYPE_NUMERIC_COMPARISON(==)
 	_DECLARE_TYPE_NUMERIC_COMPARISON(!=)
 	_DECLARE_TYPE_NUMERIC_COMPARISON(>)
@@ -103,6 +103,7 @@ class Numeric : virtual public TypeEngine {
 	_DECLARE_TYPE_NUMERIC_COMPARISON(<=)
 /// \todo define comparaision with floating point
 
+/// \todo operations with null values???
 #define _DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op) __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
 #define __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, TID, TID2) \
 	inline Numeric& operator _Op##=(const Numeric& rhs) {_value _Op##= rhs._value; return *this;};\
@@ -117,10 +118,16 @@ class Numeric : virtual public TypeEngine {
 	inline Numeric& operator _Op##=(const TID& rhs) {_value _Op##= rhs; return *this;};\
 	template<typename TID2, std::enable_if_t<std::is_integral<TID2>::value, bool> = true>\
 	inline friend Numeric operator _Op(Numeric lhs, const TID2& rhs) { lhs _Op##= rhs; return lhs;}
-	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(+);
-	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(-);
-	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(*);
-	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(/);
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(+)
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(-)
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(*)
+	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(/)
+
+	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>
+	inline Numeric& operator=(const TID& rhs) {_value = rhs; return *this;};
+	inline Numeric& operator=(const std::decimal::decimal128& rhs) { _value = rhs; return *this; };
+	inline Numeric& operator=(const std::decimal::decimal64& rhs) { _value = rhs; return *this; };
+	inline Numeric& operator=(const std::decimal::decimal32& rhs) { _value = rhs; return *this; };
 
 	/**
 	 * \brief Output the number as string

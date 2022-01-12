@@ -34,10 +34,22 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 }
 
 std::unique_ptr<orm::type::Numeric> driver::oracle::TypeFactory::Numeric() const {
-	assert(data.get()->precision >= 0 && data.get()->scale >= 0);
-	return std::make_unique<orm::type::Numeric>((unsigned)data.get()->precision, (unsigned)data.get()->scale, number_to_Decimal128(data.get()->data, data.get()->returned_length));
+	assert(data.get()->precision > 0 && data.get()->scale >= 0);
+	std::unique_ptr<orm::type::Numeric> out = std::make_unique<orm::type::Numeric>((unsigned)data.get()->precision, (unsigned)data.get()->scale);
+	if(data.get()->indicator == -1) {
+		out->is_null = true;
+	} else {
+		*out.get() = number_to_Decimal128(data.get()->data, data.get()->returned_length);
+	}
+	return out;
 }
 
 std::unique_ptr<orm::type::String> driver::oracle::TypeFactory::String() const {
-	return std::make_unique<orm::type::String>(data.get()->length, data.get()->data);
+	std::unique_ptr<orm::type::String> out = std::make_unique<orm::type::String>(data.get()->length);
+	if(data.get()->indicator == -1) {
+		out->is_null = true;
+	} else {
+		*out.get() = data.get()->data;
+	}
+	return out;
 }

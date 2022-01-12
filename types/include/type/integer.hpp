@@ -12,9 +12,9 @@ namespace orm::type {
 
 class Integer : public TypeEngine {
 	public:
-	Integer() : TypeEngine("integer", sizeof(intmax_t)) {}
+	Integer() : TypeEngine("integer", typeid(*this), sizeof(intmax_t)) {}
 	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-	Integer(T val) : TypeEngine("integer", sizeof(intmax_t)), _value(val) {
+	Integer(T val) : TypeEngine("integer", typeid(*this), sizeof(intmax_t)), _value(val) {
 		assert(val < std::numeric_limits<uintmax_t>::lowest() || std::numeric_limits<uintmax_t>::max() > val); // overflow
 	}
 

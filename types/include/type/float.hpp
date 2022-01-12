@@ -12,7 +12,7 @@ namespace orm::type {
  */
 class Float : public virtual TypeEngine {
 	public:
-	Float() : TypeEngine("float", sizeof(long double)) {}
+	Float() : TypeEngine("float", typeid(*this), sizeof(long double)) {}
 };
 
 }

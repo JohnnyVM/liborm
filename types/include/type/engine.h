@@ -27,7 +27,8 @@ class TypeEngine { // Keep that separate for class slicing
 	const size_t length;
 	const std::string name;
 	virtual ~TypeEngine() {}
-	TypeEngine(std::string arg_name, size_t arg_length) : length(arg_length), name(arg_name) {}
+	TypeEngine(std::string arg_name, const std::type_info& arg_type, size_t arg_length)
+	: length(arg_length), name(arg_name), type(arg_type), is_null(false) {}
 	inline std::string bind_expression() const { return (std::string)":" + name; }
 	/* \todo
 	 * bind_processor() Return a conversion function for processing bind values.
@@ -40,6 +41,9 @@ class TypeEngine { // Keep that separate for class slicing
     	return std::string(_engine);
   	}
 	virtual std::unique_ptr<TypeEngine> clone() const = 0;
+
+	const std::type_info& type;
+	bool is_null; // null value
 };
 
 #endif
