@@ -24,6 +24,7 @@ class TypeFactory final : virtual public orm::TypeFactory {
 	const std::type_info& coerced_type() const  override;
 	std::unique_ptr<orm::type::Numeric> Numeric() const override;
 	std::unique_ptr<orm::type::String> String() const override;
+	std::unique_ptr<orm::type::Datetime> Datetime() const override;
 	~TypeFactory() = default;
 	private:
 	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> data;

@@ -35,7 +35,7 @@ TEST(driver_oracle, select_number_16)
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
 	std::shared_ptr<Engine> engine = create_engine(uri);
-	std::shared_ptr<Connection> conn = engine->connect();
+	std::unique_ptr<Connection> conn = engine->connect();
 
 	auto [cursor, err] = conn->execute("select 16 from dual");
 	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
@@ -82,7 +82,7 @@ TEST(driver_oracle, acbuffer)
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
 	std::shared_ptr<Engine> engine = create_engine(uri);
-	std::shared_ptr<Connection> conn = engine->connect();
+	std::unique_ptr<Connection> conn = engine->connect();
 
 	auto [cursor1, err1] = conn->execute("select 16 from dual");
 	if(err1 != SQL_ROWS || conn->changes() != 0 || cursor1 == nullptr) {
@@ -101,4 +101,19 @@ TEST(driver_oracle, acbuffer)
 	auto [cursor2, err2] = conn->execute("SELECT CAST(9999999999.999999999 AS NUMBER(19,9)) AS LONG_DOUBLE FROM DUAL");
 	CHECK_TEXT(err2 == SQL_MAXOPENCURSORS, "Not returned SQL_MAXOPENCURSORS");
 	#endif
+}
+
+TEST(driver_oracle, select_date) {
+	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
+
+	std::shared_ptr<Engine> engine = create_engine(uri);
+	std::unique_ptr<Connection> conn = engine->connect();
+
+	auto [cursor, err] = conn->execute("select SYSDATE from dual");
+	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
+		FAIL(conn->error_message());
+	}
+
+	/* \todo err = cursor->fetch();
+	CHECK_TEXT(!err and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message()); */
 }

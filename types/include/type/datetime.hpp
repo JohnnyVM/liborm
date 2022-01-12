@@ -43,6 +43,7 @@ class Datetime : public virtual TypeEngine {
 
 	std::unique_ptr<TypeEngine> clone() const override { return std::make_unique<Datetime>(ts); }
 
+	inline bool operator!() const { return this->is_null ? true : false; }
 
 #define _DATETIME_BINARY_OPERATOR(_Op) \
 	inline friend bool operator _Op(const Datetime& _lhs, const Datetime& _rhs) { \

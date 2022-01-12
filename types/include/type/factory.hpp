@@ -23,7 +23,7 @@ class TypeFactory {
 	virtual std::unique_ptr<orm::type::Integer> Integer() const { assert(!"Type not supported by driver"); return nullptr; }
 	virtual std::unique_ptr<orm::type::Numeric> Numeric() const = 0;
 	virtual std::unique_ptr<orm::type::Date> Date() const { assert(!"Type not supported by driver"); return nullptr; }
-	virtual std::unique_ptr<orm::type::Datetime> Datetime() const { assert(!"Type not supported by driver"); return nullptr; }
+	virtual std::unique_ptr<orm::type::Datetime> Datetime() const = 0;
 	virtual std::unique_ptr<orm::type::Boolean> Boolean() const { assert(!"Type not supported by driver"); return nullptr; }
 	virtual std::unique_ptr<orm::type::Float> Float() const { assert(!"Type not supported by driver"); return nullptr; }
 	virtual const std::type_info& coerced_type() const = 0; /**< return the expected type */

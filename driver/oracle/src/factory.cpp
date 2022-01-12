@@ -53,3 +53,13 @@ std::unique_ptr<orm::type::String> driver::oracle::TypeFactory::String() const {
 	}
 	return out;
 }
+
+std::unique_ptr<orm::type::Datetime> driver::oracle::TypeFactory::Datetime() const {
+	std::unique_ptr<orm::type::Datetime> out = std::make_unique<orm::type::Datetime>();
+	if(data.get()->indicator == -1) {
+		out->is_null = true;
+	} else {
+		assert(!"Not implemented");
+	}
+	return out;
+}
