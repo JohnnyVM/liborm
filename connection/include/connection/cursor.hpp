@@ -21,6 +21,8 @@ class Cursor {
 	[[nodiscard]] virtual conn_state fetch(void) = 0; /**< fetch the default quantity determined by the driver */
 	[[nodiscard]] virtual unsigned nfields(void) const = 0;
 	[[nodiscard]] virtual unsigned nrows(void) const = 0;
+	[[nodiscard]] inline size_t size(unsigned n) const { return _size.at(n); }; /**< Returns the size in bytes of the column associated with the given column number. */
+	//[[nodiscard]] const std::type_info& type(unsigned n) const; /**< Returns the data type associated with the given column number */
 	[[nodiscard]] virtual unsigned changes(void) const = 0;
 	[[nodiscard]] virtual bool is_open(void) const = 0;
 	[[nodiscard]] const std::string& name(unsigned n) const; /**< return the name of the column at n position, empty if out of range*/
@@ -29,6 +31,8 @@ class Cursor {
 
 	protected:
 	std::vector<std::string> _names;
+	std::vector<size_t> _size;
+	//std::vector<std::reference_wrapper<const std::type_info>> _type_id;
 	/// \todo In pure C++ this should be public and defined at Cursor level, but for that i need a Row class
 	[[nodiscard]] virtual TypeEngine* _getValue (unsigned row, unsigned column) const = 0;
 };

@@ -53,7 +53,9 @@ conn_state driver::oracle::Cursor::open_cursor(void) {
 			assert(!"Internal error");
 			return state.state;
 		}
+		assert((size_t)ptr.length > 0);
 		_names.push_back(std::string(ptr.name));
+		_size.push_back((size_t)ptr.length);
 	}
 	return state.state;
 }
