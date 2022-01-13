@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <cassert>
 
 #include "type/engine.hpp"
 #include "connection/types.h"
