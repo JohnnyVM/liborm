@@ -19,4 +19,5 @@ TEST(typeengine, numeric_to_string)
     using std::to_string;
     stream << std::fixed << std::setprecision(numeric.scale) << fnum;
     CHECK_EQUAL(to_string(alias), stream.str());
+    CHECK_EQUAL(std::string(alias), stream.str());
 }

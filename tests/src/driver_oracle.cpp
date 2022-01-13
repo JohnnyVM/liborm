@@ -4,6 +4,7 @@
 #include "CppUTest/TestHarness.h"
 #include "connection/connection.h"
 #include "engine/engine.h"
+#include "type/types.hpp"
 
 
 TEST_GROUP(driver_oracle){};
