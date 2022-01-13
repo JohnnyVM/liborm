@@ -1,11 +1,11 @@
 #include <string>
 #include <memory>
 
-#include "CppUTest/TestHarness.h"
 #include "connection/connection.h"
 #include "engine/engine.h"
 #include "type/types.hpp"
 
+#include "CppUTest/TestHarness.h"
 
 TEST_GROUP(driver_oracle){};
 
