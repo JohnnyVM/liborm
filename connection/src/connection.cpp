@@ -7,6 +7,22 @@
 
 extern "C" {
 
+conn_state connection_close(Connection* const conn) {
+	return conn->close();
+}
+
+conn_state connection_begin(Connection* const conn) {
+	return conn->begin();
+}
+
+conn_state connection_commit(Connection* const conn) {
+	return conn->commit();
+}
+
+conn_state connection_rollback(Connection* const conn) {
+	return conn->rollback();
+}
+
 struct connection_result connection_execute(Connection* const conn, const char* const stmt) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 	auto [cursor, err] = conn->execute((std::string)stmt);
