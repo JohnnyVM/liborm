@@ -28,6 +28,7 @@ class Cursor {
 	[[nodiscard]] const std::string& name(unsigned n) const; /**< return the name of the column at n position, empty if out of range*/
 	[[nodiscard]] int number(const std::string&) const; /**< return the number of the column of name, -1 if out of range */
 	[[nodiscard]] TypeEngine* getValue(unsigned row, unsigned column) const;
+	[[nodiscard]] inline TypeEngine* getValue(unsigned row, const std::string& col) const { assert(number(col) >= 0); return getValue(row, (unsigned)number(col)); };
 
 	protected:
 	std::vector<std::string> _names;
