@@ -103,6 +103,22 @@ TEST(driver_oracle, acbuffer)
 	#endif
 }
 
+TEST(driver_oracle, select_false) {
+	conn_state error;
+	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
+
+	std::shared_ptr<Engine> engine = create_engine(uri);
+	std::unique_ptr<Connection> conn = engine->connect();
+
+	auto [cursor, err] = conn->execute("select '16' from dual  WHERE 1 = 0");
+	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr || cursor->changes() != 0 || cursor->nrows() != 0) {
+		FAIL(conn->error_message());
+	}
+
+	error = cursor->fetch();
+	CHECK_TEXT(!error and cursor->changes() == 0 and cursor->nrows() == 0, conn->error_message());
+}
+
 TEST(driver_oracle, select_date) {
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 

@@ -33,7 +33,7 @@ class Engine {
 	engine::RFC1738 params;
 };
 
-[[nodiscard]] std::shared_ptr<Engine> create_engine(const std::string& uri);
+[[nodiscard]] std::unique_ptr<Engine> create_engine(const std::string& uri);
 
 #endif
 
