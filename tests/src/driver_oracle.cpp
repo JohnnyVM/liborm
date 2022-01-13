@@ -16,7 +16,7 @@ TEST(driver_oracle, select_char_16)
 	std::shared_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
-	auto [cursor, err] = conn->execute("select '16' from dual");
+	auto [cursor, err] = conn->execute("select '16' AS STRING from dual");
 	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr || cursor->changes() != 0 || cursor->nrows() != 0) {
 		FAIL(conn->error_message());
 	}
@@ -28,6 +28,8 @@ TEST(driver_oracle, select_char_16)
 	CHECK_TEXT(dynamic_cast<orm::type::String*>(val), "invalid returned type");
 	const orm::type::String& num = dynamic_cast<orm::type::String&>(*cursor->getValue(0,0));
 	CHECK(num == "16");
+	CHECK_EQUAL(cursor->size("STRING"),3);
+	CHECK_EQUAL(cursor->size(0U),3);
 }
 
 TEST(driver_oracle, select_number_16)

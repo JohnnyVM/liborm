@@ -22,6 +22,12 @@ class Cursor {
 	[[nodiscard]] virtual unsigned nfields(void) const = 0;
 	[[nodiscard]] virtual unsigned nrows(void) const = 0;
 	[[nodiscard]] inline size_t size(unsigned n) const { return _size.at(n); }; /**< Returns the size in bytes of the column associated with the given column number. */
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	[[nodiscard]] inline size_t size(const T& __col) const {
+		std::string col = std::string(__col);
+		assert(number(col) >= 0);
+		return _size.at((unsigned)number(col));
+	}
 	//[[nodiscard]] const std::type_info& type(unsigned n) const; /**< Returns the data type associated with the given column number */
 	[[nodiscard]] virtual unsigned changes(void) const = 0;
 	[[nodiscard]] virtual bool is_open(void) const = 0;
