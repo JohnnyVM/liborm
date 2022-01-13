@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "type/types.hpp"
+#include "type/engine.hpp"
 #include "connection/types.h"
 
 /** A Cursor that is representing state from a DBAPI cursor.
