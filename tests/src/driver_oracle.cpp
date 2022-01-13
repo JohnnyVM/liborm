@@ -64,7 +64,9 @@ TEST(driver_oracle, select_number_16)
 
 	TypeEngine* nval = cursor->getValue(0, 0);
 	TypeEngine* cval = cursor->getValue(0, cursor->number("LONG_DOUBLE"));
+	TypeEngine* dval = cursor->getValue(0, "LONG_DOUBLE");
 	CHECK_EQUAL(nval, cval);
+	CHECK_EQUAL(dval, cval);
 
 	std::tie(cursor, err) = conn->execute("SELECT CAST(9999999999.999999989 AS NUMBER(19,9)) AS LONG_DOUBLE FROM DUAL");
 	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
