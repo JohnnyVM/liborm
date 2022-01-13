@@ -17,19 +17,19 @@ driver::Postgres::~Postgres() {
 struct connection_result driver::Postgres::open(void) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 
-	char *s_port = (char*)std::to_string(engine->port).data();
+	char *s_port = (char*)std::to_string(engine->port).c_str();
 	if(engine->port == 0) {
 		s_port = NULL;
 	}
 
 	pg_conn = PQsetdbLogin(
-			engine->host.data(),
+			engine->host.c_str(),
 			s_port,
 			NULL, // command line options
 			NULL, // ignored
-			engine->resource.data(),
-			engine->user.data(),
-			engine->password.data()
+			engine->resource.c_str(),
+			engine->user.c_str(),
+			engine->password.c_str()
 	);
 	if (PQstatus(pg_conn) != CONNECTION_OK) {
 		state.state = DATABASE_ERROR;

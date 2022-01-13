@@ -51,7 +51,7 @@ unsigned cursor_changes(Cursor* const c) {
 }
 
 const char* cursor_name(Cursor* const c, unsigned pos) {
-	return (char*)c->name(pos).data();
+	return (char*)c->name(pos).c_str();
 }
 
 int cursor_number(Cursor* const c, const char* const name) {

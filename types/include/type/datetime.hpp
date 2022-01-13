@@ -91,7 +91,7 @@ class Datetime : public virtual TypeEngine {
 		check = gmtime_r(&ts.tv_sec, &tm);
 		if(check == NULL) { assert(!"gmtime_r error"); throw std::system_error(errno, std::generic_category()); }
 		char out[100];
-		int icheck = strftime(out, sizeof out, std::string(val).data(), &tm);
+		int icheck = strftime(out, sizeof out, std::string(val).c_str(), &tm);
 		assert(icheck != 0);
 
 		return std::string(out);
