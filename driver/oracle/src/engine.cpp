@@ -26,13 +26,13 @@ struct oracle_connection_data driver::oracle::Engine::params_to_conn() {
 	// \todo mutext ward this
 	static int counter = 0;
 
-	length = snprintf((char*)data.user, sizeof data.user, "%s", this->params.user.c_str());
+	length = snprintf((char*)data.user, sizeof data.user, "%s", this->params.user.data());
 	CHECK_OUTPUT_SNPRINTF(length, sizeof data.user);
 
-	length = snprintf((char*)data.password, sizeof data.password, "%s", this->params.password.c_str());
+	length = snprintf((char*)data.password, sizeof data.password, "%s", this->params.password.data());
 	CHECK_OUTPUT_SNPRINTF(length, sizeof data.password);
 
-	length = snprintf((char*)data.connect_string, sizeof data.connect_string, "%s", this->params.host.c_str());
+	length = snprintf((char*)data.connect_string, sizeof data.connect_string, "%s", this->params.host.data());
 	CHECK_OUTPUT_SNPRINTF(length, sizeof data.connect_string);
 
 	length = snprintf((char*)data.dbname, sizeof data.dbname, "dbname_%i", counter);

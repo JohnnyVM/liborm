@@ -68,7 +68,7 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
 	}
 
-	struct connection_result state = oracle_cursor.value().get()->execute(&data, stmt.c_str(), nullptr);
+	struct connection_result state = oracle_cursor.value().get()->execute(&data, stmt.data(), nullptr);
 	if(state.state != SQL_ROWS) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
 	}

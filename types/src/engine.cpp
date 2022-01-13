@@ -12,7 +12,7 @@ extern "C" {
 int column_as_char(TypeEngine* const val, char**buf, size_t len) {
     std::string src = std::string(*val);
 
-    return snprintf(*buf, len, "%s", src.c_str());
+    return snprintf(*buf, len, "%s", src.data());
 }
 
 /* only numeric types meet that */
