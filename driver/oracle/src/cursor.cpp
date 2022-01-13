@@ -119,12 +119,6 @@ conn_state driver::oracle::Cursor::close(void) {
 	return state.state;
 }
 
-PCursor* driver::oracle::Cursor::clone_c() const {
-	driver::oracle::Cursor* c = new driver::oracle::Cursor(conn, cursor);
-	*c = *this;
-	return dynamic_cast<PCursor*>(c);
-}
-
 TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) const {
 	return _values[row * nfields() + column].get();
 }

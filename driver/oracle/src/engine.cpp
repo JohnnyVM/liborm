@@ -62,10 +62,3 @@ std::unique_ptr<PConnection> driver::oracle::Engine::connect() {
 	std::unique_ptr<PConnection>connection = std::make_unique<driver::oracle::Connection>(conn);
 	return connection;
 }
-
-PEngine* driver::oracle::Engine::clone_c(void) {
-	driver::oracle::Engine *engine = new driver::oracle::Engine(engine::RFC1738::compose(params));
-	*engine = *this;
-	return dynamic_cast<PEngine*>(engine);
-}
-

@@ -16,7 +16,6 @@ class Cursor {
 	public:
 	virtual ~Cursor() = default;
 	Cursor& operator=(const Cursor&) = delete;
-	[[nodiscard]] virtual Cursor* clone_c(void) const = 0;
 	[[nodiscard]] virtual conn_state open(void) = 0;
 	[[nodiscard]] virtual conn_state close(void) = 0;
 	[[nodiscard]] virtual conn_state fetch(void) = 0; /**< fetch the default quantity determined by the driver */

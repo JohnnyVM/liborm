@@ -40,9 +40,9 @@ std::unique_ptr<Engine> create_engine(const std::string& uri_arg) {
 extern "C" {
 
 Engine* create_engine_p(const char* uri){
-	std::shared_ptr<Engine> engine = create_engine((std::string)uri);
+	std::unique_ptr<Engine> engine = create_engine((std::string)uri);
 
-	return engine->clone_c();
+	return engine.release();
 }
 
 }

@@ -33,7 +33,7 @@ struct connection_result connection_execute(Connection* const conn, const char* 
 
 	state.state = err;
 	state.changes = conn->changes();
-	state.cursor = cursor->clone_c();
+	state.cursor = cursor.release();
 	return state;
 }
 

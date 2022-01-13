@@ -15,7 +15,6 @@ class Connection {
 	public:
 	virtual ~Connection() = default;
 	Connection& operator=(const Connection&) = delete;
-	[[nodiscard]] virtual Connection* clone_c() = 0; /**< warning: clone a engine have a lot of side effects, try not have 2 copy of the same object at the same time */
 	[[nodiscard]] virtual conn_state close() = 0;
 	[[nodiscard]] virtual conn_state begin() = 0;
 	[[nodiscard]] virtual conn_state commit() = 0;

@@ -34,7 +34,6 @@ class Cursor final : public PCursor {
 	[[nodiscard]] unsigned changes(void) const override { return _changes; }
 	[[nodiscard]] bool is_open(void) const override { return cursor.use_count() > 0; }
 	[[nodiscard]] TypeEngine* _getValue(unsigned row, unsigned column) const override;
-	[[nodiscard]] PCursor* clone_c(void) const override;
 	protected:
 	[[nodiscard]] conn_state open(void) override;
 	private:

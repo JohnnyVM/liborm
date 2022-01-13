@@ -26,7 +26,6 @@ class Engine {
 	Engine(const std::string& uri) : Engine(engine::RFC1738{uri}) {}
 	Engine(const engine::RFC1738& uri) : params(uri) {}
 
-	[[nodiscard]] virtual Engine* clone_c() = 0;
 	[[nodiscard]] virtual std::unique_ptr<Connection> connect() = 0; /**< return open connection to the dbapi */
 
 	protected:
