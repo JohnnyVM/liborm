@@ -38,32 +38,32 @@ driver::oracle::Cursor::~Cursor() {
 }
 
 conn_state driver::oracle::Cursor::open_cursor(void) {
-	struct connection_result state = INIT_CONNECTION_RESULT;
+	conn_state state = SQL_DONE;
 	state = cursor->open(&conn, _nfields);
-	if(state.state) {
+	if(state) {
 		assert(!"Atempt to open cursor failed");
 		throw std::runtime_error("Couldn't open the cursor");
-		return state.state;
+		return state;
 	}
 
 	for(unsigned i = 0; i < _nfields; i++) {
 		struct ora_database_type ptr;
 		state = driver_ora_get_descriptor_column(&conn, i + 1, &ptr);
-		if(state.state) {
+		if(state) {
 			assert(!"Internal error");
-			return state.state;
+			return state;
 		}
 		assert((size_t)ptr.length > 0);
 		_names.push_back(std::string(ptr.name));
 		_size.push_back((size_t)ptr.length);
 	}
-	return state.state;
+	return state;
 }
 
 conn_state driver::oracle::Cursor::open(void) {
-	struct connection_result state = driver_ora_fields_count(&conn, &_nfields);
-	std::call_once(open_cursor_flag, [this, &state](){ state.state = open_cursor();});
-	return state.state;
+	conn_state state = driver_ora_fields_count(&conn, &_nfields);
+	std::call_once(open_cursor_flag, [this, &state](){ state = open_cursor();});
+	return state;
 }
 
 /**
@@ -72,12 +72,12 @@ conn_state driver::oracle::Cursor::open(void) {
  * \return conn_state
  */
 conn_state driver::oracle::Cursor::fetch(void) {
-	struct connection_result state = INIT_CONNECTION_RESULT;
+	conn_state state = SQL_DONE;
 
 	state = cursor->fetch(&conn, &_changes);
-	if(state.state != SQL_DONE && state.state != SQL_ROWS) {
-		assert(!state.state || !"Invalid operation fetch over cursor");
-		return state.state;
+	if(state != SQL_DONE && state != SQL_ROWS) {
+		assert(!state || !"Invalid operation fetch over cursor");
+		return state;
 	}
 
 	size_t osize = _values.size();
@@ -85,9 +85,9 @@ conn_state driver::oracle::Cursor::fetch(void) {
 	for(unsigned i = 0; i < _nfields; i++) {
 		struct ora_database_type ptr;
 		state = driver_ora_get_descriptor_column(&conn, i + 1, &ptr);
-		if(state.state) {
+		if(state) {
 			_values.resize(osize);
-			return state.state;
+			return state;
 		}
 		
 		driver::oracle::TypeFactory factory{&ptr};
@@ -96,14 +96,14 @@ conn_state driver::oracle::Cursor::fetch(void) {
 	}
 	_ntuples += sqlca.sqlerrd[2];
 	_changes += sqlca.sqlerrd[2];
-	return state.state;
+	return state;
 }
 
 void driver::oracle::Cursor::close_cursor(void) {
-	struct connection_result state = INIT_CONNECTION_RESULT;
+	conn_state state = SQL_DONE;
 
 	state = cursor->close(&conn);
-	if(state.state) {
+	if(state) {
 		assert(!"Atempt to close cursor failed");
 		throw std::runtime_error("Couldn't close the cursor");
 	}
@@ -112,11 +112,11 @@ void driver::oracle::Cursor::close_cursor(void) {
 }
 
 conn_state driver::oracle::Cursor::close(void) {
-	struct connection_result state = INIT_CONNECTION_RESULT;
+	conn_state state = SQL_DONE;
 
 	std::call_once(close_cursor_flag, [this](){ close_cursor(); });
 
-	return state.state;
+	return state;
 }
 
 TypeEngine* driver::oracle::Cursor::_getValue(unsigned row, unsigned column) const {

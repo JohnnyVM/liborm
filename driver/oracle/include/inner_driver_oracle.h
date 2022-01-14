@@ -23,18 +23,14 @@ using _Decimal128 = std::decimal::decimal128;
 extern "C" {
 #endif
 
-struct connection_result driver_ora_enable_threads(void);
-struct connection_result driver_ora_connect(struct oracle_connection_data* conn);
-struct connection_result driver_ora_commit(struct oracle_connection_data* conn);
-struct connection_result driver_ora_rollback(struct oracle_connection_data* conn);
-struct connection_result driver_ora_close(struct oracle_connection_data* conn);
-struct connection_result allocate_descriptor_global(struct oracle_connection_data* dbconn, unsigned char* descriptor);
-struct connection_result driver_ora_execute_many(struct oracle_connection_data* dbconn, const char* stmt, void* rows);
-struct connection_result driver_ora_cursor_open(struct oracle_connection_data* conn, unsigned fields);
-struct connection_result driver_ora_cursor_close(struct oracle_connection_data* conn);
-struct connection_result driver_ora_fields_count(struct oracle_connection_data* conn, unsigned* i);
-struct connection_result driver_ora_fetch(struct oracle_connection_data* conn, unsigned* changes);
-struct connection_result driver_ora_get_descriptor_column(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
+conn_state driver_ora_enable_threads(void);
+conn_state driver_ora_connect(struct oracle_connection_data* conn);
+conn_state driver_ora_close(struct oracle_connection_data* conn);
+conn_state driver_ora_commit(struct oracle_connection_data* conn);
+conn_state driver_ora_rollback(struct oracle_connection_data* conn);
+conn_state allocate_descriptor_global(struct oracle_connection_data* dbconn, unsigned char* descriptor);
+conn_state driver_ora_fields_count(struct oracle_connection_data* conn, unsigned* i);
+conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
 _Decimal128 number_to_Decimal128(unsigned char const* number, int size);
 char* driver_ora_short_error_message(void);
 

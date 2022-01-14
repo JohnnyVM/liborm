@@ -26,13 +26,13 @@ driver::oracle::Connection::~Connection() {
 }
 
 conn_state driver::oracle::Connection::close(void) {
-	struct connection_result state = INIT_CONNECTION_RESULT;
+	conn_state state = SQL_DONE;
 	std::call_once(close_connection_flag, [&,this]() {
 		driver_ora_close(&data);
-		assert(!state.state || !"Error at close connection");
+		assert(!state || !"Error at close connection");
 	});
 	_is_open = false;
-	return state.state;
+	return state;
 }
 
 conn_state driver::oracle::Connection::begin(void) {
@@ -41,15 +41,15 @@ conn_state driver::oracle::Connection::begin(void) {
 }
 
 conn_state driver::oracle::Connection::commit(void) {
-	struct connection_result state = driver_ora_commit(&data);
-	assert(!state.state || !"Error at commit");
-	return state.state;
+	conn_state state = driver_ora_commit(&data);
+	assert(!state || !"Error at commit");
+	return state;
 }
 
 conn_state driver::oracle::Connection::rollback(void) {
-	struct connection_result state = driver_ora_rollback(&data);
-	assert(!state.state || !"Error at rollback transaction");
-	return state.state;
+	conn_state state = driver_ora_rollback(&data);
+	assert(!state || !"Error at rollback transaction");
+	return state;
 }
 
 const char* driver::oracle::Connection::error_message(void) {
@@ -62,7 +62,12 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
 	}
 
-	struct connection_result state = oracle_cursor.value().get()->execute(&data, stmt.c_str(), nullptr);
+	conn_state err = oracle_cursor.value().get()->prepare(&data, stmt.c_str());
+	if(err != SQL_DONE) {
+		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, err);
+	}
+
+	struct connection_result state = oracle_cursor.value().get()->execute(&data);
 	if(state.state != SQL_ROWS) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
 	}

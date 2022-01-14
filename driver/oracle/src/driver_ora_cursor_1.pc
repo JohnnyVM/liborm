@@ -12,18 +12,11 @@
 #include "driver/oracle/connection_data.h"
 #include "oracle_types.h"
 
-/* resource 0 */
-struct connection_result
-driver_ora_execute_many_1(struct oracle_connection_data* dbconn, const char* stmt, void* rows) {
-	struct connection_result db_stat = {0};
-
+conn_state driver_ora_prepare_1(struct oracle_connection_data* dbconn, const char* stmt) {
 	EXEC SQL BEGIN DECLARE SECTION;
 	int i;
 	sql_context ctx = dbconn->ctx;
 	unsigned char* database = dbconn->dbname;
-	unsigned char* input_descriptor = dbconn->input_descriptor;
-	unsigned char* output_descriptor = dbconn->output_descriptor;
-	int input_count, output_count;
 	const char* statement = stmt;
 	char name[INDICATOR_NAME_LENGTH];
 	int type;
@@ -36,9 +29,27 @@ driver_ora_execute_many_1(struct oracle_connection_data* dbconn, const char* stm
 	EXEC SQL AT :database DECLARE db_execute_stmt_1 STATEMENT;
 	EXEC SQL AT :database PREPARE db_execute_stmt_1 FROM :statement;
 	if(sqlca.sqlcode) {
-		db_stat.state = DATABASE_ERROR;
-		return db_stat;
+		return DATABASE_ERROR;
 	}
+	return SQL_DONE;
+}
+
+struct connection_result
+driver_ora_execute_1(struct oracle_connection_data* dbconn) {
+	struct connection_result db_stat = {0};
+	EXEC SQL BEGIN DECLARE SECTION;
+	int i;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* input_descriptor = dbconn->input_descriptor;
+	unsigned char* output_descriptor = dbconn->output_descriptor;
+	int input_count, output_count;
+	char name[INDICATOR_NAME_LENGTH];
+	int type;
+	int length;
+	short indicator;
+	unsigned char* data;
+	EXEC SQL END DECLARE SECTION;
 
 	EXEC SQL AT :database DESCRIBE INPUT db_execute_stmt_1 USING SQL DESCRIPTOR GLOBAL :input_descriptor;
 	if(sqlca.sqlcode) {
@@ -52,7 +63,7 @@ driver_ora_execute_many_1(struct oracle_connection_data* dbconn, const char* stm
 		return db_stat;
 	}
 
-	if(rows) { assert(0); }
+	//if(rows) { assert(0); }
 
 	EXEC SQL AT :database DESCRIBE OUTPUT db_execute_stmt_1 USING SQL DESCRIPTOR GLOBAL :output_descriptor;
 	if(sqlca.sqlcode) {
@@ -84,9 +95,7 @@ driver_ora_execute_many_1(struct oracle_connection_data* dbconn, const char* stm
 /**
  * \param many number of rows required, can be returned less
  */
-struct connection_result
-driver_ora_cursor_open_1(struct oracle_connection_data* dbconn, unsigned nfields) {
-	struct connection_result state = {0};
+conn_state driver_ora_cursor_open_1(struct oracle_connection_data* dbconn, unsigned nfields) {
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
 	unsigned char* database = dbconn->dbname;
@@ -104,8 +113,7 @@ driver_ora_cursor_open_1(struct oracle_connection_data* dbconn, unsigned nfields
 
 	EXEC SQL AT :database OPEN db_execute_cursor_1;
 	if(sqlca.sqlcode) {
-		state.state = DATABASE_ERROR;
-		return state;
+		return DATABASE_ERROR;
 	}
 
 	for(i = 1; (unsigned)i <= nfields; ++i) {
@@ -116,8 +124,7 @@ driver_ora_cursor_open_1(struct oracle_connection_data* dbconn, unsigned nfields
 			:octet_length = OCTET_LENGTH,
 			:scale = SCALE;
 		if(sqlca.sqlcode) {
-			state.state = DATABASE_ERROR;
-			return state;
+			return DATABASE_ERROR;
 		}
 		/// \todo move this to other part
 		// the type String have to be setted forward
@@ -136,16 +143,14 @@ driver_ora_cursor_open_1(struct oracle_connection_data* dbconn, unsigned nfields
 			SCALE = :scale,
 			PRECISION = :precision;
 		if(sqlca.sqlcode) {
-			state.state = DATABASE_ERROR;		
-			return state;
+			return DATABASE_ERROR;
 		}
 	}
-	return state;
+	return SQL_DONE;
 }
 
-struct connection_result
-driver_ora_fetch_1(struct oracle_connection_data* dbconn, unsigned* changes) {
-	struct connection_result state = {0};
+conn_state driver_ora_fetch_1(struct oracle_connection_data* dbconn, unsigned* changes) {
+	conn_state state = SQL_DONE;
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -156,12 +161,11 @@ driver_ora_fetch_1(struct oracle_connection_data* dbconn, unsigned* changes) {
 	EXEC SQL CONTEXT USE :ctx;
 	EXEC SQL AT :database FETCH db_execute_cursor_1 INTO DESCRIPTOR GLOBAL :output_descriptor;
 
-	state.state = SQL_ROWS;
+	state = SQL_ROWS;
 	if(sqlca.sqlcode) {
-		state.state = DATABASE_ERROR;
+		state = DATABASE_ERROR;
 		if(sqlca.sqlcode == ORA_NOT_FOUND) {
-			state.state = SQL_DONE;
-			return state;
+			return SQL_DONE;
 		}
 	}
 
@@ -169,9 +173,7 @@ driver_ora_fetch_1(struct oracle_connection_data* dbconn, unsigned* changes) {
 	return state;
 }
 
-struct connection_result
-driver_ora_cursor_close_1(struct oracle_connection_data* dbconn) {
-	struct connection_result state = {0};
+conn_state driver_ora_cursor_close_1(struct oracle_connection_data* dbconn) {
 	EXEC SQL BEGIN DECLARE SECTION;
 	unsigned char* database = dbconn->dbname; // Nasty dragon, not remove
 	sql_context ctx = dbconn->ctx;
@@ -181,7 +183,7 @@ driver_ora_cursor_close_1(struct oracle_connection_data* dbconn) {
 	EXEC SQL CLOSE db_execute_cursor_1;
 
 	if(sqlca.sqlcode) {
-		state.state = DATABASE_ERROR;
+		return DATABASE_ERROR;
 	}
-	return state;
+	return SQL_DONE;
 }

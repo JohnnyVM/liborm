@@ -16,21 +16,16 @@
  * \warning this set a global variable that cant be free or accessed in any normal way (memory leak) but is small
  * \return struct connection_result 
  */
- struct connection_result
-driver_ora_enable_threads(void) {
-	struct connection_result state = {0};
+conn_state driver_ora_enable_threads(void) {
 	EXEC SQL ENABLE THREADS;
 	if(sqlca.sqlcode) {
 		assert(!"Enable threads error");
-		state.state = DATABASE_ERROR;
-		return state;
+		return DATABASE_ERROR;
 	}
-	return state;
+	return SQL_DONE;
 };
 
-struct connection_result
-driver_ora_connect(struct oracle_connection_data* dbconn) {
-	struct connection_result state = {0};
+conn_state driver_ora_connect(struct oracle_connection_data* dbconn) {
 
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -43,34 +38,32 @@ driver_ora_connect(struct oracle_connection_data* dbconn) {
 	EXEC SQL CONTEXT ALLOCATE :ctx;
 	if(sqlca.sqlcode) {
 		assert(!"Error at connection");
-		state.state = DATABASE_ERROR;
 		dbconn->ctx = NULL;
-		return state;
+		return DATABASE_ERROR;
 	}
 	dbconn->ctx = ctx;
 	EXEC SQL CONTEXT USE :ctx;
 
-	state = allocate_descriptor_global(dbconn, dbconn->input_descriptor);
-	if(state.state) {
+	conn_state state = allocate_descriptor_global(dbconn, dbconn->input_descriptor);
+	if(state) {
 		assert(!"Error at connection");
-		return state;
+		return DATABASE_ERROR;
 	}
 
 	state = allocate_descriptor_global(dbconn, dbconn->output_descriptor);
-	if(state.state) {
+	if(state) {
 		assert(!"Error at connection");
-		return state;
+		return DATABASE_ERROR;
 	}
 
 	EXEC SQL CONNECT :user IDENTIFIED BY :password AT :database USING :connect_string;
 	if(sqlca.sqlcode) {
 		assert(!"Error at connection");
-		state.state = DATABASE_ERROR;
 		EXEC SQL CONTEXT FREE :ctx;
 		dbconn->ctx = NULL;
-		return state;
+		return DATABASE_ERROR;
 	}
 
-	return state;
+	return SQL_DONE;
 }
 

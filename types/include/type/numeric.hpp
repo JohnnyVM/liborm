@@ -84,12 +84,11 @@ class Numeric : virtual public TypeEngine {
 	 * \return true if are equal
 	 * \return false if not are equal
 	 */
-#define _DECLARE_TYPE_NUMERIC_COMPARISON(_Op) __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
-#define __DECLARE_TYPE_NUMERIC_COMPARISON(_Op, TID, TID2) \
-	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>\
-	inline friend bool operator _Op(const Numeric& __lhs, const TID& __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
-	template<typename TID2, std::enable_if_t<std::is_integral<TID2>::value, bool> = true>\
-	inline friend bool operator _Op(const TID2& __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}\
+#define _DECLARE_TYPE_NUMERIC_COMPARISON(_Op) \
+	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
+	inline friend bool operator _Op(const Numeric& __lhs, const T& __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
+	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
+	inline friend bool operator _Op(const T& __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}\
 	inline friend bool operator _Op(const Numeric& __lhs, const Numeric& __rhs) {return __lhs.is_null or __rhs.is_null ? false : __lhs._value _Op __rhs._value;}\
 	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal128 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
 	inline friend bool operator _Op(std::decimal::decimal128 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}\
@@ -106,8 +105,7 @@ class Numeric : virtual public TypeEngine {
 /// \todo define comparaision with floating point
 
 /// \todo operations with null values???
-#define _DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op) __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, I ## __COUNTER__, I ## __COUNTER__ ## 2)
-#define __DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op, TID, TID2) \
+#define _DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op) \
 	inline Numeric& operator _Op##=(const Numeric& rhs) {_value _Op##= rhs._value; return *this;}\
 	inline friend Numeric operator _Op(Numeric lhs, const Numeric& rhs) { lhs _Op##= rhs; return lhs;}\
 	inline Numeric& operator _Op##=(const std::decimal::decimal128& rhs) {_value _Op##= rhs; return *this;}\
@@ -116,10 +114,10 @@ class Numeric : virtual public TypeEngine {
 	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal64& rhs) { lhs _Op##= rhs; return lhs;}\
 	inline Numeric& operator _Op##=(const std::decimal::decimal32& rhs) {_value _Op##= rhs; return *this;};\
 	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal32& rhs) { lhs _Op##= rhs; return lhs;}\
-	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>\
-	inline Numeric& operator _Op##=(const TID& rhs) {_value _Op##= rhs; return *this;}\
-	template<typename TID2, std::enable_if_t<std::is_integral<TID2>::value, bool> = true>\
-	inline friend Numeric operator _Op(Numeric lhs, const TID2& rhs) { lhs _Op##= rhs; return lhs;}
+	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
+	inline Numeric& operator _Op##=(const T& rhs) {_value _Op##= rhs; return *this;}\
+	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
+	inline friend Numeric operator _Op(Numeric lhs, const T& rhs) { lhs _Op##= rhs; return lhs;}
 	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(+)
 	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(-)
 	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(*)

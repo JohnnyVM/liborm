@@ -54,8 +54,8 @@ std::unique_ptr<PConnection> driver::oracle::Engine::connect() {
 	struct oracle_connection_data conn = params_to_conn();
 
 	std::call_once(enable_threads, driver_ora_enable_threads);
-	struct connection_result state = driver_ora_connect(&conn);
-	if(state.state) {
+	conn_state state = driver_ora_connect(&conn);
+	if(state) {
 		assert(!"Could not open connection to the database");
 		throw std::runtime_error("Could not open connection to the database"); // TODO move to custom exception
 	}

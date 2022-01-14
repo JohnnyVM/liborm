@@ -11,22 +11,25 @@ extern "C" {
 #endif
 
 struct resource_ora_cursor{
-    struct connection_result (*execute)(struct oracle_connection_data*, const char*, void*);
-    struct connection_result (*open)(struct oracle_connection_data*, unsigned);
-    struct connection_result (*fetch)(struct oracle_connection_data*, unsigned*);
-    struct connection_result (*close)(struct oracle_connection_data*);
+    conn_state (*prepare)(struct oracle_connection_data*, const char*);
+    struct connection_result (*execute)(struct oracle_connection_data*);
+    conn_state (*open)(struct oracle_connection_data*, unsigned);
+    conn_state (*fetch)(struct oracle_connection_data*, unsigned*);
+    conn_state (*close)(struct oracle_connection_data*);
 };
 
 #define _DECLARE_ORA_CURSOR_FUNC(ID) \
-struct connection_result driver_ora_cursor_close_##ID(struct oracle_connection_data*); \
-struct connection_result driver_ora_fetch_##ID(struct oracle_connection_data*, unsigned*); \
-struct connection_result driver_ora_cursor_open_##ID(struct oracle_connection_data*, unsigned); \
-struct connection_result driver_ora_execute_many_##ID(struct oracle_connection_data*, const char*, void*)
+conn_state driver_ora_cursor_close_##ID(struct oracle_connection_data*); \
+conn_state driver_ora_fetch_##ID(struct oracle_connection_data*, unsigned*); \
+conn_state driver_ora_cursor_open_##ID(struct oracle_connection_data*, unsigned); \
+struct connection_result driver_ora_execute_##ID(struct oracle_connection_data*); \
+conn_state driver_ora_prepare_##ID(struct oracle_connection_data*, const char*)
 _DECLARE_ORA_CURSOR_FUNC(0);
 _DECLARE_ORA_CURSOR_FUNC(1);
 
 #define INIT_ORA_CURSOR(ID) \
-{ .execute = &driver_ora_execute_many_##ID, \
+{ .prepare = &driver_ora_prepare_##ID,\
+  .execute = &driver_ora_execute_##ID, \
   .open = &driver_ora_cursor_open_##ID, \
   .fetch = &driver_ora_fetch_##ID, \
   .close = &driver_ora_cursor_close_##ID \
