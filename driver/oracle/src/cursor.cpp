@@ -62,7 +62,7 @@ conn_state driver::oracle::Cursor::open_cursor(void) {
 }
 
 conn_state driver::oracle::Cursor::open(void) {
-	conn_state state = driver_ora_fields_count(&conn, &_nfields);
+	conn_state state = driver_ora_fields_out_count(&conn, &_nfields);
 	std::call_once(open_cursor_flag, [this, &state](){ state = open_cursor();});
 	return state;
 }

@@ -93,7 +93,8 @@ conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* dbcon
 	return SQL_DONE;
 }
 
-conn_state driver_ora_fields_count(struct oracle_connection_data* dbconn, unsigned* i) {
+/* return the number of expected output parameters*/
+conn_state driver_ora_fields_out_count(struct oracle_connection_data* dbconn, unsigned* i) {
 	struct connection_result state = {0};
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;
@@ -108,5 +109,25 @@ conn_state driver_ora_fields_count(struct oracle_connection_data* dbconn, unsign
 		return DATABASE_ERROR;
 	}
 	*i = output_count;
+	return SQL_DONE;
+}
+
+/* return the number of expected input parameters*/
+conn_state driver_ora_fields_in_count(struct oracle_connection_data* dbconn, unsigned* i) {
+	struct connection_result state = {0};
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* input_descriptor = dbconn->input_descriptor;
+	int input_count;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL GET DESCRIPTOR GLOBAL :input_descriptor :input_count = COUNT;
+	if(sqlca.sqlcode) {
+		return DATABASE_ERROR;
+	}
+
+	*i = input_count;
 	return SQL_DONE;
 }

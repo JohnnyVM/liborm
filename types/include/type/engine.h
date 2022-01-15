@@ -29,11 +29,9 @@ class TypeEngine { // Keep that separate for class slicing
 	virtual ~TypeEngine() {}
 	TypeEngine(std::string arg_name, const std::type_info& arg_type, size_t arg_length)
 	: length(arg_length), name(arg_name), type(arg_type), is_null(false) {}
-	inline std::string bind_expression() const { return (std::string)":" + name; }
-	/* \todo
-	 * bind_processor() Return a conversion function for processing bind values.
-	 */
 	virtual explicit operator std::string() const = 0; /**< convenience method */
+	inline std::string bind_expression() const { return std::string(":") + name; }
+
 	inline friend std::string StringFrom(TypeEngine& arg) {
 		return std::string(arg);
 	}

@@ -1,14 +1,15 @@
 #ifndef LIBORM_CONNECTION_STATEMENT_H
 #define LIBORM_CONNECTION_STATEMENT_H
 
+#include <stdlib.h>
+#include "connection/types.h"
+
 #ifndef __cplusplus
 
 typedef struct Statement Statement;
 
 #else
 
-#include <queue>
-#include <variant>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -25,7 +26,7 @@ struct Statement {
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	Statement(const T& _arg) : statement(std::string(_arg)) {}
 	const std::string statement;
-	std::queue<std::unordered_map<std::variant<unsigned, std::string>, std::unique_ptr<TypeEngine>>> params;
+	std::unordered_map<std::string, std::shared_ptr<TypeEngine>> params;
 };
 
 #endif
@@ -33,6 +34,12 @@ struct Statement {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* This list of function bind parameters by host name */
+conn_state stmt_bind_int(Statement* stmt, const char* host_parameter, int val);
+conn_state stmt_bind_char(Statement* stmt, const char* host_parameter, char* val, size_t);
+
+/* \todo This list of function bind parameters by position */
 
 #ifdef __cplusplus
 }

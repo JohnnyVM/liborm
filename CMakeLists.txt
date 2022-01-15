@@ -50,6 +50,7 @@ add_subdirectory(engine)
 add_subdirectory(connection)
 add_subdirectory(mapper)
 add_subdirectory(types)
+add_subdirectory(utils)
 
 add_library(orm STATIC
 	src/liborm.cpp)

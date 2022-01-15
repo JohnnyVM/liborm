@@ -19,11 +19,11 @@ struct resource_ora_cursor{
 };
 
 #define _DECLARE_ORA_CURSOR_FUNC(ID) \
-conn_state driver_ora_cursor_close_##ID(struct oracle_connection_data*); \
-conn_state driver_ora_fetch_##ID(struct oracle_connection_data*, unsigned*); \
-conn_state driver_ora_cursor_open_##ID(struct oracle_connection_data*, unsigned); \
+conn_state driver_ora_prepare_##ID(struct oracle_connection_data*, const char*); \
 struct connection_result driver_ora_execute_##ID(struct oracle_connection_data*); \
-conn_state driver_ora_prepare_##ID(struct oracle_connection_data*, const char*)
+conn_state driver_ora_cursor_open_##ID(struct oracle_connection_data*, unsigned); \
+conn_state driver_ora_fetch_##ID(struct oracle_connection_data*, unsigned*); \
+conn_state driver_ora_cursor_close_##ID(struct oracle_connection_data*)
 _DECLARE_ORA_CURSOR_FUNC(0);
 _DECLARE_ORA_CURSOR_FUNC(1);
 

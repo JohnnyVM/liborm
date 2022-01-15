@@ -4,7 +4,7 @@
 #include <memory>
 #include <optional>
 
-#include "driver/oracle/acbuffer.hpp"
+#include "liborm/utils/acbuffer.hpp"
 #include "engine/engine.h"
 #include "driver/oracle/cursor.hpp"
 #include "driver/oracle/connection.hpp"
@@ -56,16 +56,24 @@ const char* driver::oracle::Connection::error_message(void) {
 	return  driver_ora_short_error_message();
 }
 
-std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const Statement& stmt) {
+std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt, std::unordered_map<std::string, std::shared_ptr<TypeEngine>>list) {
 	std::optional<std::shared_ptr<struct resource_ora_cursor>>oracle_cursor = gora_cursors.get();
 	if(not oracle_cursor.has_value()) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
 	}
 
-	conn_state err = oracle_cursor.value().get()->prepare(&data, stmt.statement.c_str());
+	conn_state err = oracle_cursor.value().get()->prepare(&data, stmt.c_str());
 	if(err != SQL_DONE) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, err);
 	}
+
+#ifndef NDEBUG
+{
+	unsigned nout_params;
+	conn_state derr = driver_ora_fields_in_count(&data, &nout_params);
+	assert(derr == SQL_DONE && nout_params == list.size());
+}
+#endif
 
 	struct connection_result state = oracle_cursor.value().get()->execute(&data);
 	if(state.state != SQL_ROWS) {

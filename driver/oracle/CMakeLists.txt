@@ -47,7 +47,7 @@ add_library(${driver} STATIC
 target_include_directories(${driver}
 	PUBLIC include $ENV{ORACLE_HOME}/sdk/include)
 
-target_link_libraries(${driver} connection engine types -lclntsh)
+target_link_libraries(${driver} connection engine types utils -lclntsh)
 target_link_directories(${driver} PUBLIC $ENV{ORACLE_HOME}/lib)
 
 install(TARGETS ${driver}  DESTINATION lib)

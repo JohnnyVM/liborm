@@ -1,5 +1,5 @@
-#ifndef LIBORM_DRIVER_ORACLE_ACBUFFER_HPP
-#define LIBORM_DRIVER_ORACLE_ACBUFFER_HPP
+#ifndef LIBORM_UTILS_ACBUFFER_HPP
+#define LIBORM_UTILS_ACBUFFER_HPP
 
 #include <type_traits>
 #include <mutex>

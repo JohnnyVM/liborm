@@ -10,15 +10,9 @@
 #include "mapper/table_restriction.hpp"
 #include "mapper/schema_element.hpp"
 #include "mapper/column.hpp"
+#include "liborm/utils/movable_il.hpp"
 
 namespace orm {
-
-template<class T>
-struct movable_il {
-    mutable T t;
-    operator T() const&& { return std::move(t); }
-    movable_il( T&& in ): t(std::move(in)) {}
-};
 
 class Table : public orm::SchemaElement {
 	public:

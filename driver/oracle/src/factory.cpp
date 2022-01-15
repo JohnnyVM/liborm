@@ -6,7 +6,7 @@
 #include "oracle_types.h"
 #include "inner_driver_oracle.h"
 
-const std::type_info& driver::oracle::TypeFactory::coerced_type(enum sql_code code) {
+const std::type_info& driver::oracle::TypeFactory::coerced_type(enum sql_code code) noexcept {
 	switch(code) {
 		case ORA_ORACLE_NUMBER: /**< char[n] (n<=22) */
 		case ORA_NUMBER:
@@ -34,7 +34,7 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type(enum sql_code co
 	}
 }
 
-const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
+const std::type_info& driver::oracle::TypeFactory::coerced_type() const noexcept {
 	return driver::oracle::TypeFactory::coerced_type(data.get()->type);
 }
 

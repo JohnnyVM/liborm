@@ -12,7 +12,7 @@ target_include_directories(mapper PUBLIC
 	include
 )
 
-target_link_libraries(mapper types)
+target_link_libraries(mapper types utils)
 
 install(TARGETS mapper DESTINATION lib)
 install(DIRECTORY include DESTINATION include)

@@ -21,8 +21,8 @@ namespace driver::oracle {
 class TypeFactory final : virtual public orm::TypeFactory {
 	public:
 	TypeFactory(struct ora_database_type *arg_data) : data(private_copy_data(arg_data)) {}
-	const std::type_info& coerced_type() const  override;
-	static const std::type_info& coerced_type(enum sql_code);
+	const std::type_info& coerced_type() const noexcept override;
+	static const std::type_info& coerced_type(enum sql_code) noexcept;
 	std::unique_ptr<orm::type::Numeric> Numeric() const override;
 	std::unique_ptr<orm::type::String> String() const override;
 	std::unique_ptr<orm::type::Datetime> Datetime() const override;

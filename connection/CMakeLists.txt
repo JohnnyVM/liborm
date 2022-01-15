@@ -10,7 +10,7 @@ add_library(connection STATIC
 
 target_include_directories(connection PUBLIC include)
 
-	target_link_libraries(connection types)
+	target_link_libraries(connection types utils)
 
 install(TARGETS connection DESTINATION lib)
 install(DIRECTORY include/connection DESTINATION include)
