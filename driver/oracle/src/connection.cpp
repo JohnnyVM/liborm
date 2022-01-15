@@ -56,13 +56,13 @@ const char* driver::oracle::Connection::error_message(void) {
 	return  driver_ora_short_error_message();
 }
 
-std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt) {
+std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const Statement& stmt) {
 	std::optional<std::shared_ptr<struct resource_ora_cursor>>oracle_cursor = gora_cursors.get();
 	if(not oracle_cursor.has_value()) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
 	}
 
-	conn_state err = oracle_cursor.value().get()->prepare(&data, stmt.c_str());
+	conn_state err = oracle_cursor.value().get()->prepare(&data, stmt.statement.c_str());
 	if(err != SQL_DONE) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, err);
 	}

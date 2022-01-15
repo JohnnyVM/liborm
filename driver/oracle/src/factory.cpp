@@ -6,8 +6,8 @@
 #include "oracle_types.h"
 #include "inner_driver_oracle.h"
 
-const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
-	switch(data.get()->type) {
+const std::type_info& driver::oracle::TypeFactory::coerced_type(enum sql_code code) {
+	switch(code) {
 		case ORA_ORACLE_NUMBER: /**< char[n] (n<=22) */
 		case ORA_NUMBER:
 			return typeid(orm::type::Numeric);
@@ -18,6 +18,7 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 		case ORA_VARCHAR2: /**< char[n] */
 			return typeid(orm::type::String);
 		case ORA_DATE:
+			return typeid(orm::type::Datetime);
 		case ORA_DECIMAL:
 		case ORA_DOUBLE_PRECISION:
 		case ORA_FLOAT:
@@ -31,6 +32,10 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
 			assert(!"Not implemented");
 			return typeid(nullptr);
 	}
+}
+
+const std::type_info& driver::oracle::TypeFactory::coerced_type() const {
+	return driver::oracle::TypeFactory::coerced_type(data.get()->type);
 }
 
 std::unique_ptr<orm::type::Numeric> driver::oracle::TypeFactory::Numeric() const {

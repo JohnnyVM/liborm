@@ -3,7 +3,9 @@
 
 #include <tuple>
 #include <memory>
+#include <cassert>
 
+#include "connection/statement.h"
 #include "connection/types.h"
 
 class Cursor;
@@ -19,17 +21,13 @@ class Connection {
 	[[nodiscard]] virtual conn_state begin() = 0;
 	[[nodiscard]] virtual conn_state commit() = 0;
 	[[nodiscard]] virtual conn_state rollback() = 0;
-	[[nodiscard]] virtual std::tuple<std::unique_ptr<Cursor>, conn_state> execute(const std::string& stmt) = 0;
+	[[nodiscard]] virtual std::tuple<std::unique_ptr<Cursor>, conn_state> execute(const Statement& stmt) = 0;
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+	[[nodiscard]] inline std::tuple<std::unique_ptr<Cursor>, conn_state> execute(const T& stmt) { return execute(Statement(stmt)); }
 
 	[[nodiscard]] virtual bool is_open() = 0; /**< the connection is open */
 	[[nodiscard]] virtual unsigned changes() = 0; /**< list of rows modified by the last statement */
-	/** \todo database structure */
-	/*struct connection_result (*get_columns)(void) = 0;
-	struct connection_result (*get_table_id)(void) = 0;
-	struct connection_result (*get_column_definition)(void) = 0;*/
-	/* etc */
 	[[nodiscard]] virtual const char* error_message() = 0; /**< return latest connection error code as message database specific */
-	//bool autobegin; /**< The db begin a transacion when connect */
 };
 
 #endif

@@ -56,6 +56,7 @@ conn_state driver::oracle::Cursor::open_cursor(void) {
 		assert((size_t)ptr.length > 0);
 		_names.push_back(std::string(ptr.name));
 		_size.push_back((size_t)ptr.length);
+		_type_id.push_back(driver::oracle::TypeFactory::coerced_type(ptr.type));
 	}
 	return state;
 }
