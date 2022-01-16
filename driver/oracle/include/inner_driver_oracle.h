@@ -32,6 +32,7 @@ conn_state allocate_descriptor_global(struct oracle_connection_data* dbconn, uns
 conn_state driver_ora_fields_out_count(struct oracle_connection_data* conn, unsigned* i);
 conn_state driver_ora_fields_in_count(struct oracle_connection_data* conn, unsigned* i);
 conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
+conn_state driver_ora_set_descriptor_input(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
 _Decimal128 number_to_Decimal128(unsigned char const* number, int size);
 char* driver_ora_short_error_message(void);
 

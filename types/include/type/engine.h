@@ -16,6 +16,10 @@ typedef long long decimal128;
 
 #include <decimal/decimal>
 using decimal128 = std::decimal::decimal128;
+namespace orm::type {
+	class Numeric;
+	class Integer;
+}
 
 #include <cstdlib>
 #include <string>

@@ -15,6 +15,31 @@ char* driver_ora_short_error_message(void) {
 	return sqlca.sqlerrm.sqlerrmc;
 }
 
+conn_state driver_ora_set_descriptor_input(struct oracle_connection_data* dbconn, unsigned nfield, struct ora_database_type *result) {
+	EXEC SQL BEGIN DECLARE SECTION;
+	sql_context ctx = dbconn->ctx;
+	unsigned char* database = dbconn->dbname;
+	unsigned char* input_descriptor = dbconn->input_descriptor;
+	int type = result->type;
+	int length = result->length;
+	unsigned char* data = result->data;
+	short indicator = result->indicator;
+	const int pos = nfield;
+	EXEC SQL END DECLARE SECTION;
+
+	EXEC SQL CONTEXT USE :ctx;
+	EXEC SQL SET DESCRIPTOR GLOBAL :input_descriptor VALUE :pos
+		TYPE = :type,
+		LENGTH = :length,
+		INDICATOR = :indicator,
+		DATA = :data;
+	if(sqlca.sqlcode) {
+		return DATABASE_ERROR;
+	}
+
+	return SQL_DONE;
+}
+
 conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* dbconn, unsigned nfield, struct ora_database_type *result) {
 	EXEC SQL BEGIN DECLARE SECTION;
 	sql_context ctx = dbconn->ctx;

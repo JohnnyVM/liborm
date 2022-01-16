@@ -8,6 +8,7 @@
 #include "liborm/utils/acbuffer.hpp"
 #include "engine/engine.h"
 #include "driver/oracle/cursor.hpp"
+#include "driver/oracle/factory.hpp"
 #include "driver/oracle/connection.hpp"
 #include "connection/connection.h"
 #include "inner_driver_oracle.h"
@@ -58,6 +59,8 @@ const char* driver::oracle::Connection::error_message(void) {
 }
 
 std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt, std::vector<std::vector<std::shared_ptr<const TypeEngine>>>list) {
+	struct connection_result state;
+	unsigned nout_params;
 	std::optional<std::shared_ptr<struct resource_ora_cursor>>oracle_cursor = gora_cursors.get();
 	if(not oracle_cursor.has_value()) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
@@ -68,17 +71,36 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, err);
 	}
 
+	err = driver_ora_fields_in_count(&data, &nout_params);
+	if(err != SQL_DONE) {
+		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, err);
+	}
+
 #ifndef NDEBUG
 {
-	unsigned nout_params;
-	conn_state derr = driver_ora_fields_in_count(&data, &nout_params);
-	assert(derr == SQL_DONE && nout_params == list.size());
+	assert(nout_params == 0 || (nout_params > 0 && list.size() > 0));
+	for(std::vector<std::shared_ptr<const TypeEngine>> el : list) {
+		assert(nout_params == el.size());
+	}
 }
 #endif
 
-	struct connection_result state = oracle_cursor.value().get()->execute(&data);
-	if(state.state != SQL_ROWS) {
-		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
+	if(list.size() <= 0) {
+		std::vector<std::shared_ptr<const TypeEngine>>row;
+		list.emplace_back(row);
+	}
+	for(std::vector<std::shared_ptr<const TypeEngine>> row : list) {
+		for(unsigned i = 1; i <= nout_params; i++) {
+			std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> tptr = bind_param(row.at(i - 1));
+			err = driver_ora_set_descriptor_input(&data, i, tptr.get());
+			if(err != SQL_DONE) {
+				return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, err);
+			}
+		}
+		state = oracle_cursor.value().get()->execute(&data);
+		if(state.state != SQL_ROWS) {
+			return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
+		}
 	}
 
 	std::unique_ptr<driver::oracle::Cursor> cursor = std::make_unique<driver::oracle::Cursor>(data, oracle_cursor.value());

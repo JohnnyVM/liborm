@@ -29,6 +29,8 @@ class Connection {
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	[[nodiscard]] std::tuple<std::unique_ptr<Cursor>, conn_state> execute(const T& _stmt){
 		std::vector<std::vector<std::shared_ptr<const TypeEngine>>>rows;
+		std::vector<std::shared_ptr<const TypeEngine>>row;
+		rows.emplace_back(row);
 		std::string stmt = std::string(_stmt);
 		return execute(stmt, rows);
 	}
@@ -40,7 +42,7 @@ class Connection {
 		std::vector<std::shared_ptr<const TypeEngine>>row;
 		std::string stmt = std::string(_stmt);
 		for(std::shared_ptr<const TypeEngine> el : list) {
-			row.push_back(el);
+			row.emplace_back(el);
 		}
 		rows.push_back(row);
 		return execute(stmt, rows);
@@ -56,9 +58,9 @@ class Connection {
 			assert(list.begin()->size() == l.size());
 			row.clear();
 			for(std::shared_ptr<const TypeEngine> el : l) {
-				row.push_back(el);
+				row.emplace_back(el);
 			}
-			rows.push_back(row);
+			rows.emplace_back(row);
 		}
 		return execute(stmt, rows);
 	}

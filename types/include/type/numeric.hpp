@@ -9,7 +9,9 @@
 #include <type_traits>
 #include <limits>
 #include <memory>
+
 #include "type/engine.h"
+#include "type/integer.hpp"
 #define __STDC_WANT_DEC_FP__
 #include <cfloat>
 
@@ -90,9 +92,9 @@ class Numeric : virtual public TypeEngine {
 	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
 	inline friend bool operator _Op(const T& __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}\
 	inline friend bool operator _Op(const Numeric& __lhs, const Numeric& __rhs) {return __lhs.is_null or __rhs.is_null ? false : __lhs._value _Op __rhs._value;}\
-	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal128 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
+	inline friend bool operator _Op(const Numeric& __lhs, const std::decimal::decimal128& __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
 	inline friend bool operator _Op(std::decimal::decimal128 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}\
-	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal64 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
+	inline friend bool operator _Op(const Numeric& __lhs, const std::decimal::decimal64& __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
 	inline friend bool operator _Op(std::decimal::decimal64 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}\
 	inline friend bool operator _Op(const Numeric& __lhs, std::decimal::decimal32 __rhs) {return __lhs.is_null ? false : __lhs._value _Op __rhs;}\
 	inline friend bool operator _Op(std::decimal::decimal32 __lhs, const Numeric& __rhs) {return __rhs.is_null ? false : __lhs _Op __rhs._value;}

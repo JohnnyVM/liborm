@@ -4,6 +4,7 @@
 #include <memory>
 #include <limits>
 #include <type_traits>
+#include <string>
 
 #include <stdint.h>
 #include "type/engine.h"
@@ -15,10 +16,18 @@ class Integer : public TypeEngine {
 	Integer() : TypeEngine("integer", typeid(*this), sizeof(intmax_t)) {}
 	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
 	Integer(T val) : TypeEngine("integer", typeid(*this), sizeof(intmax_t)), _value(val) {
-		assert(val < std::numeric_limits<uintmax_t>::lowest() || std::numeric_limits<uintmax_t>::max() > val); // overflow
+		assert(val < std::numeric_limits<intmax_t>::lowest() || std::numeric_limits<intmax_t>::max() > val); // overflow
 	}
 
-	//std::unique_ptr<TypeEngine> clone() const { return std::make_unique<Integer>(_value); }
+	explicit operator std::string() const override { return std::to_string(_value); };
+	std::unique_ptr<TypeEngine> clone() const override { return std::make_unique<Integer>(_value); }
+
+	template<typename I, std::enable_if_t<std::is_arithmetic<I>::value, bool> = true>
+	inline explicit operator I() const {
+		assert(_value < std::numeric_limits<I>::lowest() || std::numeric_limits<I>::max() > _value); // overflow
+		return (I)_value; }
+
+
 
 	private:
 	intmax_t _value;

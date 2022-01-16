@@ -1,12 +1,6 @@
 #ifndef LIBORM_DRIVER_ORACLE_TYPES_FACTORY_H
 #define LIBORM_DRIVER_ORACLE_TYPES_FACTORY_H
 
-#ifndef __cplusplus
-
-typedef struct OracleTypeFactory OracleTypeFactory;
-
-#else
-
 #include <typeinfo>
 #include <memory>
 
@@ -35,8 +29,8 @@ class TypeFactory final : virtual public orm::TypeFactory {
 	}
 };
 
-}
+std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param(std::shared_ptr<TypeEngine const> _val);
 
-#endif
+}
 
 #endif

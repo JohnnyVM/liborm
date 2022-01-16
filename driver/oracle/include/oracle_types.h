@@ -50,6 +50,7 @@ struct ora_database_type {
 
 // in C23 move this to [[attribute]]
 __attribute__((nothrow, warn_unused_result)) struct ora_database_type* ora_database_type_clone(struct ora_database_type *result);
+__attribute__((nothrow, warn_unused_result)) struct ora_database_type* ora_database_type_param_clone(struct ora_database_type *result);
 __attribute__((nothrow)) void free_ora_database_type(struct ora_database_type* result);
 
 #ifdef __cplusplus

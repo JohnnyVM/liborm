@@ -1,5 +1,6 @@
 #include <memory>
 #include <stdexcept>
+#include <cstring>
 
 #include "type/types.hpp"
 #include "driver/oracle/factory.hpp"
@@ -18,7 +19,7 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type(enum sql_code co
 		case ORA_VARCHAR2: /**< char[n] */
 			return typeid(orm::type::String);
 		case ORA_DATE:
-			return typeid(orm::type::Datetime);
+			//return typeid(orm::type::Datetime);
 		case ORA_DECIMAL:
 		case ORA_DOUBLE_PRECISION:
 		case ORA_FLOAT:
@@ -67,4 +68,88 @@ std::unique_ptr<orm::type::Datetime> driver::oracle::TypeFactory::Datetime() con
 		assert(!"Not implemented");
 	}
 	return out;
+}
+
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param(const orm::type::String& _val) {
+	struct ora_database_type val;
+	val.type = ORA_CHARACTER_VARYING;
+	val.length = std::string(_val).length();
+	val.indicator = _val.is_null ? -1 : 0;
+	val.data = (unsigned char*)malloc(val.length);
+	memcpy(val.data, std::string(_val).c_str(), val.length);
+	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> ptr(ora_database_type_param_clone(&val), &free_ora_database_type);
+	return ptr;
+}
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param(const orm::type::Integer& _val) {
+	struct ora_database_type val;
+	val.type = ORA_INTEGER;
+	val.length = _val.length;
+	val.indicator = _val.is_null ? -1 : 0;
+	val.data = (unsigned char*)malloc(val.length);
+	intmax_t in = (intmax_t)_val;
+	memcpy(val.data, &in, val.length);
+	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> ptr(ora_database_type_param_clone(&val), &free_ora_database_type);
+	return ptr;
+}
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param([[maybe_unused]]const orm::type::Numeric& val) {
+	assert(!"Type not supported");
+	return {nullptr, nullptr};
+}
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param([[maybe_unused]]const orm::type::Datetime& val) {
+	assert(!"Type not supported");
+	return {nullptr, nullptr};
+}
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param([[maybe_unused]]const orm::type::Date& val) {
+	assert(!"Type not supported");
+	return {nullptr, nullptr};
+}
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param([[maybe_unused]]const orm::type::Float& val) {
+	assert(!"Type not supported");
+	return {nullptr, nullptr};
+}
+
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param([[maybe_unused]]const orm::type::Boolean& val) {
+	assert(!"Type not supported");
+	return {nullptr, nullptr};
+}
+
+std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> driver::oracle::bind_param(std::shared_ptr<TypeEngine const> _val) {
+	const std::type_info& type = _val->type;
+    if(type == typeid(orm::type::String)) { // UGH again...
+		const orm::type::String& val = dynamic_cast<const orm::type::String&>(*_val.get());
+        return bind_param(val);
+    }
+    if(type == typeid(orm::type::Integer)) {
+		const orm::type::Integer& val = dynamic_cast<const orm::type::Integer&>(*_val.get());
+        return bind_param(val);
+    }
+    if(type == typeid(orm::type::Numeric)) {
+		const orm::type::Numeric& val = dynamic_cast<const orm::type::Numeric&>(*_val.get());
+        return bind_param(val);
+    }
+    if(type == typeid(orm::type::Date)) {
+		const orm::type::Date& val = dynamic_cast<const orm::type::Date&>(*_val.get());
+        return bind_param(val);
+    }
+    if(type == typeid(orm::type::Datetime)) {
+		const orm::type::Datetime& val = dynamic_cast<const orm::type::Datetime&>(*_val.get());
+        return bind_param(val);
+    }
+    if(type == typeid(orm::type::Boolean)) {
+		const orm::type::Boolean& val = dynamic_cast<const orm::type::Boolean&>(*_val.get());
+        return bind_param(val);
+    }
+    if(type == typeid(orm::type::Float)) {
+		const orm::type::Float& val = dynamic_cast<const orm::type::Float&>(*_val.get());
+        return bind_param(val);
+    }
+    assert(!"Type not supported");
+	throw std::runtime_error("Type not supported");
+    return {nullptr, nullptr};
 }

@@ -27,4 +27,17 @@ struct ora_database_type* ora_database_type_clone(struct ora_database_type *src)
     return dest;
 }
 
+struct ora_database_type* ora_database_type_param_clone(struct ora_database_type *src) {
+	if(!src) {
+        return NULL;
+    }
+	struct ora_database_type* dest = (struct ora_database_type*)malloc(sizeof *dest);
+	*dest = *src;
+    if(src->indicator != -1) {
+		dest->data = (unsigned char*)malloc(src->length);
+		memcpy(dest->data, src->data, src->length);
+    }
+    return dest;
+}
+
 }
