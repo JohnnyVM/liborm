@@ -4,8 +4,8 @@
 #include <decimal/decimal>
 using decimal128 = std::decimal::decimal128;
 
-#include "type/engine.h"
-#include "type/numeric.hpp"
+#include "liborm/type/engine.h"
+#include "liborm/type/numeric.hpp"
 
 extern "C" {
 

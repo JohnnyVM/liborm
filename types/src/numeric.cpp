@@ -3,7 +3,7 @@
 #include <sstream>
 #include <decimal/decimal>
 
-#include "type/numeric.hpp"
+#include "liborm/type/numeric.hpp"
 #include <cfloat>
 
 orm::type::Numeric::operator std::string() const {

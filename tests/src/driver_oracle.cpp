@@ -4,7 +4,7 @@
 
 #include "connection/connection.h"
 #include "engine/engine.h"
-#include "type/types.hpp"
+#include "liborm/type/types.hpp"
 
 #include "CppUTest/TestHarness.h"
 

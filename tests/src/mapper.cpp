@@ -1,6 +1,6 @@
 #include "mapper/column.hpp"
-#include "type/string.hpp"
-#include "type/numeric.hpp"
+#include "liborm/type/string.hpp"
+#include "liborm/type/numeric.hpp"
 #include "mapper/table.hpp"
 
 #include "CppUTest/TestHarness.h"

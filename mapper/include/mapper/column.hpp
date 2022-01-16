@@ -10,8 +10,8 @@
 #include <utility>
 
 #include "mapper/table_element.hpp"
-#include "type/engine.h"
-#include "type/types.hpp"
+#include "liborm/type/engine.h"
+#include "liborm/type/types.hpp"
 
 namespace orm {
 

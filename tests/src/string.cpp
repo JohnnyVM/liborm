@@ -1,6 +1,6 @@
 #include <string>
 
-#include "type/string.hpp"
+#include "liborm/type/string.hpp"
 
 #include "CppUTest/TestHarness.h"
 

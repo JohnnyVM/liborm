@@ -1,7 +1,7 @@
 #ifndef LIBORM_CONNECTION_H
 #define LIBORM_CONNECTION_H
 
-#include "connection/statement.h"
+#include "liborm/connection/statement.h"
 #include "connection/types.h"
 
 #ifdef __cplusplus

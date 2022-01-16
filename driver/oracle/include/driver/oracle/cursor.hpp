@@ -8,7 +8,7 @@
 #include "driver/oracle/connection.hpp"
 #include "inner_driver_oracle.h"
 #include "connection_data.h"
-#include "type/engine.h"
+#include "liborm/type/engine.h"
 
 using PCursor = Cursor;
 using resource_ora_cursor = struct resource_ora_cursor;

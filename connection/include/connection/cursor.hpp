@@ -6,7 +6,7 @@
 #include <string>
 #include <cassert>
 
-#include "type/engine.h"
+#include "liborm/type/engine.h"
 #include "connection/types.h"
 
 /** A Cursor that is representing state from a DBAPI cursor.

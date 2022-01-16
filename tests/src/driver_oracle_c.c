@@ -2,7 +2,7 @@
 
 #include "connection/connection.h"
 #include "engine/engine.h"
-#include "type/engine.h"
+#include "liborm/type/engine.h"
 
 #include "CppUTest/TestHarness_c.h"
 
@@ -71,3 +71,37 @@ TEST_C(driver_oracle_c, select_number_16_c)
 	free_engine(engine);
 }
 
+TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
+	conn_state error;
+	char uri[] ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@CBSMOLS1.world/BSM_DBA";
+
+	Engine* engine = create_engine_p(uri);
+	Connection* conn = engine_connect(engine);
+
+	struct connection_result res = connection_prepare(
+		"INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)");
+	if(res.state != SQL_DONE) {
+		FAIL(connection_error_message(conn));
+	}
+
+	error = connection_rollback(conn);
+	if(res.state != SQL_DONE) {
+		FAIL(connection_error_message(conn));
+	}
+
+	std::shared_ptr<TypeEngine const> codpar = orm::String("HI!");
+	std::shared_ptr<TypeEngine const> valpar = orm::String("WORLD!");
+	std::shared_ptr<TypeEngine const> sitact = orm::String(":)");
+
+	// simply check the syntax work
+	auto [cursor, err] = conn->execute("INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)",
+		{{codpar, valpar, sitact}, {orm::String("H2!"), orm::String("H3!"), orm::String("H4!")}});
+	if(err != SQL_DONE) {
+		FAIL(conn->error_message());
+	}
+
+	err = conn->rollback();
+	if(err != SQL_DONE) {
+		FAIL(conn->error_message());
+	}
+}

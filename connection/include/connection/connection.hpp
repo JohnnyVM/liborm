@@ -8,9 +8,9 @@
 #include <initializer_list>
 
 #include "liborm/utils/movable_il.hpp"
-#include "connection/statement.h"
+#include "liborm/connection/statement.h"
 #include "connection/types.h"
-#include "type/engine.h"
+#include "liborm/type/engine.h"
 
 class Cursor;
 

@@ -5,10 +5,10 @@
 #include <memory>
 
 #include "oracle_types.h"
-#include "type/string.hpp"
-#include "type/integer.hpp"
-#include "type/numeric.hpp"
-#include "type/factory.hpp"
+#include "liborm/type/string.hpp"
+#include "liborm/type/integer.hpp"
+#include "liborm/type/numeric.hpp"
+#include "liborm/type/factory.hpp"
 
 namespace driver::oracle {
 

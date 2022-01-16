@@ -2,7 +2,7 @@
 
 #include "connection/cursor.hpp"
 #include "connection/state.h"
-#include "type/engine.h"
+#include "liborm/type/engine.h"
 
 TypeEngine* Cursor::getValue(unsigned row, unsigned column) const {
 	assert(row < nrows() and column < nfields()); // out of index

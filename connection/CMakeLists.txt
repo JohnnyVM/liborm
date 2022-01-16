@@ -6,6 +6,7 @@ configure_file(include/version.h.in include/connection/version.h)
 
 add_library(connection STATIC
 	src/connection.cpp
+	src/statement.cpp
 	src/cursor.cpp)
 
 target_include_directories(connection PUBLIC include)

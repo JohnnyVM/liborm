@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <cstring>
 
-#include "type/types.hpp"
+#include "liborm/type/types.hpp"
 #include "driver/oracle/factory.hpp"
 #include "oracle_types.h"
 #include "inner_driver_oracle.h"

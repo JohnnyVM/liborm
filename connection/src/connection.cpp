@@ -4,7 +4,7 @@
 #include "connection/connection.hpp"
 #include "connection/state.h"
 #include "connection/cursor.hpp"
-#include "connection/statement.h"
+#include "liborm/connection/statement.h"
 
 extern "C" {
 
@@ -50,8 +50,10 @@ unsigned connection_changes(Connection* const conn) {
 	return conn->changes();
 }
 
-Statement* connection_prepare(const char* stmt) {
-	return new Statement(stmt);
+struct connection_result connection_prepare(const char* stmt) {
+	struct connection_result state = INIT_CONNECTION_RESULT;
+	state.stmt = new Statement(stmt);
+	return state;
 }
 
 struct connection_result connection_step(Connection* conn, Statement* stmt) {
@@ -66,12 +68,10 @@ struct connection_result connection_step(Connection* conn, Statement* stmt) {
 
 	state.state = err;
 	state.changes = conn->changes();
-	state.cursor = cursor.release();
+	if(err == SQL_ROWS) {
+		state.cursor = cursor.release();
+	}
 	return state;
-}
-
-void free_statement(Statement* stmt) {
-	delete stmt;
 }
 
 }

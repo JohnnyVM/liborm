@@ -1,6 +1,6 @@
 #include <decimal/decimal>
-#include "type/engine.h"
-#include "type/numeric.hpp"
+#include "liborm/type/engine.h"
+#include "liborm/type/numeric.hpp"
 
 #include "CppUTest/TestHarness.h"
 

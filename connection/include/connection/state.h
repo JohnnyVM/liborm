@@ -3,13 +3,17 @@
 
 #include <stdlib.h>
 
+#include "liborm/connection/statement.h"
 #include "connection/types.h"
 #include "connection/cursor_c.h"
 
 struct connection_result {
 	enum connection_state state;
 	unsigned changes;
-	Cursor* cursor; /**< No access to this memeber if state != SQL_ROWS */
+	union {
+		Statement* stmt;
+		Cursor* cursor; /**< No access to this memeber if state != SQL_ROWS */
+	};
 };
 
 #define INIT_CONNECTION_RESULT {\

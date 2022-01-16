@@ -1,7 +1,7 @@
 #ifndef LIBORM_CONNECTION_CONNECTION_C_H
 #define LIBORM_CONNECTION_CONNECTION_C_H
 
-#include "connection/statement.h"
+#include "liborm/connection/statement.h"
 
 #ifndef __cplusplus
 typedef struct Connection Connection;
@@ -17,7 +17,7 @@ __attribute__((warn_unused_result)) conn_state connection_begin(Connection* conn
 __attribute__((warn_unused_result)) conn_state connection_commit(Connection* conn);
 __attribute__((warn_unused_result)) conn_state connection_rollback(Connection* conn);
 
-__attribute__((warn_unused_result)) Statement* connection_prepare(const char* stmt);
+__attribute__((warn_unused_result)) struct connection_result connection_prepare(const char* stmt);
 __attribute__((warn_unused_result)) struct connection_result connection_step(Connection* conn, Statement* stmt);
 
 __attribute__((warn_unused_result)) const char* connection_error_message(Connection* const conn);

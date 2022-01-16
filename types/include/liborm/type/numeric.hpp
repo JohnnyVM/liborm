@@ -10,8 +10,8 @@
 #include <limits>
 #include <memory>
 
-#include "type/engine.h"
-#include "type/integer.hpp"
+#include "liborm/type/engine.h"
+#include "liborm/type/integer.hpp"
 #define __STDC_WANT_DEC_FP__
 #include <cfloat>
 

@@ -2,7 +2,7 @@
 #define LIBORM_CONNECTION_CURSOR_C_H
 
 #include "connection/types.h"
-#include "type/engine.h"
+#include "liborm/type/engine.h"
 
 #ifndef __cplusplus
 typedef struct Cursor Cursor;

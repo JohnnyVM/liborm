@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "type/numeric.hpp"
+#include "liborm/type/numeric.hpp"
 
 #include "CppUTest/TestHarness.h"
 

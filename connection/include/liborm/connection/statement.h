@@ -14,7 +14,7 @@ typedef struct Statement Statement;
 #include <string>
 #include <vector>
 
-#include "type/engine.h" 
+#include "liborm/type/engine.h" 
 
 /**
  * \brief Dummy class for allow bind params
@@ -35,13 +35,15 @@ struct Statement {
 extern "C" {
 #endif
 
-/* This list of function bind parameters by host name */
-conn_state stmt_bind_int(Statement* stmt, const char* host_parameter, int val);
-conn_state stmt_bind_char(Statement* stmt, const char* host_parameter, char* val, size_t);
+void free_statement(Statement* stmt);
 
-/* \todo This list of function bind parameters by position */
+/* This list of function bind parameters by position */
+conn_state stmt_bind_int(Statement* stmt, unsigned pos, int val);
+conn_state stmt_bind_char(Statement* stmt, unsigned pos, char* val, size_t);
+
+/* \todo This list of function bind parameters by name
 conn_state stmt_bindn_int(Statement* stmt, unsigned, int val);
-conn_state stmt_bindn_char(Statement* stmt, unsigned, char* val, size_t);
+conn_state stmt_bindn_char(Statement* stmt, unsigned, char* val, size_t); */
 
 #ifdef __cplusplus
 }
