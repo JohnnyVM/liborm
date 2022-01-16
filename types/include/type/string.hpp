@@ -17,6 +17,10 @@ class String : public TypeEngine { // Keep that separate for class slicing
 	String(size_t arg_length, unsigned char* value) : String(arg_length, std::string(reinterpret_cast< char const* >(value))) {}
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
 	String(size_t arg_length, const T& value) : String(arg_length, std::string(value)) {}
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+	String( const T& value, size_t arg_length) : String(arg_length, std::string(value)) {}
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+	String(const T& value) : String(std::string(value).length(), std::string(value)) {}
 	String(size_t arg_length, const std::string& value) :
 		TypeEngine(init_name(minimun_is_1(arg_length)), typeid(*this), minimun_is_1(arg_length)), _value(value)
 		{ if(_value.length() > length) { assert(!"Input string truncated"); throw std::length_error("Input string truncated"); } }
@@ -96,6 +100,27 @@ class String : public TypeEngine { // Keep that separate for class slicing
 	}
 	inline static size_t minimun_is_1(size_t len) { return len >= 1 ? len : 1; }
 };
+
+}
+
+namespace orm {
+
+std::unique_ptr<TypeEngine> String(size_t);
+
+template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+inline std::unique_ptr<TypeEngine> String(const T& val) {
+	return std::make_unique<orm::type::String>(val);
+}
+
+template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+inline std::unique_ptr<TypeEngine> String(size_t size, const T& val) {
+	return std::make_unique<orm::type::String>(size, val);
+}
+
+template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+inline std::unique_ptr<TypeEngine> String(const T& val, size_t size) {
+	return std::make_unique<orm::type::String>(size, val);
+}
 
 }
 

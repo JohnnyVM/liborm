@@ -26,7 +26,7 @@ struct Statement {
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	Statement(const T& _arg) : statement(std::string(_arg)) {}
 	const std::string statement;
-	std::vector<std::shared_ptr<TypeEngine>> params;
+	std::vector<std::shared_ptr<const TypeEngine>> params;
 };
 
 #endif

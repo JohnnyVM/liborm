@@ -1,13 +1,22 @@
 #ifndef LIBORM_UTILS_MOVABLE_IL_HPP
 #define LIBORM_UTILS_MOVABLE_IL_HPP
 
+#include <vector>
+
 /* Explanation: https://stackoverflow.com/questions/46737054/vectorunique-ptra-using-initialization-list */
 template<class T>
 struct movable_il {
     mutable T t;
     operator T() const&& { return std::move(t); }
     movable_il( T&& in ): t(std::move(in)) {}
+    //movable_il( T& in ): t(std::move(in)) {}
 };
+
+template<class T, class A=std::allocator<T>>
+std::vector<T,A> vector_from_il( std::initializer_list< movable_il<T> > il ) {
+  std::vector<T,A> r( std::make_move_iterator(il.begin()), std::make_move_iterator(il.end()) );
+  return r;
+}
 
 template<class VT>
 struct fix_vt {

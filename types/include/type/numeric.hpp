@@ -149,6 +149,13 @@ class Numeric : virtual public TypeEngine {
 
 }
 
+namespace orm {
+
+std::unique_ptr<TypeEngine> Numeric(unsigned precision);
+std::unique_ptr<TypeEngine> Numeric(unsigned precision, unsigned scale);
+
+}
+
 #endif
 
 

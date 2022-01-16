@@ -69,9 +69,6 @@ class Column : public orm::TableElement {
 /** Return a class Column */
 std::unique_ptr<Column> column(const std::string& name, std::unique_ptr<TypeEngine>targ);
 std::unique_ptr<Column> column(const std::string& name, std::unique_ptr<TypeEngine>targ, const struct non_primary_key_nullable& npk);
-std::unique_ptr<TypeEngine> Numeric(unsigned precision);
-std::unique_ptr<TypeEngine> Numeric(unsigned precision, unsigned scale);
-std::unique_ptr<TypeEngine> String(size_t);
 
 }
 

@@ -8,6 +8,7 @@ add_library(types STATIC
 	src/factory.cpp
 	src/engine.cpp
 	src/numeric.cpp
+	src/string.cpp
 	src/datetime.cpp
 	src/types.cpp)
 

@@ -6,7 +6,6 @@
 #include "type/numeric.hpp"
 #include <cfloat>
 
-
 orm::type::Numeric::operator std::string() const {
     std::stringstream stream;
 
@@ -19,4 +18,11 @@ orm::type::Numeric::operator std::string() const {
     stream << std::fixed << std::setprecision(scale) << out;
 
     return stream.str();
+}
+
+std::unique_ptr<TypeEngine> orm::Numeric(unsigned precision) {
+	return std::make_unique<orm::type::Numeric>(precision, 0U);
+}
+std::unique_ptr<TypeEngine> orm::Numeric(unsigned precision, unsigned scale) {
+	return std::make_unique<orm::type::Numeric>(precision, scale);
 }

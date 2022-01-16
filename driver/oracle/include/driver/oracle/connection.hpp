@@ -22,7 +22,7 @@ class Connection final : virtual public PConnection {
 	[[nodiscard]] conn_state begin(void) override;
 	[[nodiscard]] conn_state commit(void) override;
 	[[nodiscard]] conn_state rollback(void) override;
-	[[nodiscard]] virtual std::tuple<std::unique_ptr<PCursor>, conn_state> execute(const std::string& stmt, std::vector<std::vector<std::shared_ptr<TypeEngine>>>list) override;
+	[[nodiscard]] virtual std::tuple<std::unique_ptr<PCursor>, conn_state> execute(const std::string& stmt, std::vector<std::vector<std::shared_ptr<const TypeEngine>>>list) override;
 
 	[[nodiscard]] bool is_open() override { return _is_open; }; /**< the connection is open */
 	[[nodiscard]] unsigned changes() override { return _changes;};

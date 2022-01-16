@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <initializer_list>
 
 #include "connection/connection.h"
 #include "engine/engine.h"
@@ -145,11 +146,17 @@ TEST(driver_oracle, insert_bind_update_select_delete) {
 	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
-	orm::type::String codpar(3, "HI!");
-	orm::type::String valpar(8, "WORLD!");
-	orm::type::String sitact(3, ":)");
+	std::shared_ptr<TypeEngine> codpar = orm::String("HI!");
+	std::shared_ptr<TypeEngine> valpar = orm::String("WORLD!");
+	std::shared_ptr<TypeEngine> sitact = orm::String(":)");
 
-	/*auto [cursor, err] = conn->execute("INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)");
+	auto [cursor, err] = conn->execute("INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)", {codpar, valpar, sitact});
+	if(err != SQL_DONE) {
+		FAIL(conn->error_message());
+	}
+	
+	auto [cursor2, err2] = conn->execute("INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)", 
+		{orm::String("HI!"), orm::String("WORLD!"), orm::String(":)")});
 	if(err != SQL_DONE) {
 		FAIL(conn->error_message());
 	}
@@ -157,5 +164,5 @@ TEST(driver_oracle, insert_bind_update_select_delete) {
 	conn->rollback();
 	if(err != SQL_DONE) {
 		FAIL(conn->error_message());
-	}*/
+	}
 }
