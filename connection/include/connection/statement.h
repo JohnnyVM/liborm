@@ -12,7 +12,7 @@ typedef struct Statement Statement;
 
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 #include "type/engine.h" 
 
@@ -26,7 +26,7 @@ struct Statement {
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	Statement(const T& _arg) : statement(std::string(_arg)) {}
 	const std::string statement;
-	std::unordered_map<std::string, std::shared_ptr<TypeEngine>> params;
+	std::vector<std::shared_ptr<TypeEngine>> params;
 };
 
 #endif
@@ -40,6 +40,8 @@ conn_state stmt_bind_int(Statement* stmt, const char* host_parameter, int val);
 conn_state stmt_bind_char(Statement* stmt, const char* host_parameter, char* val, size_t);
 
 /* \todo This list of function bind parameters by position */
+conn_state stmt_bindn_int(Statement* stmt, unsigned, int val);
+conn_state stmt_bindn_char(Statement* stmt, unsigned, char* val, size_t);
 
 #ifdef __cplusplus
 }

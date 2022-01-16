@@ -86,7 +86,7 @@ TEST(driver_oracle, acbuffer)
 {
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
-	std::shared_ptr<Engine> engine = create_engine(uri);
+	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
 	auto [cursor1, err1] = conn->execute("select 16 from dual");
@@ -112,7 +112,7 @@ TEST(driver_oracle, select_false) {
 	conn_state error;
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
-	std::shared_ptr<Engine> engine = create_engine(uri);
+	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
 	auto [cursor, err] = conn->execute("select '16' from dual  WHERE 1 = 0");
@@ -127,7 +127,7 @@ TEST(driver_oracle, select_false) {
 TEST(driver_oracle, select_date) {
 	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA";
 
-	std::shared_ptr<Engine> engine = create_engine(uri);
+	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
 	auto [cursor, err] = conn->execute("select SYSDATE from dual");
@@ -137,4 +137,25 @@ TEST(driver_oracle, select_date) {
 
 	/* \todo err = cursor->fetch();
 	CHECK_TEXT(!err and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message()); */
+}
+
+TEST(driver_oracle, insert_bind_update_select_delete) {
+	std::string uri ="oracle+oracle://BSM_DBA:BSM_DBA_MICH@CBSMOLS1.world/BSM_DBA";
+
+	std::unique_ptr<Engine> engine = create_engine(uri);
+	std::unique_ptr<Connection> conn = engine->connect();
+
+	orm::type::String codpar(3, "HI!");
+	orm::type::String valpar(8, "WORLD!");
+	orm::type::String sitact(3, ":)");
+
+	/*auto [cursor, err] = conn->execute("INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)");
+	if(err != SQL_DONE) {
+		FAIL(conn->error_message());
+	}
+
+	conn->rollback();
+	if(err != SQL_DONE) {
+		FAIL(conn->error_message());
+	}*/
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <optional>
+#include <vector>
 
 #include "liborm/utils/acbuffer.hpp"
 #include "engine/engine.h"
@@ -56,7 +57,7 @@ const char* driver::oracle::Connection::error_message(void) {
 	return  driver_ora_short_error_message();
 }
 
-std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt, std::unordered_map<std::string, std::shared_ptr<TypeEngine>>list) {
+std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::execute(const std::string& stmt, std::vector<std::vector<std::shared_ptr<TypeEngine>>>list) {
 	std::optional<std::shared_ptr<struct resource_ora_cursor>>oracle_cursor = gora_cursors.get();
 	if(not oracle_cursor.has_value()) {
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);

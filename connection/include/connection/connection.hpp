@@ -4,7 +4,10 @@
 #include <tuple>
 #include <memory>
 #include <cassert>
+#include <vector>
+#include <initializer_list>
 
+#include "liborm/utils/is_iterable.hpp"
 #include "connection/statement.h"
 #include "connection/types.h"
 #include "type/engine.h"
@@ -22,8 +25,46 @@ class Connection {
 	[[nodiscard]] virtual conn_state begin() = 0;
 	[[nodiscard]] virtual conn_state commit() = 0;
 	[[nodiscard]] virtual conn_state rollback() = 0;
+
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	[[nodiscard]] std::tuple<std::unique_ptr<Cursor>, conn_state> execute(const T& _stmt){
+		std::vector<std::vector<std::shared_ptr<TypeEngine>>>rows;
+		std::string stmt = std::string(_stmt);
+		return execute(stmt, rows);
+	}
+
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	[[nodiscard]] std::tuple<std::unique_ptr<Cursor>, conn_state> execute(
+			const T& _stmt, std::initializer_list<std::shared_ptr<TypeEngine>>list){
+		std::vector<std::vector<std::shared_ptr<TypeEngine>>>rows;
+		std::vector<std::shared_ptr<TypeEngine>>row;
+		std::string stmt = std::string(_stmt);
+		for(std::shared_ptr<TypeEngine> el : list) {
+			row.push_back(el);
+		}
+		rows.push_back(row);
+		return execute(stmt, list);
+	}
+
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	[[nodiscard]] std::tuple<std::unique_ptr<Cursor>, conn_state> execute(
+			const T& _stmt, std::initializer_list<std::initializer_list<std::shared_ptr<TypeEngine>>>list){
+		std::string stmt = std::string(_stmt);
+		std::vector<std::vector<std::shared_ptr<TypeEngine>>> rows;
+		std::vector<std::shared_ptr<TypeEngine>>row;
+		for(std::initializer_list<std::shared_ptr<TypeEngine>> l : list) {
+			assert(list.begin()->size() == l.size());
+			row.clear();
+			for(std::shared_ptr<TypeEngine> el : l) {
+				row.push_back(el);
+			}
+			rows.push_back(row);
+		}
+		return execute(stmt, rows);
+	}
+
 	[[nodiscard]] virtual std::tuple<std::unique_ptr<Cursor>, conn_state> execute(
-		const std::string& stmt, std::unordered_map<std::string, std::shared_ptr<TypeEngine>>list = {}) = 0;
+		const std::string& stmt, std::vector<std::vector<std::shared_ptr<TypeEngine>>>list) = 0;
 	[[nodiscard]] virtual bool is_open() = 0; /**< the connection is open */
 	[[nodiscard]] virtual unsigned changes() = 0; /**< list of rows modified by the last statement */
 	[[nodiscard]] virtual const char* error_message() = 0; /**< return latest connection error code as message database specific */

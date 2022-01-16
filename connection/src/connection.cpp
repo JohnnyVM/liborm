@@ -56,7 +56,9 @@ Statement* connection_prepare(const char* stmt) {
 
 struct connection_result connection_step(Connection* conn, Statement* stmt) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
-	auto [cursor, err] = conn->execute(stmt->statement, stmt->params);
+	std::vector<std::vector<std::shared_ptr<TypeEngine>>>rows;
+	rows.emplace_back(stmt->params);
+	auto [cursor, err] = conn->execute(stmt->statement, rows);
 	if(err != SQL_DONE && err != SQL_ROWS) {
 		state.state = err;
 		return state;

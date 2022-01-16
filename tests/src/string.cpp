@@ -11,13 +11,15 @@ TEST(String, cast_string) {
 
 	CHECK_EQUAL(std::string("Hi!"), std::string(str));
 
+#ifdef NDEBUG
 	try {
-		orm::type::String(3, "Hi!!");
+		orm::type::String(3, "1234");
 	} catch(const std::length_error& err) {
 		CHECK(1);
 	} catch(...) {
 		FAIL("Invalid exception");
 	}
+#endif
 
 	orm::type::String test(9, "Hi ");
 	CHECK_EQUAL(std::string("Hi world!"), test + std::string("world!"));

@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <memory>
+#include <cassert>
 
 #include "type/engine.h"
 
@@ -14,11 +15,11 @@ namespace orm::type {
 class String : public TypeEngine { // Keep that separate for class slicing
 	public:
 	String(size_t arg_length, unsigned char* value) : String(arg_length, std::string(reinterpret_cast< char const* >(value))) {}
-	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
-	String(size_t arg_length, T value) : String(arg_length, std::string(value)) {}
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value, bool> = true>
+	String(size_t arg_length, const T& value) : String(arg_length, std::string(value)) {}
 	String(size_t arg_length, const std::string& value) :
 		TypeEngine(init_name(minimun_is_1(arg_length)), typeid(*this), minimun_is_1(arg_length)), _value(value)
-		{ if(_value.length() > length) { throw std::length_error("Input string truncated"); } }
+		{ if(_value.length() > length) { assert(!"Input string truncated"); throw std::length_error("Input string truncated"); } }
 	String(size_t arg_length) :
 		TypeEngine(init_name(minimun_is_1(arg_length)), typeid(*this), minimun_is_1(arg_length)) {}
 
@@ -31,11 +32,21 @@ class String : public TypeEngine { // Keep that separate for class slicing
 
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	inline String& operator=(const T& __rhs) {
-		_value = std::string(__rhs);
+		std::string tmp = std::string(__rhs);
+		if(tmp.length() > length) {
+			assert(!"Input string truncated");
+			throw std::length_error("Input string truncated"); // warning
+		}
+		_value = tmp;
 		return *this;
 	}
 	inline String& operator=(const unsigned char* const __restrict __rhs) {
-		_value = std::string((char*)__rhs);
+		std::string tmp = std::string((char*)__rhs);
+		if(tmp.length() > length) {
+			assert(!"Input string truncated");
+			throw std::length_error("Input string truncated"); // warning
+		}
+		_value = tmp;
 		return *this;
 	}
 
@@ -70,7 +81,8 @@ class String : public TypeEngine { // Keep that separate for class slicing
 
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	inline String& operator+=(const T& rhs) {
-		if(_value.length() + std::string(rhs).length() > this->length) {
+		if(_value.length() + std::string(rhs).length() > length) {
+			assert(!"Input string truncated");
 			throw std::length_error("Input string truncated");
 		}
 		_value += std::string(rhs);
