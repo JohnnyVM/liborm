@@ -38,8 +38,9 @@ extern "C" {
 void free_statement(Statement* stmt);
 
 /* This list of function bind parameters by position */
-conn_state stmt_bind_int(Statement* stmt, unsigned pos, int val);
-conn_state stmt_bind_char(Statement* stmt, unsigned pos, char* val, size_t);
+conn_state stmt_bind_null(Statement* stmt, unsigned pos, int val) __attribute__((nonnull));
+conn_state stmt_bind_int(Statement* stmt, unsigned pos, int val) __attribute__((nonnull));
+conn_state stmt_bind_char(Statement* stmt, unsigned pos, char* val, size_t)__attribute__((nonnull));
 
 /* \todo This list of function bind parameters by name
 conn_state stmt_bindn_int(Statement* stmt, unsigned, int val);

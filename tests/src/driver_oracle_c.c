@@ -78,7 +78,7 @@ TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
 	Engine* engine = create_engine_p(uri);
 	Connection* conn = engine_connect(engine);
 
-	struct connection_result res = connection_prepare(
+	struct connection_result res = connection_prepare(conn,
 		"INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)");
 	if(res.state != SQL_DONE) {
 		FAIL_C();

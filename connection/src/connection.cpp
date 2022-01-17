@@ -50,7 +50,7 @@ unsigned connection_changes(Connection* const conn) {
 	return conn->changes();
 }
 
-struct connection_result connection_prepare(const char* stmt) {
+struct connection_result connection_prepare([[maybe_unused]] Connection* conn, const char* stmt) {
 	struct connection_result state = INIT_CONNECTION_RESULT;
 	state.stmt = new Statement(stmt);
 	return state;

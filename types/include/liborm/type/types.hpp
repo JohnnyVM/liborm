@@ -8,5 +8,6 @@
 #include "liborm/type/integer.hpp"
 #include "liborm/type/numeric.hpp"
 #include "liborm/type/string.hpp"
+#include "liborm/type/null.hpp"
 
 #endif

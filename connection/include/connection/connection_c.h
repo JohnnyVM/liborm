@@ -17,7 +17,7 @@ __attribute__((warn_unused_result, nonnull)) conn_state connection_begin(Connect
 __attribute__((warn_unused_result, nonnull)) conn_state connection_commit(Connection* conn);
 __attribute__((warn_unused_result, nonnull)) conn_state connection_rollback(Connection* conn);
 
-__attribute__((warn_unused_result, nonnull)) struct connection_result connection_prepare(const char* stmt);
+__attribute__((warn_unused_result, nonnull)) struct connection_result connection_prepare(Connection* conn, const char* stmt);
 __attribute__((warn_unused_result, nonnull)) struct connection_result connection_step(Connection* conn, Statement* stmt);
 
 __attribute__((warn_unused_result, nonnull)) const char* connection_error_message(Connection* const conn);
