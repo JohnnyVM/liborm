@@ -71,9 +71,20 @@ std::unique_ptr<orm::type::Datetime> driver::oracle::TypeFactory::Datetime() con
 }
 
 
+static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param([[maybe_unused]]const orm::type::Null& _val) {
+	struct ora_database_type val;
+	val.type = ORA_INTEGER;
+	val.indicator = -1;
+	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> ptr(ora_database_type_param_clone(&val), &free_ora_database_type);
+    return ptr;
+}
+
 static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param(const orm::type::String& _val) {
 	struct ora_database_type val;
 	val.type = ORA_CHARACTER_VARYING;
+	if(_val.is_null) {
+		return bind_param(orm::type::Null());
+	}
 	val.length = std::string(_val).length();
 	val.indicator = _val.is_null ? -1 : 0;
 	val.data = (unsigned char*)malloc(val.length);
@@ -85,6 +96,9 @@ static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_typ
 static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> bind_param(const orm::type::Integer& _val) {
 	struct ora_database_type val;
 	val.type = ORA_INTEGER;
+	if(_val.is_null) {
+		return bind_param(orm::type::Null());
+	}
 	val.length = _val.length;
 	val.indicator = _val.is_null ? -1 : 0;
 	val.data = (unsigned char*)malloc(val.length);
