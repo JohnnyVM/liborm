@@ -4,7 +4,7 @@
 #include "mapper/table.hpp"
 
 #include "CppUTest/TestHarness.h"
-#include "type/types.hpp"
+#include "liborm/type/types.hpp"
 
 TEST_GROUP(Column){};
 

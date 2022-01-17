@@ -76,7 +76,7 @@ class Numeric : virtual public TypeEngine {
 	inline explicit operator std::decimal::decimal64() const { return std::decimal::decimal64(_value); }
 	inline explicit operator std::decimal::decimal32() const { return std::decimal::decimal32(_value); }
 
-	inline bool operator!() const { return this->is_null ? true : this->_value == 0;}
+	inline bool operator!() const { return this->is_null ? false : this->_value == 0;}
 
 	/**
 	 * \brief Comparations between numeric

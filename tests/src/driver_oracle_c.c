@@ -81,27 +81,11 @@ TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
 	struct connection_result res = connection_prepare(
 		"INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)");
 	if(res.state != SQL_DONE) {
-		FAIL(connection_error_message(conn));
+		FAIL_C();
 	}
 
 	error = connection_rollback(conn);
-	if(res.state != SQL_DONE) {
-		FAIL(connection_error_message(conn));
-	}
-
-	std::shared_ptr<TypeEngine const> codpar = orm::String("HI!");
-	std::shared_ptr<TypeEngine const> valpar = orm::String("WORLD!");
-	std::shared_ptr<TypeEngine const> sitact = orm::String(":)");
-
-	// simply check the syntax work
-	auto [cursor, err] = conn->execute("INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)",
-		{{codpar, valpar, sitact}, {orm::String("H2!"), orm::String("H3!"), orm::String("H4!")}});
-	if(err != SQL_DONE) {
-		FAIL(conn->error_message());
-	}
-
-	err = conn->rollback();
-	if(err != SQL_DONE) {
-		FAIL(conn->error_message());
+	if(error != SQL_DONE) {
+		FAIL_C();
 	}
 }
