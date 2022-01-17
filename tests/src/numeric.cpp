@@ -29,7 +29,6 @@ TEST(numeric, cast_integer)
 TEST(numeric, check_null_compare_to_false) {
     orm::type::Numeric numeric{2U, 0U, 1};
     numeric.is_null = true;
-    CHECK(not numeric);
     CHECK(not (numeric == 1));
 }
 

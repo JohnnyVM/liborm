@@ -11,17 +11,17 @@ typedef struct Connection Connection;
 extern "C" {
 #endif
 
-__attribute__((warn_unused_result)) struct connection_result connection_execute(Connection* conn, const char* const stmt);
-__attribute__((warn_unused_result)) conn_state connection_close(Connection* conn);
-__attribute__((warn_unused_result)) conn_state connection_begin(Connection* conn);
-__attribute__((warn_unused_result)) conn_state connection_commit(Connection* conn);
-__attribute__((warn_unused_result)) conn_state connection_rollback(Connection* conn);
+__attribute__((warn_unused_result, nonnull)) struct connection_result connection_execute(Connection* conn, const char* const stmt);
+__attribute__((warn_unused_result, nonnull)) conn_state connection_close(Connection* conn);
+__attribute__((warn_unused_result, nonnull)) conn_state connection_begin(Connection* conn);
+__attribute__((warn_unused_result, nonnull)) conn_state connection_commit(Connection* conn);
+__attribute__((warn_unused_result, nonnull)) conn_state connection_rollback(Connection* conn);
 
-__attribute__((warn_unused_result)) struct connection_result connection_prepare(const char* stmt);
-__attribute__((warn_unused_result)) struct connection_result connection_step(Connection* conn, Statement* stmt);
+__attribute__((warn_unused_result, nonnull)) struct connection_result connection_prepare(const char* stmt);
+__attribute__((warn_unused_result, nonnull)) struct connection_result connection_step(Connection* conn, Statement* stmt);
 
-__attribute__((warn_unused_result)) const char* connection_error_message(Connection* const conn);
-__attribute__((warn_unused_result)) unsigned connection_changes(Connection* const conn);
+__attribute__((warn_unused_result, nonnull)) const char* connection_error_message(Connection* const conn);
+__attribute__((warn_unused_result, nonnull)) unsigned connection_changes(Connection* const conn);
 void free_connection(Connection* conn);
 void free_statement(Statement*);
 
