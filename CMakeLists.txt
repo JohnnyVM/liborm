@@ -15,7 +15,7 @@ option(DOXYGEN "Generate doxygen documentation" OFF)
 
 configure_file(version.h.in include/version.h)
 
-add_compile_options(-Wall -Wextra -Werror -fno-common)
+add_compile_options(-Wall -Wextra -Werror -fno-common -Wformat -Wformat-truncation -Wshadow -Wundef -Wconversion)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
 
 if(CHECK_MEMORY)

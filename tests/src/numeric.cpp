@@ -48,7 +48,7 @@ TEST(numeric, cast_numeric)
 
 TEST(numeric, int_op_equivalence)
 {
-    int inum = 12.546L;
+    int inum = (int)12.546L;
     //float fnum = 12.546L;
     orm::type::Numeric numeric{2U, 0U, inum};
     // cast to int

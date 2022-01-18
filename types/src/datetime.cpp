@@ -27,7 +27,7 @@ orm::type::Datetime::operator std::string() const {
     check = gmtime_r(&ts.tv_sec, &tm);
     if(check == NULL) { assert(!"gmtime_r error"); throw std::system_error(errno, std::generic_category()); }
     char out[100]; // i suppose is enought
-    int icheck = strftime(out, sizeof out, nl_langinfo(D_T_FMT), &tm);
+    size_t icheck = strftime(out, sizeof out, nl_langinfo(D_T_FMT), &tm);
     assert(icheck < (int)sizeof out);
 
     return std::string(out);

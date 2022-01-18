@@ -66,7 +66,7 @@ driver_ora_execute_1(struct oracle_connection_data* dbconn) {
 		return db_stat;
 	}
 
-	db_stat.changes = sqlca.sqlerrd[2];
+	db_stat.changes = sqlca.sqlerrd[2] > 0 ? (unsigned)sqlca.sqlerrd[2] : 0u;
 	if(output_count) {
 		db_stat.state = SQL_ROWS;
 	}
@@ -151,7 +151,7 @@ conn_state driver_ora_fetch_1(struct oracle_connection_data* dbconn, unsigned* c
 		}
 	}
 
-	(*changes) += sqlca.sqlerrd[2];
+	(*changes) += sqlca.sqlerrd[2] > 0 ? (unsigned)sqlca.sqlerrd[2] : 0u;
 	return state;
 }
 

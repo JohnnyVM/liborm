@@ -34,6 +34,10 @@ target_link_libraries(tests
 target_include_directories(tests PRIVATE ${CPPUTEST_INCLUDE_DIRS})
 target_link_directories(tests PRIVATE ${CPPUTEST_LIBRARIES})
 
+if(ORACLE)
+	target_compile_definitions(tests PUBLIC ORACLE)
+endif()
+
 if(RUN_TESTS)
 add_custom_command(TARGET tests COMMAND ./tests POST_BUILD)
 endif()

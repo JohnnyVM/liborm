@@ -20,6 +20,7 @@ namespace driver::oracle {
  * \warning The ORACLE DBAPI is designed in way taht the cursor are global variables at file unit
  * this api only provide a cursor, any THREAD aplication have to be designed VERY carefully 
  * around that limitation, or think how remove that, by default the class block when lock and unlock the cursor
+ * \warning the thread context of the cursor is a variably carried by the connection, you cannoy free the connection and use the cursor
  * */
 class Cursor final : public PCursor {
 	friend class driver::oracle::Connection;

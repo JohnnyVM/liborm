@@ -17,7 +17,7 @@ const std::string& Cursor::name(unsigned pos) const {
 int Cursor::number(const std::string& _name) const {
 	for(size_t i = 0; i < _names.size(); i++) {
 		if(_names[i] == _name) {
-			return i;
+			return (int)i;
 		}
 	}
 	assert(!"Column name not found"); // out of index
@@ -56,6 +56,7 @@ const char* cursor_name(Cursor* const c, unsigned pos) {
 
 int cursor_number(Cursor* const c, const char* const name) {
 	return c->number(std::string(name));
+
 }
 
 void free_cursor(Cursor* const c) {

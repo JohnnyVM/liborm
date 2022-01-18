@@ -95,8 +95,8 @@ conn_state driver::oracle::Cursor::fetch(void) {
 		_values[osize + i] = factory.factory();
 		if(ptr.indicator != -1) { free(ptr.data); }
 	}
-	_ntuples += sqlca.sqlerrd[2];
-	_changes += sqlca.sqlerrd[2];
+	_ntuples += sqlca.sqlerrd[2] > 0 ? (unsigned)sqlca.sqlerrd[2] : 0u;
+	_changes += sqlca.sqlerrd[2] > 0 ? (unsigned)sqlca.sqlerrd[2] : 0u;
 	return state;
 }
 

@@ -24,7 +24,7 @@ conn_state driver_ora_set_descriptor_input(struct oracle_connection_data* dbconn
 	int length = result->length;
 	unsigned char* data = result->data;
 	short indicator = result->indicator;
-	const int pos = nfield;
+	const int pos = (int)nfield;
 	EXEC SQL END DECLARE SECTION;
 
 	EXEC SQL CONTEXT USE :ctx;
@@ -56,7 +56,7 @@ conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* dbcon
 	int scale;
 	int nullable;
 	short indicator;
-	const int pos = nfield;
+	const int pos = (int)nfield;
 	int len;
 	EXEC SQL END DECLARE SECTION;
 
@@ -133,7 +133,8 @@ conn_state driver_ora_fields_out_count(struct oracle_connection_data* dbconn, un
 	if(sqlca.sqlcode) {
 		return DATABASE_ERROR;
 	}
-	*i = output_count;
+	assert(output_count >= 0);
+	*i = (unsigned)output_count;
 	return SQL_DONE;
 }
 
@@ -152,7 +153,7 @@ conn_state driver_ora_fields_in_count(struct oracle_connection_data* dbconn, uns
 	if(sqlca.sqlcode) {
 		return DATABASE_ERROR;
 	}
-
-	*i = input_count;
+	assert(input_count >= 0);
+	*i = (unsigned)input_count;
 	return SQL_DONE;
 }

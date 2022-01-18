@@ -60,7 +60,7 @@ class TypeEngine { // Keep that separate for class slicing
 extern "C" {
 #endif
 
-int column_as_char(TypeEngine* const, char**buf, size_t len);
+int column_as_char(TypeEngine* const, char* buf, size_t len);
 int column_as_int(TypeEngine* const val);
 long column_as_long(TypeEngine* const val);
 float column_as_float(TypeEngine* const val);

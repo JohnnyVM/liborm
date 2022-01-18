@@ -1,6 +1,7 @@
 #include <memory>
 #include <stdexcept>
 #include <cstring>
+#include <limits>
 
 #include "liborm/type/types.hpp"
 #include "driver/oracle/factory.hpp"
@@ -85,7 +86,8 @@ static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_typ
 	if(_val.is_null) {
 		return bind_param(orm::type::Null());
 	}
-	val.length = std::string(_val).length();
+	assert(std::string(_val).length() <= std::numeric_limits<int>::max());
+	val.length = (int)std::string(_val).length();
 	val.indicator = _val.is_null ? -1 : 0;
 	val.data = (unsigned char*)malloc(val.length);
 	memcpy(val.data, std::string(_val).c_str(), val.length);
@@ -99,7 +101,8 @@ static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_typ
 	if(_val.is_null) {
 		return bind_param(orm::type::Null());
 	}
-	val.length = _val.length;
+	assert(_val.length <= std::numeric_limits<int>::max());
+	val.length = (int)_val.length;
 	val.indicator = _val.is_null ? -1 : 0;
 	val.data = (unsigned char*)malloc(val.length);
 	intmax_t in = (intmax_t)_val;
