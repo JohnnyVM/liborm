@@ -27,7 +27,7 @@ class acbuffer
 		unsigned i;
 		for(i = 0; i < container.size() and not observer[i].expired(); i++);
 		if(i == container.size()) {
-			return std::nullopt;
+			return std::nullopt; // Max open cursors
 		}
 		std::shared_ptr<C>res = std::make_shared<C>(*container[i].get());
 		observer[i] = res;

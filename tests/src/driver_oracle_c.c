@@ -97,7 +97,7 @@ TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
 	free_statement(stmt);
 
 	res = connection_prepare(conn,"SELECT CODPAR, VALPAR, SITACT FROM PARAMETROS WHERE CODPAR = :codpar AND VALPAR = :valpar AND SITACT = :sitact");
-	if(res.state != SQL_DONE || connection_changes(conn) != 0 ||  res.stmt == NULL) {
+	if(res.state != SQL_DONE ||  res.stmt == NULL) {
 		FAIL_TEXT_C("Simple select failed");
 	}
 	
@@ -106,12 +106,12 @@ TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
 	stmt_bind_char(stmt, 1, "world!", 7);
 	stmt_bind_char(stmt, 2, ":)", 3);
 	res = connection_step(conn, stmt);
-	if(res.state == SQL_ROWS && res.cursor != NULL) {
+	if(res.state != SQL_ROWS || res.cursor == NULL) {
 		FAIL_C();
 	}
 
 	error = cursor_fetch(res.cursor);
-	CHECK_C_TEXT(!error && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
+	CHECK_C_TEXT(!error && cursor_changes(res.cursor) == 1 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
 	char tmp1[4]; column_as_char(cursor_getValue(res.cursor, 0, 0), tmp1, sizeof tmp1);
 	char tmp2[8]; column_as_char(cursor_getValue(res.cursor, 0, 1), tmp2, sizeof tmp2);
 	char tmp3[4]; column_as_char(cursor_getValue(res.cursor, 0, 2), tmp3, sizeof tmp3);

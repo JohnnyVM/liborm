@@ -63,6 +63,7 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 	unsigned nout_params;
 	std::optional<std::shared_ptr<struct resource_ora_cursor>>oracle_cursor = gora_cursors.get();
 	if(not oracle_cursor.has_value()) {
+		assert(!"Max open cursors");
 		return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, SQL_MAXOPENCURSORS);
 	}
 
