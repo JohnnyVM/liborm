@@ -84,8 +84,23 @@ TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
 		FAIL_C();
 	}
 
-	error = connection_rollback(conn);
+	Statement* stmt = res.stmt;
+	stmt_bind_char(stmt, 0, "H1!", 3);
+	stmt_bind_char(stmt, 0, "H2!", 3);
+	stmt_bind_char(stmt, 1, "world!", 5);
+	stmt_bind_char(stmt, 2, ":)", 2);
+
+	res = connection_step(conn, stmt);
+	if(res.state != SQL_DONE) {
+		FAIL_C();
+	}
+
+	error = connection_commit(conn);
 	if(error != SQL_DONE) {
 		FAIL_C();
 	}
+
+	free_statement(stmt);
+	free_connection(conn);
+	free_engine(engine);
 }

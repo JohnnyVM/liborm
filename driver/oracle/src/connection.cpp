@@ -85,6 +85,7 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 }
 #endif
 
+	_changes = 0;
 	if(list.size() <= 0) {
 		std::vector<std::shared_ptr<const TypeEngine>>row;
 		list.emplace_back(row);
@@ -98,6 +99,7 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 			}
 		}
 		state = oracle_cursor.value().get()->execute(&data);
+		_changes += state.changes;
 		if(state.state != SQL_ROWS) {
 			return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(nullptr, state.state);
 		}
@@ -111,7 +113,6 @@ std::tuple<std::unique_ptr<Cursor>, conn_state> driver::oracle::Connection::exec
 	}
 
 	state.state = SQL_ROWS;
-	_changes += state.changes;
 	cursor->_changes += state.changes;
 	return std::tuple<std::unique_ptr<driver::oracle::Cursor>, conn_state>(std::move(cursor), state.state);
 }

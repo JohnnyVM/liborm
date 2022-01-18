@@ -146,18 +146,6 @@ TEST(driver_oracle, insert_bind_update_select_delete) {
 	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
-	auto [cursor2, err2] = conn->execute(
-		"INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)",
-		{ orm::String("HI!"), orm::String("WORLD!"), orm::String(":)") });
-	if(err2 != SQL_DONE) {
-		FAIL(conn->error_message());
-	}
-
-	err2 = conn->rollback();
-	if(err2 != SQL_DONE) {
-		FAIL(conn->error_message());
-	}
-
 	std::shared_ptr<TypeEngine const> codpar = orm::String("HI!");
 	std::shared_ptr<TypeEngine const> valpar = orm::String("WORLD!");
 	std::shared_ptr<TypeEngine const> sitact = orm::String(":)");
@@ -168,6 +156,34 @@ TEST(driver_oracle, insert_bind_update_select_delete) {
 	if(err != SQL_DONE) {
 		FAIL(conn->error_message());
 	}
+
+	err = conn->rollback();
+	if(err != SQL_DONE) {
+		FAIL(conn->error_message());
+	}
+
+	auto [cursor2, err2] = conn->execute(
+		"INSERT INTO PARAMETROS(CODPAR, VALPAR, SITACT) VALUES(:codpar, :valpar, :sitact)",
+		{ codpar, valpar, sitact });
+	if(err2 != SQL_DONE || conn->changes() != 1 || cursor2 != nullptr) {
+		FAIL(conn->error_message());
+	}
+
+	std::tie(cursor, err) = conn->execute("SELECT CODPAR, VALPAR, SITACT FROM PARAMETROS WHERE CODPAR = :codpar AND VALPAR = :valpar AND SITACT = :sitact",
+		{codpar, valpar, sitact});
+	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
+		FAIL(conn->error_message());
+	}
+
+	conn_state error = cursor->fetch();
+	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+
+	TypeEngine* get_sitact = cursor->getValue(0,2);
+	TypeEngine* get_codpar = cursor->getValue(0,0);
+	TypeEngine* get_valpar = cursor->getValue(0,1);
+	CHECK(*get_sitact == *sitact.get());
+	CHECK(*get_codpar == *codpar.get());
+	CHECK(*get_valpar == *valpar.get());
 
 	err = conn->rollback();
 	if(err != SQL_DONE) {

@@ -42,6 +42,12 @@ class TypeEngine { // Keep that separate for class slicing
 	inline friend std::string to_string(const TypeEngine& _engine) {
     	return std::string(_engine);
   	}
+
+	inline friend bool operator ==(const TypeEngine& _lhs, const TypeEngine& _rhs) {
+		return _lhs.is_null or _rhs.is_null ? false : std::string(_lhs) == std::string(_rhs); }
+	inline friend bool operator !=(const TypeEngine& _lhs, const TypeEngine& _rhs) {
+		return _lhs.is_null or _rhs.is_null ? false : std::string(_lhs) == std::string(_rhs); }
+
 	virtual std::unique_ptr<TypeEngine> clone() const = 0;
 
 	const std::type_info& type;
