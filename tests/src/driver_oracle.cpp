@@ -103,7 +103,7 @@ TEST(driver_oracle, acbuffer)
 	CHECK_EQUAL(std::string("LONG_DOUBLE"), cursor0->name(0));
 
 	// this test fail in debug mode becouse assert
-	#ifndef NDEBUG
+	#ifdef NDEBUG
 	auto [cursor2, err2] = conn->execute("SELECT CAST(9999999999.999999999 AS NUMBER(19,9)) AS LONG_DOUBLE FROM DUAL");
 	CHECK_TEXT(err2 == SQL_MAXOPENCURSORS, "Not returned SQL_MAXOPENCURSORS");
 	#endif
