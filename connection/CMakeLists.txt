@@ -14,7 +14,7 @@ target_include_directories(connection PUBLIC include)
 	target_link_libraries(connection types utils)
 
 install(TARGETS connection DESTINATION lib)
-install(DIRECTORY include/connection DESTINATION include)
+install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)
