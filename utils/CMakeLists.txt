@@ -12,7 +12,7 @@ target_include_directories(utils PUBLIC
 )
 
 install(TARGETS utils DESTINATION lib)
-install(DIRECTORY include DESTINATION include)
+install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)
