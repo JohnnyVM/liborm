@@ -82,6 +82,9 @@ conn_state driver::oracle::Cursor::fetch(void) {
 		assert(!state || !"Invalid operation fetch over cursor");
 		return state;
 	}
+	if(state == SQL_DONE) { // no more rows
+		return state;
+	}
 
 	size_t osize = _values.size();
 	_values.resize(osize + _nfields);
