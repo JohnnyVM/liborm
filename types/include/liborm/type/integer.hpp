@@ -24,6 +24,9 @@ class Integer : public TypeEngine {
 
 	template<typename I, std::enable_if_t<std::is_arithmetic<I>::value, bool> = true>
 	inline explicit operator I() const {
+		if(is_null) {
+			return (I)0;
+		}
 		assert(_value < std::numeric_limits<I>::lowest() || std::numeric_limits<I>::max() > _value); // overflow
 		return (I)_value; }
 

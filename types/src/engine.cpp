@@ -30,4 +30,8 @@ decimal128 column_as_decimal128(TypeEngine* const val) {
 }
 #undef DECLARE_NUMERIC_CAST
 
+bool column_is_null(TypeEngine* const val) {
+    return val->is_null;
+}
+
 }

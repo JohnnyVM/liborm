@@ -31,7 +31,7 @@ class String : public TypeEngine { // Keep that separate for class slicing
 
 	inline explicit operator std::string() const {return _value;}
 	inline friend std::string StringFrom(String& arg) {
-		return arg._value;
+		return is_null ? std::string() : arg._value;
 	}
 
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>

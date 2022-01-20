@@ -22,10 +22,14 @@ conn_state driver_ora_set_descriptor_input(struct oracle_connection_data* dbconn
 	unsigned char* input_descriptor = dbconn->input_descriptor;
 	int type = result->type;
 	int length = result->length;
-	unsigned char* data = result->data;
+	unsigned char* data = NULL;
 	short indicator = result->indicator;
 	const int pos = (int)nfield;
 	EXEC SQL END DECLARE SECTION;
+
+	if(result->indicator != -1) {
+		data = result->data;
+	}
 
 	EXEC SQL CONTEXT USE :ctx;
 	EXEC SQL SET DESCRIPTOR GLOBAL :input_descriptor VALUE :pos

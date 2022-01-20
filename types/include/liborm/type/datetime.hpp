@@ -84,6 +84,10 @@ class Datetime : public virtual TypeEngine {
 	template<typename T,
 		std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	std::string tostring(const T& val) const {
+		if(is_null) {
+			return std::string();
+		}
+
 	    std::scoped_lock lock(Datetime::lock_timer);
 
 		struct tm tm, *check;

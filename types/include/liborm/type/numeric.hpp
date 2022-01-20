@@ -62,19 +62,19 @@ class Numeric : virtual public TypeEngine {
 	template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
 	inline explicit operator I() const {
 		assert(_value < std::numeric_limits<I>::lowest() || std::numeric_limits<I>::max() > _value); // overflow
-		return (I)std::decimal::decimal128_to_long_long(_value); }
+		return is_null ? (I)0 : (I)std::decimal::decimal128_to_long_long(_value); }
 	inline explicit operator long double() const {
 		assert(_value < (std::decimal::decimal128)std::numeric_limits<long double>::lowest() || (std::decimal::decimal128)std::numeric_limits<long double>::max() > _value); // overflow
-		return std::decimal::decimal128_to_long_double(_value); }
+		return is_null ? 0 : std::decimal::decimal128_to_long_double(_value); }
 	inline explicit operator double() const {
 		assert(_value < (std::decimal::decimal128)std::numeric_limits<double>::lowest() || (std::decimal::decimal128)std::numeric_limits<double>::max() > _value); // overflow
-		return std::decimal::decimal128_to_double(_value); }
+		return is_null ? 0 : std::decimal::decimal128_to_double(_value); }
 	inline explicit operator float() const {
 		assert(_value < (std::decimal::decimal128)std::numeric_limits<float>::lowest() || (std::decimal::decimal128)std::numeric_limits<float>::max() > _value); // overflow
-		return std::decimal::decimal128_to_float(_value); }
-	inline explicit operator std::decimal::decimal128() const { return _value; }
-	inline explicit operator std::decimal::decimal64() const { return std::decimal::decimal64(_value); }
-	inline explicit operator std::decimal::decimal32() const { return std::decimal::decimal32(_value); }
+		return is_null ? 0 : std::decimal::decimal128_to_float(_value); }
+	inline explicit operator std::decimal::decimal128() const { return is_null ? 0 : _value; }
+	inline explicit operator std::decimal::decimal64() const { return is_null ? 0 : std::decimal::decimal64(_value); }
+	inline explicit operator std::decimal::decimal32() const { return is_null ? 0 : std::decimal::decimal32(_value); }
 
 	inline bool operator!() const { return this->is_null ? false : this->_value == 0;}
 
