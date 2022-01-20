@@ -6,6 +6,19 @@
 
 #include "CppUTest/TestHarness_c.h"
 
+static Connection* _test_gconn = NULL;
+
+TEST_C(driver_oracle_c, test_global_c)
+{
+    if(_test_gconn == NULL) {
+        Engine* engine = create_engine_p("oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA");
+        _test_gconn = engine_connect(engine);
+        free_engine(engine);
+    }
+
+	free_connection(_test_gconn);
+}
+
 TEST_C(driver_oracle_c, select_char_16_c)
 {
 	conn_state error;

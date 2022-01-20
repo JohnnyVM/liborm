@@ -92,6 +92,7 @@ static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_typ
 	val.data = (unsigned char*)malloc(val.length);
 	memcpy(val.data, std::string(_val).c_str(), val.length);
 	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> ptr(ora_database_type_param_clone(&val), &free_ora_database_type);
+	free(val.data);
 	return ptr;
 }
 
@@ -108,6 +109,7 @@ static std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_typ
 	intmax_t in = (intmax_t)_val;
 	memcpy(val.data, &in, val.length);
 	std::unique_ptr<struct ora_database_type, decltype(&free_ora_database_type)> ptr(ora_database_type_param_clone(&val), &free_ora_database_type);
+	free(val.data);
 	return ptr;
 }
 

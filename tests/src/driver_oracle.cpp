@@ -10,6 +10,20 @@
 
 TEST_GROUP(driver_oracle){};
 
+static Connection* _test_gconn = NULL;
+
+TEST(driver_oracle, test_global)
+{
+    if(_test_gconn == NULL) {
+        Engine* engine = create_engine_p("oracle+oracle://BSM_DBA:BSM_DBA_MICH@QBSMOLS2.world/BSM_DBA");
+        _test_gconn = engine_connect(engine);
+        free_engine(engine);
+    }
+
+	free_connection(_test_gconn);
+	_test_gconn = NULL;
+}
+
 TEST(driver_oracle, select_char_16)
 {
 	conn_state error;

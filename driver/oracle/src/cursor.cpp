@@ -50,6 +50,7 @@ conn_state driver::oracle::Cursor::open_cursor(void) {
 		struct ora_database_type ptr;
 		state = driver_ora_get_descriptor_column(&conn, i + 1, &ptr);
 		if(state) {
+			if(ptr.indicator != -1) { free(ptr.data); }
 			assert(!"Internal error");
 			return state;
 		}
@@ -57,6 +58,7 @@ conn_state driver::oracle::Cursor::open_cursor(void) {
 		_names.push_back(std::string(ptr.name));
 		_size.push_back((size_t)ptr.length);
 		_type_id.push_back(driver::oracle::TypeFactory::coerced_type(ptr.type));
+		if(ptr.indicator != -1) { free(ptr.data); }
 	}
 	return state;
 }
@@ -87,6 +89,7 @@ conn_state driver::oracle::Cursor::fetch(void) {
 		struct ora_database_type ptr;
 		state = driver_ora_get_descriptor_column(&conn, i + 1, &ptr);
 		if(state) {
+			if(ptr.indicator != -1) { free(ptr.data); }
 			_values.resize(osize);
 			return state;
 		}

@@ -86,7 +86,7 @@ conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* dbcon
 	if(indicator != -1) { // Not null
 		data = malloc((size_t)octet_length);
 		if(data == NULL) {
-		return NO_MEMORY;
+			return NO_MEMORY;
 		}
 
 		EXEC SQL GET DESCRIPTOR GLOBAL :output_descriptor VALUE :pos

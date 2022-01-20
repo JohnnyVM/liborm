@@ -9,6 +9,7 @@ TEST_GROUP_C_WRAPPER(driver_oracle_c) {};
 TEST_C_WRAPPER(driver_oracle_c, select_number_16_c);
 TEST_C_WRAPPER(driver_oracle_c, select_char_16_c);
 TEST_C_WRAPPER(driver_oracle_c, insert_bind_update_select_delete_c);
+TEST_C_WRAPPER(driver_oracle_c, test_global_c);
 #endif
 
 int main(int argc, char** argv)
