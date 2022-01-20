@@ -69,7 +69,7 @@ double column_as_double(TypeEngine* const val);
 long long column_as_long_long(TypeEngine* const val);
 long double column_as_long_double(TypeEngine* const val);
 decimal128 column_as_decimal128(TypeEngine* const val);
-bool column_is_null(TypeEngine* const val)
+bool column_is_null(TypeEngine* const val);
 
 #ifdef __cplusplus
 }
