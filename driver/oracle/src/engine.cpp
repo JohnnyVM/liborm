@@ -44,7 +44,7 @@ struct oracle_connection_data driver::oracle::Engine::params_to_conn() {
 	length = snprintf((char*)data.output_descriptor, sizeof data.output_descriptor, "output_descriptor_%i", counter);
 	CHECK_OUTPUT_SNPRINTF(length, sizeof data.output_descriptor);
 
-	data.ctx = NULL;
+	data.ctx = nullptr;
 
 	counter++;
 
