@@ -11,6 +11,7 @@ typedef struct TypeEngine TypeEngine;
 typedef _Decimal128 decimal128;
 #else
 typedef long long decimal128;
+typedef int bool;
 #endif
 
 #else
