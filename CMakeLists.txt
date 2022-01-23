@@ -97,16 +97,16 @@ include(CPack)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/liborm/libormConfigVersion.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/libormConfigVersion.cmake"
   VERSION ${liborm_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
 export(EXPORT libormTargets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/liborm/liborm.cmake"
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/liborm.cmake"
   NAMESPACE liborm::)
 configure_file(cmake/libormConfig.cmake
-  "${CMAKE_CURRENT_BINARY_DIR}/liborm/libormConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/libormConfig.cmake"
   COPYONLY)
 
 set(ConfigPackageLocation cmake/liborm)
@@ -120,7 +120,7 @@ install(EXPORT libormTargets
 install(
   FILES
     cmake/libormConfig.cmake
-    "${CMAKE_CURRENT_BINARY_DIR}/liborm/libormConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/libormConfigVersion.cmake"
   DESTINATION
     ${ConfigPackageLocation}
   COMPONENT
