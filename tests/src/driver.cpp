@@ -2,7 +2,7 @@
 
 #include "engine/engine.h"
 #include "connection/connection.h"
-#include "connection/state.h"
+#include "liborm/connection/state.h"
 
 #include "CppUTest/TestHarness.h"
 

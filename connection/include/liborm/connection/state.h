@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "liborm/connection/statement.h"
-#include "connection/types.h"
+#include "liborm/connection/types.h"
 #include "connection/cursor_c.h"
 
 struct connection_result {

@@ -13,7 +13,7 @@
 #include "inner_driver_oracle.h"
 #include "driver/oracle/connection_data.h"
 #include "oracle_types.h"
-#include "connection/state.h"
+#include "liborm/connection/state.h"
 #include "driver/oracle/factory.hpp"
 
 driver::oracle::Cursor::Cursor(struct oracle_connection_data arg_conn, std::shared_ptr<struct resource_ora_cursor> arg_cursor) :

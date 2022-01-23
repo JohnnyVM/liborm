@@ -1,7 +1,7 @@
 #include <cassert>
 
 #include "connection/cursor.hpp"
-#include "connection/state.h"
+#include "liborm/connection/state.h"
 #include "liborm/type/engine.h"
 
 TypeEngine* Cursor::getValue(unsigned row, unsigned column) const {

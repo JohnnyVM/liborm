@@ -9,7 +9,7 @@
 
 #include "liborm/utils/movable_il.hpp"
 #include "liborm/connection/statement.h"
-#include "connection/types.h"
+#include "liborm/connection/types.h"
 #include "liborm/type/engine.h"
 
 class Cursor;

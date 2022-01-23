@@ -7,8 +7,9 @@
 #include <sqlcpr.h>
 
 #include "inner_driver_oracle.h"
-#include "connection/connection.h"
 #include "driver/oracle/connection_data.h"
+#include "liborm/connection/types.h"
+#include "liborm/connection/state.h"
 
 /**
  * \brief enable thread

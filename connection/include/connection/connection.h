@@ -2,7 +2,7 @@
 #define LIBORM_CONNECTION_H
 
 #include "liborm/connection/statement.h"
-#include "connection/types.h"
+#include "liborm/connection/types.h"
 
 #ifdef __cplusplus
 
@@ -14,6 +14,6 @@
 #include "connection/cursor_c.h"
 #include "connection/connection_c.h"
 
-#include "connection/state.h"
+#include "liborm/connection/state.h"
 
 #endif

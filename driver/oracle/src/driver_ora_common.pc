@@ -6,9 +6,10 @@
 #include <stdlib.h>
 
 #include "inner_driver_oracle.h"
-#include "connection/connection.h"
 #include "driver/oracle/connection_data.h"
 #include "oracle_types.h"
+#include "liborm/connection/types.h"
+#include "liborm/connection/state.h"
 
 
 char* driver_ora_short_error_message(void) {

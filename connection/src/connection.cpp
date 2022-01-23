@@ -1,8 +1,8 @@
 #include <string>
 
-#include "connection/types.h"
+#include "liborm/connection/types.h"
 #include "connection/connection.hpp"
-#include "connection/state.h"
+#include "liborm/connection/state.h"
 #include "connection/cursor.hpp"
 #include "liborm/connection/statement.h"
 

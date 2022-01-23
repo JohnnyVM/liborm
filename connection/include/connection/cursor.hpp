@@ -7,7 +7,7 @@
 #include <cassert>
 
 #include "liborm/type/engine.h"
-#include "connection/types.h"
+#include "liborm/connection/types.h"
 
 /** A Cursor that is representing state from a DBAPI cursor.
  *	Its in charge of handle the memory used

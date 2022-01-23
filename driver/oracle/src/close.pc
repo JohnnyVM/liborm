@@ -5,7 +5,8 @@
 #include <sqlca.h>
 
 #include "driver/oracle/connection_data.h"
-#include "connection/connection.h"
+#include "liborm/connection/types.h"
+#include "liborm/connection/state.h"
 
 struct connection_result
 driver_ora_close(struct oracle_connection_data* dbconn) {
