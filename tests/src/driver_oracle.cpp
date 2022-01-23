@@ -38,7 +38,7 @@ TEST(driver_oracle, select_char_16)
 	}
 
 	error = cursor->fetch();
-	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+	CHECK_TEXT(error == SQL_ROWS and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 
 	TypeEngine* val = cursor->getValue(0,0);
 	CHECK_TEXT(dynamic_cast<orm::type::String*>(val), "invalid returned type");
@@ -61,7 +61,7 @@ TEST(driver_oracle, select_number_16)
 	}
 
 	conn_state error = cursor->fetch();
-	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+	CHECK_TEXT(error == SQL_ROWS and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 
 	TypeEngine* val = cursor->getValue(0,0);
 	CHECK_TEXT(dynamic_cast<orm::type::Numeric*>(val), "invalid returned type");
@@ -76,7 +76,7 @@ TEST(driver_oracle, select_number_16)
 	CHECK_EQUAL(std::string("LONG_DOUBLE"), cursor->name(0));
 
 	error = cursor->fetch();
-	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+	CHECK_TEXT(error == SQL_ROWS and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 	const orm::type::Numeric& minus = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(minus == -1);
 
@@ -92,9 +92,12 @@ TEST(driver_oracle, select_number_16)
 	}
 
 	error = cursor->fetch();
-	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+	CHECK_TEXT(error == SQL_ROWS and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 	const orm::type::Numeric& canido = dynamic_cast<orm::type::Numeric&>(*cursor->getValue(0,0));
 	CHECK(canido == std::decimal::decimal128(9999999999.999999989DL));
+
+	error = cursor->fetch();
+	CHECK_TEXT(error == SQL_DONE and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 }
 
 TEST(driver_oracle, acbuffer)
@@ -116,7 +119,7 @@ TEST(driver_oracle, acbuffer)
 
 	CHECK_EQUAL(std::string("LONG_DOUBLE"), cursor0->name(0));
 
-	// this test fail in debug mode becouse assert
+	// this test fail in debug mode becouse assert, update if you add more cursors
 	#ifdef NDEBUG
 	auto [cursor2, err2] = conn->execute("SELECT CAST(9999999999.999999999 AS NUMBER(19,9)) AS LONG_DOUBLE FROM DUAL");
 	CHECK_TEXT(err2 == SQL_MAXOPENCURSORS, "Not returned SQL_MAXOPENCURSORS");
@@ -136,7 +139,7 @@ TEST(driver_oracle, select_false) {
 	}
 
 	error = cursor->fetch();
-	CHECK_TEXT(!error and cursor->changes() == 0 and cursor->nrows() == 0, conn->error_message());
+	CHECK_TEXT(error == SQL_DONE and cursor->changes() == 0 and cursor->nrows() == 0, conn->error_message());
 }
 
 TEST(driver_oracle, select_date) {
@@ -145,13 +148,16 @@ TEST(driver_oracle, select_date) {
 	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
-	/*auto [cursor, err] = conn->execute("select SYSDATE from dual");
+	auto [cursor, err] = conn->execute("select TO_DATE('2010-08-03 12:34', 'YYYY-MM-DD HH24:MI') from dual"); // DATE doesn't contain timezone
 	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
 		FAIL(conn->error_message());
-	}*/
+	}
 
-	/* \todo err = cursor->fetch();
-	CHECK_TEXT(!err and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message()); */
+	err = cursor->fetch();
+	CHECK_TEXT(err == SQL_ROWS and cursor->changes() == 1 and cursor->nrows() == 1, conn->error_message());
+
+	err = cursor->fetch();
+	CHECK_TEXT(err == SQL_DONE and cursor->changes() == 1 and cursor->nrows() == 1, conn->error_message());
 }
 
 TEST(driver_oracle, insert_bind_update_select_delete) {
@@ -190,7 +196,7 @@ TEST(driver_oracle, insert_bind_update_select_delete) {
 	}
 
 	conn_state error = cursor->fetch();
-	CHECK_TEXT(!error and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
+	CHECK_TEXT(error == SQL_ROWS and cursor->changes() > 0 and cursor->nrows() > 0, conn->error_message());
 
 	TypeEngine* get_sitact = cursor->getValue(0,2);
 	TypeEngine* get_codpar = cursor->getValue(0,0);

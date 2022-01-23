@@ -33,7 +33,7 @@ TEST_C(driver_oracle_c, select_char_16_c)
 	}
 
 	error = cursor_fetch(res.cursor);
-	CHECK_C_TEXT(!error && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
+	CHECK_C_TEXT(error == SQL_ROWS && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
 
 	TypeEngine* val = cursor_getValue(res.cursor, 0, 0);
 	char test[5];
@@ -59,7 +59,7 @@ TEST_C(driver_oracle_c, select_number_16_c)
 	}
 
 	error = cursor_fetch(res.cursor);
-	CHECK_C_TEXT(!error && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
+	CHECK_C_TEXT(error == SQL_ROWS && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
 
 	TypeEngine* val = cursor_getValue(res.cursor, 0, 0);
 	int len = column_as_int(val);
@@ -74,7 +74,7 @@ TEST_C(driver_oracle_c, select_number_16_c)
 	CHECK_EQUAL_C_STRING("LONG_DOUBLE", cursor_name(res.cursor, 0));
 
 	error = cursor_fetch(res.cursor);
-	CHECK_C_TEXT(!error && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
+	CHECK_C_TEXT(error == SQL_ROWS && cursor_changes(res.cursor) > 0 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
 	val = cursor_getValue(res.cursor, 0, (unsigned)cursor_number(res.cursor, "LONG_DOUBLE"));
 	len = column_as_int(val);
 	CHECK_C(len == -1);
@@ -124,7 +124,7 @@ TEST_C(driver_oracle_c, insert_bind_update_select_delete_c) {
 	}
 
 	error = cursor_fetch(res.cursor);
-	CHECK_C_TEXT(!error && cursor_changes(res.cursor) == 1 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
+	CHECK_C_TEXT(error == SQL_ROWS && cursor_changes(res.cursor) == 1 && cursor_nrows(res.cursor) > 0, connection_error_message(conn));
 	char tmp1[4]; column_as_char(cursor_getValue(res.cursor, 0, 0), tmp1, sizeof tmp1);
 	char tmp2[8]; column_as_char(cursor_getValue(res.cursor, 0, 1), tmp2, sizeof tmp2);
 	char tmp3[4]; column_as_char(cursor_getValue(res.cursor, 0, 2), tmp3, sizeof tmp3);

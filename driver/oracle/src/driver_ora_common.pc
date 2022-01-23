@@ -111,12 +111,8 @@ conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* dbcon
 	result->scale = scale;
 	result->nullable = nullable;
 	result->indicator = indicator;
-	len = snprintf(result->name, INDICATOR_NAME_LENGTH, "%s", name);
-	if(len < 0 || len >= (int)INDICATOR_NAME_LENGTH) {
-		assert(!"indicator_name_length too short or nasty error");
-		free(data);
-		return NO_MEMORY;
-	}
+	 // warning: the database not launch warning if the name is truncated
+	snprintf(result->name, INDICATOR_NAME_LENGTH, "%s", name);
 	result->character_set_name = NULL;
 	result->data = data;
 

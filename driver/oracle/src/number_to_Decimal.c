@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
+
 static uintmax_t integer_pow(uintmax_t base, uintmax_t exp) {
 	uintmax_t out = 1;
 
@@ -21,7 +22,7 @@ static uintmax_t integer_pow(uintmax_t base, uintmax_t exp) {
  * the base of the mantisa is 100
  * related documentation [oracle](https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpcc/c-c-programmers-guide.pdf)
  * Number format explanation [random internet guy](https://gotodba.com/2015/03/24/how-are-numbers-saved-in-oracle/)
- * _Decimal128 format [wikipedia] (https://gotodba.com/2015/03/24/how-are-numbers-saved-in-oracle/)
+ * _Decimal128 format [wikipedia] (https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format)
  * \todo look for other source about oracle nuber format
  * \todo In the math library exist some combination of functions that do this work better
  */

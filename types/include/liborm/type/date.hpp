@@ -10,6 +10,8 @@ namespace orm::type {
 class Date : public virtual TypeEngine {
 	public:
 	Date() : TypeEngine("date", typeid(*this), sizeof(struct tm)) {}
+
+	
 };
 
 }

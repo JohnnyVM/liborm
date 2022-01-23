@@ -1,7 +1,7 @@
 #ifndef LIBORM_DRIVER_PRIVATE_ORACLE_TYPES_HPP
 #define LIBORM_DRIVER_PRIVATE_ORACLE_TYPES_HPP
 
-#define INDICATOR_NAME_LENGTH 32
+#define INDICATOR_NAME_LENGTH 129
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,6 +28,7 @@ enum sql_code {
 	ORA_ORACLE_VARCHAR = -9, /**< char[n+2] */
 	ORA_BINARY_FLOAT = -100,
 	ORA_BINARY_DOUBLE = -101,
+	ORA_ORACLE_DATE = -12,
 	// ...
 };
 

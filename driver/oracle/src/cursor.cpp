@@ -102,7 +102,7 @@ conn_state driver::oracle::Cursor::fetch(void) {
 		if(ptr.indicator != -1) { free(ptr.data); }
 	}
 	_ntuples += sqlca.sqlerrd[2] > 0 ? (unsigned)sqlca.sqlerrd[2] : 0u;
-	return state;
+	return SQL_ROWS;
 }
 
 void driver::oracle::Cursor::close_cursor(void) {

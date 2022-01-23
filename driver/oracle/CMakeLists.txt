@@ -41,6 +41,7 @@ add_library(${driver} STATIC
 	${C_GENERATED}
 	src/factory.cpp
 	src/number_to_Decimal.c
+	src/ora_date_to_tm.c
 	src/cursor.cpp
 	src/engine.cpp
 	src/oracle_types.cpp

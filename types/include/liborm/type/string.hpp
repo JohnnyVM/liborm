@@ -41,6 +41,7 @@ class String : public TypeEngine { // Keep that separate for class slicing
 			assert(!"Input string truncated");
 			throw std::length_error("Input string truncated"); // warning
 		}
+		is_null = false;
 		_value = tmp;
 		return *this;
 	}
@@ -50,10 +51,12 @@ class String : public TypeEngine { // Keep that separate for class slicing
 			assert(!"Input string truncated");
 			throw std::length_error("Input string truncated"); // warning
 		}
+		is_null = false;
 		_value = tmp;
 		return *this;
 	}
 
+	// \warning being strict with SQL this oprestaions with null are undefined
 	inline friend std::string operator+(const String& __lhs, const String& __rhs) {
 		return __lhs._value + __rhs._value;
 	}
@@ -89,6 +92,7 @@ class String : public TypeEngine { // Keep that separate for class slicing
 			assert(!"Input string truncated");
 			throw std::length_error("Input string truncated");
 		}
+		is_null = false;
 		_value += std::string(rhs);
 		return *this;
 	}

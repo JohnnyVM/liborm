@@ -108,16 +108,16 @@ class Numeric : virtual public TypeEngine {
 
 /// \todo operations with null values???
 #define _DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(_Op) \
-	inline Numeric& operator _Op##=(const Numeric& rhs) {_value _Op##= rhs._value; return *this;}\
+	inline Numeric& operator _Op##=(const Numeric& rhs) { is_null = false; _value _Op##= rhs._value; return *this;}\
 	inline friend Numeric operator _Op(Numeric lhs, const Numeric& rhs) { lhs _Op##= rhs; return lhs;}\
-	inline Numeric& operator _Op##=(const std::decimal::decimal128& rhs) {_value _Op##= rhs; return *this;}\
+	inline Numeric& operator _Op##=(const std::decimal::decimal128& rhs) { is_null = false; _value _Op##= rhs; return *this;}\
 	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal128& rhs) { lhs _Op##= rhs; return lhs;}\
-	inline Numeric& operator _Op##=(const std::decimal::decimal64& rhs) {_value _Op##= rhs; return *this;};\
+	inline Numeric& operator _Op##=(const std::decimal::decimal64& rhs) { is_null = false; _value _Op##= rhs; return *this;};\
 	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal64& rhs) { lhs _Op##= rhs; return lhs;}\
-	inline Numeric& operator _Op##=(const std::decimal::decimal32& rhs) {_value _Op##= rhs; return *this;};\
+	inline Numeric& operator _Op##=(const std::decimal::decimal32& rhs) { is_null = false; _value _Op##= rhs; return *this;};\
 	inline friend Numeric operator _Op(Numeric lhs, const std::decimal::decimal32& rhs) { lhs _Op##= rhs; return lhs;}\
 	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
-	inline Numeric& operator _Op##=(const T& rhs) {_value _Op##= rhs; return *this;}\
+	inline Numeric& operator _Op##=(const T& rhs) { is_null = false; _value _Op##= rhs; return *this;}\
 	template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>\
 	inline friend Numeric operator _Op(Numeric lhs, const T& rhs) { lhs _Op##= rhs; return lhs;}
 	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(+)
@@ -126,10 +126,10 @@ class Numeric : virtual public TypeEngine {
 	_DECLARE_TYPE_NUMERIC_BINARY_OP_WITH_INT(/)
 
 	template<typename TID, std::enable_if_t<std::is_integral<TID>::value, bool> = true>
-	inline Numeric& operator=(const TID& rhs) {_value = rhs; return *this;};
-	inline Numeric& operator=(const std::decimal::decimal128& rhs) { _value = rhs; return *this; }
-	inline Numeric& operator=(const std::decimal::decimal64& rhs) { _value = rhs; return *this; }
-	inline Numeric& operator=(const std::decimal::decimal32& rhs) { _value = rhs; return *this; }
+	inline Numeric& operator=(const TID& rhs) { is_null = false; _value = rhs; return *this;};
+	inline Numeric& operator=(const std::decimal::decimal128& rhs) { is_null = false; _value = rhs; return *this; }
+	inline Numeric& operator=(const std::decimal::decimal64& rhs) { is_null = false; _value = rhs; return *this; }
+	inline Numeric& operator=(const std::decimal::decimal32& rhs) { is_null = false; _value = rhs; return *this; }
 
 	/**
 	 * \brief Output the number as string

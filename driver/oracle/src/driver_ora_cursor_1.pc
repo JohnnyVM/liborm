@@ -120,6 +120,10 @@ conn_state driver_ora_cursor_open_1(struct oracle_connection_data* dbconn, unsig
 			length = 8; // maximun oracle size
 			scale = scale < 0 ? 0 : scale;
 		}
+		// the type Date have to be presetted forward
+		if(type == ORA_DATE) {
+			type = ORA_ORACLE_DATE;
+		}
 		EXEC SQL SET DESCRIPTOR GLOBAL :output_descriptor VALUE :i
 			TYPE = :type,
 			LENGTH = :length,

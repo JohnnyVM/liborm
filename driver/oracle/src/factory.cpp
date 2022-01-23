@@ -20,7 +20,7 @@ const std::type_info& driver::oracle::TypeFactory::coerced_type(enum sql_code co
 		case ORA_VARCHAR2: /**< char[n] */
 			return typeid(orm::type::String);
 		case ORA_DATE:
-			//return typeid(orm::type::Datetime);
+			return typeid(orm::type::Datetime);
 		case ORA_DECIMAL:
 		case ORA_DOUBLE_PRECISION:
 		case ORA_FLOAT:
@@ -66,7 +66,7 @@ std::unique_ptr<orm::type::Datetime> driver::oracle::TypeFactory::Datetime() con
 	if(data.get()->indicator == -1) {
 		out->is_null = true;
 	} else {
-		assert(!"Not implemented");
+		*out.get() = ora_date_to_tm(data.get()->data);
 	}
 	return out;
 }

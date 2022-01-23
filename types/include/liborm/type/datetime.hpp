@@ -31,6 +31,9 @@ class Datetime : public virtual TypeEngine {
 	~Datetime() = default;
 	Datetime() noexcept : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)) {}
 	Datetime(struct timespec arg) noexcept : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)), ts(arg) {}
+	Datetime(time_t arg) noexcept : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)) { ts.tv_sec = arg; ts.tv_nsec = 0; }
+	Datetime(struct tm arg) noexcept : Datetime(mktime(&arg)) {}
+
 	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	Datetime(T arr) : TypeEngine("datetime", typeid(*this), sizeof(struct timespec)) {
 		if(std::string(arr) == "now" or std::string(arr) == "NOW") { // todo unicode
@@ -68,6 +71,10 @@ class Datetime : public virtual TypeEngine {
 	_TIME_T_BINARY_OPERATOR(>=)
 	_TIME_T_BINARY_OPERATOR(<=)
 #undef _TIME_T_BINARY_OPERATOR
+
+	inline Datetime& operator=(const time_t& rhs) { is_null = false; ts.tv_sec = rhs; ts.tv_nsec = 0; return *this; }
+	inline Datetime& operator=(const struct timespec& rhs) { is_null = false; ts = rhs; return *this; }
+	inline Datetime& operator=(const struct tm& rhs) { is_null = false; ts.tv_sec = mktime((struct tm*)&rhs); ts.tv_nsec = 0; return *this; }
 
 	/**
 	 * \brief return the time since epoch like string represented in locale format

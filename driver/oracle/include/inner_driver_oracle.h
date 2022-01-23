@@ -2,6 +2,7 @@
 #define LIBORM_DRIVER_ORACLE_CONNECT_H
 
 #include <assert.h>
+#include <time.h>
 
 #include "connection/connection.h"
 #include "driver/oracle/connection_data.h"
@@ -34,6 +35,12 @@ conn_state driver_ora_fields_in_count(struct oracle_connection_data* conn, unsig
 conn_state driver_ora_get_descriptor_column(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
 conn_state driver_ora_set_descriptor_input(struct oracle_connection_data* conn, unsigned field, struct ora_database_type *result);
 _Decimal128 number_to_Decimal128(unsigned char const* number, int size);
+/**
+ * \brief Get the Date output of ora database
+ * the length of arg is ever 7
+ * \warning this function assume that the daylight is unknown
+ */
+struct tm ora_date_to_tm(unsigned char* arg);
 char* driver_ora_short_error_message(void);
 
 #ifdef __cplusplus
