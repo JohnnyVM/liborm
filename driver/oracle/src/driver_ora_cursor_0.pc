@@ -7,11 +7,13 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#ifndef ORA_PROC
 #include "inner_driver_oracle.h"
 #include "driver/oracle/connection_data.h"
 #include "oracle_types.h"
 #include "liborm/connection/types.h"
 #include "liborm/connection/state.h"
+#endif
 
 conn_state driver_ora_prepare_0(struct oracle_connection_data* dbconn, const char* stmt) {
 	EXEC SQL BEGIN DECLARE SECTION;

@@ -3,9 +3,11 @@
 #define SQLCA_STORAGE_CLASS extern
 #include <sqlca.h>
 
+#ifndef ORA_PROC
 #include "driver/oracle/connection_data.h"
 #include "liborm/connection/types.h"
 #include "liborm/connection/state.h"
+#endif
 
 struct connection_result
 driver_ora_commit(struct oracle_connection_data* dbconn) {

@@ -5,9 +5,11 @@
 #include <sqlca.h>
 #include <sqlcpr.h>
 
+#ifndef ORA_PROC
 #include "driver/oracle/connection_data.h"
 #include "liborm/connection/types.h"
 #include "liborm/connection/state.h"
+#endif
 
 struct connection_result
 allocate_descriptor_global(struct oracle_connection_data* dbconn, unsigned char* descriptor) {
