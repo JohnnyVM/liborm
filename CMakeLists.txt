@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.20)
 
 project(orm VERSION 0.1 DESCRIPTION "liborm library")
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
+
+set(liborm_VERSION 0.0.1)
+
 option(CHECK_MEMORY "Build with memory sanitize support" OFF)
 option(CHECK_THREADS "Build with memory sanitize threads support (todo)" OFF)
 option(POSTGRES "Build postgresql support" OFF)
@@ -58,21 +63,65 @@ add_subdirectory(utils)
 add_library(orm STATIC
 	src/liborm.cpp)
 
-target_link_libraries(orm engine connection mapper types)
+include(GenerateExportHeader)
+
+target_link_libraries(orm PUBLIC engine connection mapper types)
 
 if(TESTS)
 add_subdirectory(tests)
 endif()
 
 if(POSTGRES)
+	set(liborm_targets ${liborm_targets} postgres)
 	add_subdirectory(driver/postgres)
 endif()
 
 if(ORACLE)
+	set(liborm_targets ${liborm_targets} oracle)
 	add_subdirectory(driver/oracle)
 endif()
 
-install(TARGETS orm DESTINATION lib)
+generate_export_header(orm)
+set_property(TARGET orm PROPERTY VERSION ${liborm_VERSION})
+
+install(TARGETS orm engine connection mapper types utils ${liborm_targets} EXPORT libormTargets
+	DESTINATION lib)
 install(DIRECTORY
 		${PROJECT_BINARY_DIR}/include/
 	DESTINATION include)
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_PACKAGE_VERSION_MAJOR "${liborm_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${liborm_VERSION_MINOR}")
+include(CPack)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/liborm/libormConfigVersion.cmake"
+  VERSION ${liborm_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+export(EXPORT libormTargets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/liborm/liborm.cmake"
+  NAMESPACE liborm::)
+configure_file(cmake/libormConfig.cmake
+  "${CMAKE_CURRENT_BINARY_DIR}/liborm/libormConfig.cmake"
+  COPYONLY)
+
+set(ConfigPackageLocation cmake/liborm)
+install(EXPORT libormTargets
+	FILE
+	libormTargets.cmake
+	NAMESPACE
+		liborm::
+	DESTINATION
+		${ConfigPackageLocation})
+install(
+  FILES
+    cmake/libormConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/liborm/libormConfigVersion.cmake"
+  DESTINATION
+    ${ConfigPackageLocation}
+  COMPONENT
+    Devel)

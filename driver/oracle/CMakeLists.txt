@@ -18,6 +18,8 @@ set(PROC_SOURCES
 get_target_property (CONNECTION_INCLUDE_DIRS connection INCLUDE_DIRECTORIES)
 get_target_property (TYPES_INCLUDE_DIRS types INCLUDE_DIRECTORIES)
 set(INCLUDE_DIRS ${CONNECTION_INCLUDE_DIRS} ${TYPES_INCLUDE_DIRS})
+list(FILTER INCLUDE_DIRS EXCLUDE REGEX "^\\$<INSTALL_INTERFACE:.*$")
+
 list(TRANSFORM INCLUDE_DIRS PREPEND "INCLUDE=")
 list(JOIN INCLUDE_DIRS " " INCLUDE_STRING)
 
@@ -44,8 +46,9 @@ add_library(${driver} STATIC
 	src/oracle_types.cpp
 	src/connection.cpp)
 
-target_include_directories(${driver}
-	PUBLIC include $ENV{ORACLE_HOME}/sdk/include)
+target_include_directories(${driver} PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+	$ENV{ORACLE_HOME}/sdk/include)
 
 target_link_libraries(${driver} connection engine types utils -lclntsh)
 target_link_directories(${driver} PUBLIC $ENV{ORACLE_HOME}/lib)

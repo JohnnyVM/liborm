@@ -9,7 +9,8 @@ add_library(mapper STATIC
 	src/table.cpp)
 
 target_include_directories(mapper PUBLIC
-	include
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+	$<INSTALL_INTERFACE:include/>
 )
 
 target_link_libraries(mapper types utils)

@@ -11,7 +11,8 @@ add_library(engine STATIC
 )
 
 target_include_directories(engine PUBLIC
-	include
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+	$<INSTALL_INTERFACE:include/>
 )
 
 target_link_libraries(engine types connection)
