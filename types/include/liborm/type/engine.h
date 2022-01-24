@@ -50,6 +50,20 @@ class TypeEngine { // Keep that separate for class slicing
 	inline friend bool operator !=(const TypeEngine& _lhs, const TypeEngine& _rhs) {
 		return _lhs.is_null or _rhs.is_null ? false : std::string(_lhs) == std::string(_rhs); }
 
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	inline friend bool operator !=(const TypeEngine& _lhs, const T& _rhs) {
+		return _lhs.is_null ? false : std::string(_lhs) != std::string(_rhs); }
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	inline friend bool operator !=(const T& _lhs, const TypeEngine& _rhs) {
+		return _rhs.is_null ? false : std::string(_lhs) != std::string(_rhs); }
+
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	inline friend bool operator ==(const TypeEngine& _lhs, const T& _rhs) {
+		return _lhs.is_null ? false : std::string(_lhs) == std::string(_rhs); }
+	template<typename T, std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
+	inline friend bool operator ==(const T& _lhs, const TypeEngine& _rhs) {
+		return _rhs.is_null ? false : std::string(_lhs) == std::string(_rhs); }
+
 	virtual std::unique_ptr<TypeEngine> clone() const = 0;
 
 	const std::type_info& type;

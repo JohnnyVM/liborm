@@ -148,7 +148,7 @@ TEST(driver_oracle, select_date) {
 	std::unique_ptr<Engine> engine = create_engine(uri);
 	std::unique_ptr<Connection> conn = engine->connect();
 
-	auto [cursor, err] = conn->execute("select TO_DATE('2010-08-03 12:34', 'YYYY-MM-DD HH24:MI') from dual"); // DATE doesn't contain timezone
+	auto [cursor, err] = conn->execute("select TO_DATE('2010-08-03 12:34:56', 'YYYY-MM-DD HH24:MI:SS') from dual"); // DATE doesn't contain timezone
 	if(err != SQL_ROWS || conn->changes() != 0 || cursor == nullptr) {
 		FAIL(conn->error_message());
 	}
@@ -158,6 +158,13 @@ TEST(driver_oracle, select_date) {
 
 	err = cursor->fetch();
 	CHECK_TEXT(err == SQL_DONE and cursor->changes() == 1 and cursor->nrows() == 1, conn->error_message());
+	const orm::type::Datetime& datetime = dynamic_cast<orm::type::Datetime&>(*cursor->getValue(0,0));
+	// the problem with this is that the default format can change
+	//CHECK_EQUAL("2010-08-03 12:34:56", std::string(*cursor->getValue(0,0)));
+	//CHECK_EQUAL("2010-08-03 12:34:56", std::string(datetime));
+
+	CHECK_EQUAL("2010-08-03 12:34:56", datetime.tostring("%F %T"));
+	CHECK_EQUAL("2010/08/03 12:34:56", datetime.tostring("%Y/%m/%d %T"));
 }
 
 TEST(driver_oracle, insert_bind_update_select_delete) {

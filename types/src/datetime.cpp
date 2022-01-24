@@ -17,22 +17,3 @@ orm::type::Datetime orm::type::Datetime::now() {
     if(err != 0) { throw std::system_error(err, std::generic_category()); }
     return Datetime(nts);
 }
-
-orm::type::Datetime::operator std::string() const {
-    std::scoped_lock lock(orm::type::Datetime::lock_timer);
-    setlocale(LC_TIME, ""); // danger, this can affect other parts of the program
-    
-    struct tm tm, *check;
-    errno = 0;
-    check = gmtime_r(&ts.tv_sec, &tm);
-    if(check == NULL) { assert(!"gmtime_r error"); throw std::system_error(errno, std::generic_category()); }
-    char out[100]; // i suppose is enought
-    size_t icheck = strftime(out, sizeof out, nl_langinfo(D_T_FMT), &tm);
-    assert(icheck < (int)sizeof out);
-
-    return std::string(out);
-}
-
-std::string orm::type::Datetime::tostring() const {
-    return std::string(*this);
-}

@@ -82,12 +82,22 @@ class Datetime : public virtual TypeEngine {
 	 * debatable behaviour, but some default is necesary
 	 * \return std::string
 	 */
-	explicit operator std::string() const;
+	inline explicit operator std::string() const { return tostring(); }
 	inline explicit operator struct timespec() const { return ts; }
 	inline explicit operator time_t() const { return ts.tv_sec; }
 
 	/*transform ts in the specified format, todo check at compile time */
-	std::string tostring() const;
+	inline std::string tostring() const {
+		if(is_null) {
+			return std::string();
+		}
+
+		std::scoped_lock lock(orm::type::Datetime::lock_timer);
+		setlocale(LC_TIME, ""); // danger, this can affect other parts of the program
+
+		return tostring(nl_langinfo(D_T_FMT));
+	}
+
 	template<typename T,
 		std::enable_if_t<std::is_convertible<T, std::string>::value || std::is_same<T, std::string>::value, bool> = true>
 	std::string tostring(const T& val) const {
@@ -102,7 +112,7 @@ class Datetime : public virtual TypeEngine {
 		check = gmtime_r(&ts.tv_sec, &tm);
 		if(check == NULL) { assert(!"gmtime_r error"); throw std::system_error(errno, std::generic_category()); }
 		char out[100];
-		int icheck = strftime(out, sizeof out, std::string(val).c_str(), &tm);
+		size_t icheck = strftime(out, sizeof out, std::string(val).c_str(), &tm);
 		assert(icheck != 0);
 
 		return std::string(out);
