@@ -67,4 +67,10 @@ TypeEngine* cursor_getValue(Cursor* const c, unsigned row, unsigned column) {
 	return c->getValue(row, column);
 }
 
+void cleanup_cursor(Cursor** const c) {
+	if(c != nullptr) {
+		free_cursor(*c);
+	}
+}
+
 }

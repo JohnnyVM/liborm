@@ -23,6 +23,7 @@ __attribute__((warn_unused_result)) unsigned cursor_changes(Cursor* const c);
 __attribute__((warn_unused_result)) int cursor_number(Cursor* const c, const char* const name);
 __attribute__((warn_unused_result)) const char* cursor_name(Cursor* const c, unsigned pos); /** \warning nasty dragon, the value returned is indefined under multiple circunstances */
 __attribute__((warn_unused_result)) TypeEngine* cursor_getValue(Cursor* const c, unsigned row, unsigned column);
+void cleanup_cursor(Cursor** const c);
 
 #ifdef __cplusplus
 }
