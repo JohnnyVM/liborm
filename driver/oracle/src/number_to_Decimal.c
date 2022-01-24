@@ -30,7 +30,6 @@ static _Decimal128 positive_number_to_Decimal128(const unsigned char* number, in
 	_Decimal128 doublet, number_mantisa = 0.0dl, sum = 100.0dl;
 	uint16_t number_exponent;
 
-	assert(size > 1);
 	if(size <= 1) { return 0.0dl; }
 
 	// exponent
@@ -58,7 +57,6 @@ static _Decimal128 negative_number_to_Decimal128(const unsigned char* number, in
 	// TODO check latest bytes is 102
 	assert(*((uint8_t*)number+size-1) == 102);
 	size = size - 1; // ignore latest byte
-	assert(size > 1);
 	if(size <= 1) { return 0.0dl; }
 
 	// exponent
