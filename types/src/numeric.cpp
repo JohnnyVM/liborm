@@ -8,7 +8,9 @@
 
 orm::type::Numeric::operator std::string() const {
     std::stringstream stream;
-
+    if(is_null) {
+        return std::string();
+    }
     assert(precision <= LDBL_DIG); // fail if the value precision is bigger than the expected output
     long double out = (long double)*this;
 
